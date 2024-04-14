@@ -6,7 +6,8 @@ authors = ["Layton <caolei6767@gmail.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.10"
+python = "<3.13, >=3.9"
+pyside6 = "^6.7.0"
 
 
 [build-system]
