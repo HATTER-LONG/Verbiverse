@@ -9,12 +9,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         super().__init__()
         self.setupUi(self)
 
-        self.pushButton.clicked.connect(self.on_pushButton_clicked)
-
-    def on_pushButton_clicked(self):
-        text = self.lineEdit.text()
-        print(text)
-
 
 app = QApplication(sys.argv)
 
