@@ -1,5 +1,6 @@
 import sys
 
+from ChatLLM import ChatChain
 from MainWindow import Ui_MainWindow
 from PySide6.QtCore import Qt
 from PySide6.QtWidgets import QApplication, QLabel, QMainWindow, QVBoxLayout, QWidget
@@ -30,6 +31,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
         self.userTextEdit.setPlaceholderText("输入消息")
         self.userSendButton.clicked.connect(self.send_Message)
+        self.chat_chain = ChatChain()
 
     def scrollToBottomIfNeeded(self, minimum, maximum):
         if self.adding:
@@ -45,7 +47,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             self.userTextEdit.setText("")
 
             # 模拟机器人回复
-            reply_text = "你好，我收到你的消息了。"
+            reply_text = self.chat_chain.invoke(message_text)
             reply_label = QLabel(f"Robot: {reply_text}")
             reply_label.setWordWrap(True)
             self.messages_list.addWidget(reply_label)  # Add to QVBoxLayout
