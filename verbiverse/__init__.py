@@ -1,5 +1,7 @@
+import asyncio
 import sys
 
+import PySide6.QtAsyncio as QtAsyncio
 from ChatLLM import ChatChain
 from MainWindow import Ui_MainWindow
 from PySide6.QtCore import Qt
@@ -30,7 +32,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.chatScrollArea.setWidget(self.messages_list_widget)
 
         self.userTextEdit.setPlaceholderText("输入消息")
-        self.userSendButton.clicked.connect(self.send_Message)
+        self.userSendButton.clicked.connect(
+            lambda: asyncio.ensure_future(self.send_Message())
+        )
         self.chat_chain = ChatChain()
 
     def scrollToBottomIfNeeded(self, minimum, maximum):
@@ -38,7 +42,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             self.vscrollbar.setValue(maximum)
             self.adding = False
 
-    def send_Message(self):
+    async def send_Message(self):
+        self.userSendButton.setEnabled(False)
         message_text = self.userTextEdit.toPlainText()
         if message_text:
             message_label = QLabel(f"You: {message_text}")
@@ -46,16 +51,22 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             self.messages_list.addWidget(message_label)  # Add to QVBoxLayout
             self.userTextEdit.setText("")
 
-            # 模拟机器人回复
-            reply_text = self.chat_chain.invoke(message_text)
+            content = self.chat_chain.stream(message_text)
+
+            reply_text = ""
             reply_label = QLabel(f"Robot: {reply_text}")
             reply_label.setWordWrap(True)
             self.messages_list.addWidget(reply_label)  # Add to QVBoxLayout
             self.adding = True
+            for chunk in content:
+                print(reply_label.text() + chunk.content)
+                reply_label.setText(reply_label.text() + chunk.content)
+                QApplication.processEvents()
+        self.userSendButton.setEnabled(True)
 
 
 app = QApplication(sys.argv)
 window = MainWindow()
 window.show()
 
-app.exec()
+QtAsyncio.run()
