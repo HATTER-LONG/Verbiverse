@@ -12,7 +12,7 @@ from langchain_openai import ChatOpenAI
 api_key = "lm-studio"
 api_url = "http://localhost:1234/v1"
 
-model = "Qwen/Qwen1.5-7B-Chat-GGUF/qwen1_5-7b-chat-q6_k.gguf"
+model = "Qwen/Qwen1.5-14B-Chat-GGUF/qwen1_5-14b-chat-q5_k_m.gguf"
 
 
 class ChatMessageCallBack(BaseCallbackHandler):
@@ -77,7 +77,6 @@ class ChatChain:
         ) as file:
             content = file.read()
 
-        content = "Hello you are a smart people"
         prompt = ChatPromptTemplate.from_messages(
             [
                 (

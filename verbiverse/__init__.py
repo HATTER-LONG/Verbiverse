@@ -1,11 +1,23 @@
-import asyncio
 import sys
 
-import PySide6.QtAsyncio as QtAsyncio
 from ChatLLM import ChatChain
 from MainWindow import Ui_MainWindow
-from PySide6.QtCore import Qt
+from PySide6.QtCore import Qt, QThread, Signal
 from PySide6.QtWidgets import QApplication, QLabel, QMainWindow, QVBoxLayout, QWidget
+
+
+class WorkThread(QThread):
+    messageChanged = Signal(str)  # Declare a signal here using @pyqtSignal()
+
+    def __init__(self, message, chat_chain) -> None:
+        super().__init__()
+        self.message = message
+        self.chat_chain = chat_chain
+
+    def run(self):
+        content = self.chat_chain.stream(self.message)
+        for chunk in content:
+            self.messageChanged.emit(chunk.content)
 
 
 class MainWindow(QMainWindow, Ui_MainWindow):
@@ -32,17 +44,20 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.chatScrollArea.setWidget(self.messages_list_widget)
 
         self.userTextEdit.setPlaceholderText("输入消息")
-        self.userSendButton.clicked.connect(
-            lambda: asyncio.ensure_future(self.send_Message())
-        )
+        self.userSendButton.clicked.connect(self.send_Message)
         self.chat_chain = ChatChain()
+        self.worker = None
+        self.need_update_label = None
 
     def scrollToBottomIfNeeded(self, minimum, maximum):
         if self.adding:
             self.vscrollbar.setValue(maximum)
             self.adding = False
 
-    async def send_Message(self):
+    def updateFinish(self):
+        self.userSendButton.setEnabled(True)
+
+    def send_Message(self):
         self.userSendButton.setEnabled(False)
         message_text = self.userTextEdit.toPlainText()
         if message_text:
@@ -51,22 +66,25 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             self.messages_list.addWidget(message_label)  # Add to QVBoxLayout
             self.userTextEdit.setText("")
 
-            content = self.chat_chain.stream(message_text)
-
             reply_text = ""
-            reply_label = QLabel(f"Robot: {reply_text}")
-            reply_label.setWordWrap(True)
-            self.messages_list.addWidget(reply_label)  # Add to QVBoxLayout
-            self.adding = True
-            for chunk in content:
-                print(reply_label.text() + chunk.content)
-                reply_label.setText(reply_label.text() + chunk.content)
-                QApplication.processEvents()
-        self.userSendButton.setEnabled(True)
+            self.need_update_label = QLabel(f"Robot: {reply_text}")
+            self.need_update_label.setWordWrap(True)
+            self.messages_list.addWidget(self.need_update_label)  # Add to QVBoxLayout
+
+            self.worker = WorkThread(message_text, self.chat_chain)
+            self.worker.finished.connect(self.updateFinish)
+            self.worker.messageChanged.connect(self.update_label)
+            self.worker.start()
+        self.vscrollbar.setValue(self.vscrollbar.maximum())
+
+    def update_label(self, message):
+        if self.need_update_label is not None:
+            self.need_update_label.setText(self.need_update_label.text() + message)
+            self.vscrollbar.setValue(self.vscrollbar.maximum())
 
 
 app = QApplication(sys.argv)
 window = MainWindow()
 window.show()
 
-QtAsyncio.run()
+app.exec()
