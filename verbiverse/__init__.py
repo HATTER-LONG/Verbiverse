@@ -37,8 +37,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
         self.chatScrollArea.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         self.vscrollbar = self.chatScrollArea.verticalScrollBar()
-        self.vscrollbar.rangeChanged.connect(self.scrollToBottomIfNeeded)
-        self.adding = False
 
         self.chatScrollArea.setWidgetResizable(True)
         self.chatScrollArea.setWidget(self.messages_list_widget)
@@ -49,13 +47,16 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.worker = None
         self.need_update_label = None
 
-    def scrollToBottomIfNeeded(self, minimum, maximum):
-        if self.adding:
-            self.vscrollbar.setValue(maximum)
-            self.adding = False
-
     def updateFinish(self):
         self.userSendButton.setEnabled(True)
+        self.worker = None
+        self.messages_list.update()
+        self.vscrollbar.setValue(self.vscrollbar.maximum())
+
+    def updateStart(self):
+        self.messages_list.update()
+        QApplication.processEvents()
+        self.vscrollbar.setValue(self.vscrollbar.maximum())
 
     def send_Message(self):
         self.userSendButton.setEnabled(False)
@@ -73,6 +74,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
             self.worker = WorkThread(message_text, self.chat_chain)
             self.worker.finished.connect(self.updateFinish)
+            self.worker.started.connect(self.updateStart)
             self.worker.messageChanged.connect(self.update_label)
             self.worker.start()
         self.vscrollbar.setValue(self.vscrollbar.maximum())
