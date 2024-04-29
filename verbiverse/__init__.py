@@ -3,7 +3,17 @@ import sys
 from ChatLLM import ChatChain
 from MainWindow import Ui_MainWindow
 from PySide6.QtCore import Qt, QThread, Signal
-from PySide6.QtWidgets import QApplication, QLabel, QMainWindow, QVBoxLayout, QWidget
+from PySide6.QtGui import QPixmap
+from PySide6.QtWidgets import (
+    QApplication,
+    QHBoxLayout,
+    QLabel,
+    QMainWindow,
+    QSizePolicy,
+    QVBoxLayout,
+    QWidget,
+)
+from Message import Message
 
 
 class WorkThread(QThread):
@@ -46,6 +56,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.chat_chain = ChatChain()
         self.worker = None
         self.need_update_label = None
+        self.test = Message()
+        self.messages_list.addWidget(self.test)
 
     def updateFinish(self):
         self.userSendButton.setEnabled(True)
