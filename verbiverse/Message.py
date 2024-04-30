@@ -1,5 +1,4 @@
 from PySide6.QtWidgets import (
-    QApplication,
     QHBoxLayout,
     QLabel,
     QSizePolicy,
@@ -10,10 +9,8 @@ from PySide6.QtWidgets import (
 
 
 class Message(QWidget):
-    def __init__(self):
+    def __init__(self, image_path, user_name):
         super().__init__()
-        # self.setMinimumWidth(250)
-        # self.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Expanding)
 
         self.verticalLayout = QVBoxLayout(self)
 
@@ -24,7 +21,7 @@ class Message(QWidget):
         self.horizontalLayout = QHBoxLayout()
         self.horizontalLayout.setObjectName("horizontalLayout")
         self.user_image = QLabel(self)
-        self.user_image.setText("image")
+        self.user_image.setText(image_path)
         self.user_image.setFrameStyle(
             QLabel.StyledPanel | QLabel.Sunken
         )  # 设置带阴影的样式，这样看起来更像有边框
@@ -38,13 +35,9 @@ class Message(QWidget):
 
         self.user_name = QLabel(self)
 
-        self.user_name.setFrameStyle(
-            QLabel.StyledPanel | QLabel.Sunken
-        )  # 设置带阴影的样式，这样看起来更像有边框
-        self.user_name.setSizePolicy(
-            QSizePolicy.Preferred, QSizePolicy.Fixed
-        )  # 高度固定
-        self.user_name.setText("test name")
+        self.user_name.setFrameStyle(QLabel.StyledPanel | QLabel.Sunken)
+        self.user_name.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Fixed)
+        self.user_name.setText(user_name)
         self.user_name.setObjectName("user_name")
 
         self.horizontalLayout.addWidget(self.user_name)
@@ -69,14 +62,8 @@ class Message(QWidget):
 
         self.user_message = QLabel(self)
 
-        self.user_message.setSizePolicy(
-            QSizePolicy.Preferred, QSizePolicy.Fixed
-        )  # 高度固定
-        self.user_message.setFrameStyle(
-            QLabel.StyledPanel | QLabel.Sunken
-        )  # 设置带阴影的样式，这样看起来更像有边框
-
-        self.user_image.setText("test message")
+        self.user_message.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Fixed)
+        self.user_message.setFrameStyle(QLabel.StyledPanel | QLabel.Sunken)
         self.user_message.setObjectName("user_message")
         self.user_message.setWordWrap(True)
 
@@ -85,3 +72,9 @@ class Message(QWidget):
         self.verticalLayout.addLayout(self.horizontalLayout_3)
 
         self.setLayout(self.verticalLayout)
+
+    def setMessageText(self, text) -> None:
+        self.user_message.setText(text)
+
+    def getMessageText(self) -> str:
+        return self.user_message.text()

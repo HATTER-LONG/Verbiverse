@@ -56,8 +56,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.chat_chain = ChatChain()
         self.worker = None
         self.need_update_label = None
-        self.test = Message()
-        self.messages_list.addWidget(self.test)
 
     def updateFinish(self):
         self.userSendButton.setEnabled(True)
@@ -73,15 +71,13 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     def send_Message(self):
         self.userSendButton.setEnabled(False)
         message_text = self.userTextEdit.toPlainText()
+        self.userTextEdit.setText("")
         if message_text:
-            message_label = QLabel(f"You: {message_text}")
-            message_label.setWordWrap(True)
+            message_label = Message("image", "User")
+            message_label.setMessageText(message_text)
             self.messages_list.addWidget(message_label)  # Add to QVBoxLayout
-            self.userTextEdit.setText("")
 
-            reply_text = ""
-            self.need_update_label = QLabel(f"Robot: {reply_text}")
-            self.need_update_label.setWordWrap(True)
+            self.need_update_label = Message("image", "Robot")
             self.messages_list.addWidget(self.need_update_label)  # Add to QVBoxLayout
 
             self.worker = WorkThread(message_text, self.chat_chain)
@@ -93,7 +89,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
     def update_label(self, message):
         if self.need_update_label is not None:
-            self.need_update_label.setText(self.need_update_label.text() + message)
+            self.need_update_label.setMessageText(
+                self.need_update_label.getMessageText() + message
+            )
             self.vscrollbar.setValue(self.vscrollbar.maximum())
 
 
