@@ -74,7 +74,9 @@ class Ui_MessageBox(object):
         self.user_message.setObjectName(u"user_message")
         sizePolicy.setHeightForWidth(self.user_message.sizePolicy().hasHeightForWidth())
         self.user_message.setSizePolicy(sizePolicy)
+        self.user_message.setMouseTracking(False)
         self.user_message.setWordWrap(True)
+        self.user_message.setTextInteractionFlags(Qt.TextInteractionFlag.LinksAccessibleByMouse|Qt.TextInteractionFlag.TextSelectableByKeyboard|Qt.TextInteractionFlag.TextSelectableByMouse)
 
         self.horizontalLayout_3.addWidget(self.user_message)
 

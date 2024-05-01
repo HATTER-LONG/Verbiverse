@@ -55,6 +55,12 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.worker = None
         self.need_update_label = None
 
+        self.message_label1 = MessageBox("image", "User")
+        self.message_label1.setMessageText(
+            "This is a test message, it's helpful to dev new function avoid input ever time"
+        )
+        self.messages_list.addWidget(self.message_label1)  # Add to QVBoxLayout
+
     @Slot()
     def updateFinish(self):
         self.userSendButton.setEnabled(True)
@@ -103,11 +109,9 @@ def main():
     window.show()
 
     app.exec()
-    print("Exiting...")
     if window.worker is not None:
         window.worker.quit()
         window.worker.wait()
-    print("over Exiting...")
 
 
 if __name__ == "__main__":
