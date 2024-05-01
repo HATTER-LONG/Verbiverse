@@ -1,9 +1,7 @@
 import sys
 
 from ChatLLM import ChatChain
-from MainWindow import Ui_MainWindow
 from PySide6.QtCore import Qt, QThread, Signal
-from PySide6.QtGui import QPixmap
 from PySide6.QtWidgets import (
     QApplication,
     QHBoxLayout,
@@ -13,7 +11,8 @@ from PySide6.QtWidgets import (
     QVBoxLayout,
     QWidget,
 )
-from Message import Message
+from UI.MainWindow import Ui_MainWindow
+from UI.MessageBoxWidget import MessageBox
 
 
 class WorkThread(QThread):
@@ -73,11 +72,11 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         message_text = self.userTextEdit.toPlainText()
         self.userTextEdit.setText("")
         if message_text:
-            message_label = Message("image", "User")
+            message_label = MessageBox("image", "User")
             message_label.setMessageText(message_text)
             self.messages_list.addWidget(message_label)  # Add to QVBoxLayout
 
-            self.need_update_label = Message("image", "Robot")
+            self.need_update_label = MessageBox("image", "Robot")
             self.messages_list.addWidget(self.need_update_label)  # Add to QVBoxLayout
 
             self.worker = WorkThread(message_text, self.chat_chain)

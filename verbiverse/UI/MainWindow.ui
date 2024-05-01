@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>705</width>
-    <height>564</height>
+    <width>720</width>
+    <height>572</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -28,7 +28,7 @@
         <widget class="QWidget" name="scrollAreaWidgetContents_2">
          <property name="geometry">
           <rect>
-           <x>0</x>
+           <x>8</x>
            <y>0</y>
            <width>677</width>
            <height>392</height>
@@ -86,7 +86,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>705</width>
+     <width>720</width>
      <height>24</height>
     </rect>
    </property>
