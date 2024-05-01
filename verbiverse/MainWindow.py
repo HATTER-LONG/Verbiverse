@@ -1,6 +1,7 @@
 import sys
 
 from ChatLLM import ChatChain
+from MessageBoxWidget import MessageBox
 from PySide6.QtCore import Qt, QThread, Signal
 from PySide6.QtWidgets import (
     QApplication,
@@ -8,8 +9,7 @@ from PySide6.QtWidgets import (
     QVBoxLayout,
     QWidget,
 )
-from UI.MainWindow import Ui_MainWindow
-from UI.MessageBoxWidget import MessageBox
+from UI import Ui_MainWindow
 
 
 class WorkThread(QThread):

@@ -1,14 +1,6 @@
-# python 脚本实现工程管理
-
-
-# 0. 脚本的名字是 build.py , 支持 run、build 命令
-# 1. build 命令：递归查找所有 .ui 结尾的文件，并通过 pyside6-uic 进行转换，例如pyside6-uic /path/to/x.ui -o /path/to/x.py
-# 2. run 命令：先执行 build 命令功能，然后执行 __init__.py 程序
-
 import argparse
 import os
 import subprocess
-import sys
 
 
 def convert_ui_files(ui_file_path, py_file_path):
@@ -45,17 +37,21 @@ def main():
     parser = argparse.ArgumentParser(
         description="Engineering Project Management Script"
     )
-    parser.add_argument("command", choices=["run", "build"], help="Command to execute")
+    parser.add_argument(
+        "command", choices=["run", "build", "br"], help="Command to execute"
+    )
 
     args = parser.parse_args()
 
     if args.command == "build":
         build()
     elif args.command == "run":
+        run_app()
+    elif args.command == "br":
         build()
         run_app()
     else:
-        print("Invalid command. Use 'run' or 'build'.")
+        print("Invalid command. Use 'run', 'build' or 'br'.")
 
 
 if __name__ == "__main__":
