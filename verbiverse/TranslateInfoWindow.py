@@ -10,6 +10,7 @@ class TranslationType(Enum):
     MOTHER_TONGUE = 2
 
 
+# TODO: 冗余代码修正
 from langchain_openai import ChatOpenAI
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 
@@ -18,7 +19,7 @@ api_url = "http://localhost:1234/v1"
 
 model = "Qwen/Qwen1.5-14B-Chat-GGUF/qwen1_5-14b-chat-q5_k_m.gguf"
 
-
+# TODO: 冗余代码修正
 class WorkThread(QThread):
     # Signal emitted when a new chunk of message content is ready
     messageChanged = Signal(str)
@@ -51,6 +52,10 @@ class TranslateInfoWin(QWidget, Ui_TranslateInfoWin):
             openai_api_base=api_url,
             temperature=0.7,
         )
+        # TODO: 完善提示词
+        message = "The term {selected} originates from {input}. Provide a concise English definition and an example sentence."
+        if type == TranslationType.MOTHER_TONGUE:
+            message = "The term {selected} originates from {input}. Provide a concise Chinese definition and an english example sentence."
 
         prompt = ChatPromptTemplate.from_messages(
             [
@@ -60,7 +65,7 @@ class TranslateInfoWin(QWidget, Ui_TranslateInfoWin):
                 ),
                 (
                     "human",
-                    "The term {selected} originates from {input}. Provide a concise English definition and an example sentence.",
+                    message,
                 ),
             ]
         )

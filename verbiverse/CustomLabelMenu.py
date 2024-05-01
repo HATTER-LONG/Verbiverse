@@ -4,6 +4,7 @@ from PySide6.QtWidgets import QMenu
 from TranslateInfoWindow import TranslateInfoWin, TranslationType
 
 
+# TODO: 多语言兼容
 class LabelMenu(QMenu):
     def __init__(self, parent, selected_text, all_text):
         super().__init__(parent)
@@ -35,6 +36,7 @@ class LabelMenu(QMenu):
         )
         self.win.show()
 
+    # TODO: 待实现数据库相关功能
     @Slot()
     def handle_addDatabase(self):
         pass
