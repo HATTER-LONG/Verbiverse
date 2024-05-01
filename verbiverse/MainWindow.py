@@ -2,7 +2,7 @@ import sys
 
 from ChatLLM import ChatChain
 from MessageBoxWidget import MessageBox
-from PySide6.QtCore import Qt, QThread, Signal
+from PySide6.QtCore import Qt, QThread, Signal, Slot
 from PySide6.QtWidgets import (
     QApplication,
     QMainWindow,
@@ -13,14 +13,16 @@ from UI import Ui_MainWindow
 
 
 class WorkThread(QThread):
-    messageChanged = Signal(str)  # Declare a signal here using @pyqtSignal()
+    # Signal emitted when a new chunk of message content is ready
+    messageChanged = Signal(str)
 
-    def __init__(self, message, chat_chain) -> None:
-        super().__init__()
+    def __init__(self, message: str, chat_chain: ChatChain) -> None:
+        super().__init__()  # Call the parent constructor
         self.message = message
         self.chat_chain = chat_chain
 
-    def run(self):
+    @Slot()
+    def run(self) -> None:
         content = self.chat_chain.stream(self.message)
         for chunk in content:
             self.messageChanged.emit(chunk.content)
@@ -53,17 +55,20 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.worker = None
         self.need_update_label = None
 
+    @Slot()
     def updateFinish(self):
         self.userSendButton.setEnabled(True)
         self.worker = None
         self.messages_list.update()
         self.vscrollbar.setValue(self.vscrollbar.maximum())
 
+    @Slot()
     def updateStart(self):
         self.messages_list.update()
         QApplication.processEvents()
         self.vscrollbar.setValue(self.vscrollbar.maximum())
 
+    @Slot()
     def send_Message(self):
         self.userSendButton.setEnabled(False)
         message_text = self.userTextEdit.toPlainText()
@@ -83,6 +88,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             self.worker.start()
         self.vscrollbar.setValue(self.vscrollbar.maximum())
 
+    @Slot(str)
     def update_label(self, message):
         if self.need_update_label is not None:
             self.need_update_label.setMessageText(
@@ -97,6 +103,11 @@ def main():
     window.show()
 
     app.exec()
+    print("Exiting...")
+    if window.worker is not None:
+        window.worker.quit()
+        window.worker.wait()
+    print("over Exiting...")
 
 
 if __name__ == "__main__":
