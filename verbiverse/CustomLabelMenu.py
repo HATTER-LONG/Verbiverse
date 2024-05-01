@@ -1,6 +1,7 @@
 from PySide6.QtCore import Slot
 from PySide6.QtGui import QAction
 from PySide6.QtWidgets import QMenu
+from TranslateInfoWindow import TranslateInfoWin, TranslationType
 
 
 class LabelMenu(QMenu):
@@ -22,11 +23,17 @@ class LabelMenu(QMenu):
 
     @Slot()
     def handle_transEN(self):
-        pass
+        self.win = TranslateInfoWin(
+            TranslationType.TARGET_LANGUAGE, self.user_selected_text, self.all_text
+        )
+        self.win.show()
 
     @Slot()
     def handle_transCN(self):
-        pass
+        self.win = TranslateInfoWin(
+            TranslationType.MOTHER_TONGUE, self.user_selected_text, self.all_text
+        )
+        self.win.show()
 
     @Slot()
     def handle_addDatabase(self):

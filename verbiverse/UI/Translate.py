@@ -15,38 +15,68 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QFont, QFontDatabase, QGradient, QIcon,
     QImage, QKeySequence, QLinearGradient, QPainter,
     QPalette, QPixmap, QRadialGradient, QTransform)
-from PySide6.QtWidgets import (QApplication, QGridLayout, QLabel, QSizePolicy,
-    QSpacerItem, QWidget)
+from PySide6.QtWidgets import (QApplication, QGridLayout, QHBoxLayout, QLabel,
+    QLayout, QPushButton, QSizePolicy, QSpacerItem,
+    QVBoxLayout, QWidget)
 
-class Ui_Form(object):
-    def setupUi(self, Form):
-        if not Form.objectName():
-            Form.setObjectName(u"Form")
-        Form.resize(500, 104)
-        self.gridLayout = QGridLayout(Form)
+class Ui_TranslateInfoWin(object):
+    def setupUi(self, TranslateInfoWin):
+        if not TranslateInfoWin.objectName():
+            TranslateInfoWin.setObjectName(u"TranslateInfoWin")
+        TranslateInfoWin.resize(562, 197)
+        self.gridLayout = QGridLayout(TranslateInfoWin)
         self.gridLayout.setObjectName(u"gridLayout")
-        self.result = QLabel(Form)
+        self.verticalLayout = QVBoxLayout()
+        self.verticalLayout.setObjectName(u"verticalLayout")
+        self.result = QLabel(TranslateInfoWin)
         self.result.setObjectName(u"result")
-        sizePolicy = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Fixed)
+        sizePolicy = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Preferred)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.result.sizePolicy().hasHeightForWidth())
         self.result.setSizePolicy(sizePolicy)
+        self.result.setWordWrap(True)
 
-        self.gridLayout.addWidget(self.result, 0, 0, 1, 1)
+        self.verticalLayout.addWidget(self.result)
 
-        self.verticalSpacer = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
+        self.horizontalLayout_2 = QHBoxLayout()
+        self.horizontalLayout_2.setObjectName(u"horizontalLayout_2")
+        self.horizontalLayout_2.setSizeConstraint(QLayout.SizeConstraint.SetDefaultConstraint)
+        self.horizontalSpacer = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
-        self.gridLayout.addItem(self.verticalSpacer, 1, 0, 1, 1)
+        self.horizontalLayout_2.addItem(self.horizontalSpacer)
+
+        self.horizontalLayout = QHBoxLayout()
+        self.horizontalLayout.setObjectName(u"horizontalLayout")
+        self.translate_button = QPushButton(TranslateInfoWin)
+        self.translate_button.setObjectName(u"translate_button")
+
+        self.horizontalLayout.addWidget(self.translate_button)
+
+        self.add_database_button = QPushButton(TranslateInfoWin)
+        self.add_database_button.setObjectName(u"add_database_button")
+
+        self.horizontalLayout.addWidget(self.add_database_button)
 
 
-        self.retranslateUi(Form)
+        self.horizontalLayout_2.addLayout(self.horizontalLayout)
 
-        QMetaObject.connectSlotsByName(Form)
+
+        self.verticalLayout.addLayout(self.horizontalLayout_2)
+
+
+        self.gridLayout.addLayout(self.verticalLayout, 0, 0, 1, 1)
+
+
+        self.retranslateUi(TranslateInfoWin)
+
+        QMetaObject.connectSlotsByName(TranslateInfoWin)
     # setupUi
 
-    def retranslateUi(self, Form):
-        Form.setWindowTitle(QCoreApplication.translate("Form", u"Form", None))
-        self.result.setText(QCoreApplication.translate("Form", u"TextLabel", None))
+    def retranslateUi(self, TranslateInfoWin):
+        TranslateInfoWin.setWindowTitle(QCoreApplication.translate("TranslateInfoWin", u"Form", None))
+        self.result.setText("")
+        self.translate_button.setText(QCoreApplication.translate("TranslateInfoWin", u"\u7ffb\u8bd1", None))
+        self.add_database_button.setText(QCoreApplication.translate("TranslateInfoWin", u"\u52a0\u5165\u5355\u8bcd\u672c", None))
     # retranslateUi
 
