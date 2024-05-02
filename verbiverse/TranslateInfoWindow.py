@@ -1,7 +1,10 @@
 from enum import Enum
 
-from PySide6.QtWidgets import QWidget
+from langchain_core.prompts import PromptTemplate
+from langchain_openai import ChatOpenAI
+from LLMServerInfo import get_api_key, get_api_url, get_model
 from PySide6.QtCore import QThread, Signal, Slot
+from PySide6.QtWidgets import QWidget
 from UI import Ui_TranslateInfoWin
 
 
@@ -9,15 +12,6 @@ class TranslationType(Enum):
     TARGET_LANGUAGE = 1
     MOTHER_TONGUE = 2
 
-
-# TODO: 冗余代码修正
-from langchain_openai import ChatOpenAI
-from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
-
-api_key = "lm-studio"
-api_url = "http://localhost:1234/v1"
-
-model = "Qwen/Qwen1.5-14B-Chat-GGUF/qwen1_5-14b-chat-q5_k_m.gguf"
 
 # TODO: 冗余代码修正
 class WorkThread(QThread):
@@ -47,32 +41,31 @@ class TranslateInfoWin(QWidget, Ui_TranslateInfoWin):
             self.translate_button.setHidden(True)
 
         chat = ChatOpenAI(
-            model_name=model,
-            openai_api_key=api_key,
-            openai_api_base=api_url,
-            temperature=0.7,
+            model_name=get_model(),
+            openai_api_key=get_api_key(),
+            openai_api_base=get_api_url(),
+            temperature=0.8,
+            max_tokens=4096,
         )
-        # TODO: 完善提示词
-        message = "The term {selected} originates from {input}. Provide a concise English definition and an example sentence."
-        if type == TranslationType.MOTHER_TONGUE:
-            message = "The term {selected} originates from {input}. Provide a concise Chinese definition and an english example sentence."
-
-        prompt = ChatPromptTemplate.from_messages(
-            [
-                (
-                    "system",
-                    "You are a language expert who can analyze and parse given sentences.",
-                ),
-                (
-                    "human",
-                    message,
-                ),
-            ]
-        )
+        # TODO: 完善提示词加载路径
+        message = ""
+        if type == TranslationType.TARGET_LANGUAGE:
+            with open(
+                "/Users/caolei/WorkSpace/Verbiverse/verbiverse/prompt/translate_EN.txt",
+                "r",
+            ) as file:
+                message = file.read()
+        else:
+            with open(
+                "/Users/caolei/WorkSpace/Verbiverse/verbiverse/prompt/translate_CN.txt",
+                "r",
+            ) as file:
+                message = file.read()
+        prompt = PromptTemplate.from_template(message)
 
         self.chain = prompt | chat
 
-        msg = {"selected": self.selected_text, "input": self.all_text}
+        msg = {"word": self.selected_text, "data": self.all_text}
         self.thread = WorkThread(msg, self.chain)
         self.thread.messageChanged.connect(self.onTranslateResultUpdate)
         self.thread.start()
