@@ -1,6 +1,11 @@
 from enum import Enum
 
-from langchain_core.prompts import PromptTemplate
+from langchain_core.prompts import (
+    ChatPromptTemplate,
+    HumanMessagePromptTemplate,
+    PromptTemplate,
+    SystemMessagePromptTemplate,
+)
 from langchain_openai import ChatOpenAI
 from LLMServerInfo import get_api_key, get_api_url, get_model
 from PySide6.QtCore import QThread, Signal, Slot
@@ -34,11 +39,14 @@ class TranslateInfoWin(QWidget, Ui_TranslateInfoWin):
     def __init__(self, type, selected_text, all_text):
         super(TranslateInfoWin, self).__init__()
         self.setupUi(self)
+        self.setWindowTitle(selected_text)
         self.selected_text = selected_text
         self.all_text = all_text
         self.type = type
         if type == TranslationType.MOTHER_TONGUE:
             self.translate_button.setHidden(True)
+        else:
+            self.translate_button.clicked.connect(self.onTranslateButtonClicked)
 
         chat = ChatOpenAI(
             model_name=get_model(),
@@ -68,8 +76,55 @@ class TranslateInfoWin(QWidget, Ui_TranslateInfoWin):
         msg = {"word": self.selected_text, "data": self.all_text}
         self.thread = WorkThread(msg, self.chain)
         self.thread.messageChanged.connect(self.onTranslateResultUpdate)
+        self.thread.started.connect(self.workerStart)
+        self.thread.finished.connect(self.workerStop)
         self.thread.start()
 
     @Slot(str)
     def onTranslateResultUpdate(self, res: str):
         self.result.setText(self.result.text() + res)
+
+    @Slot()
+    def onTranslateButtonClicked(self):
+        if self.thread is not None:
+            print("onTranslateButtonClicked not running")
+            return
+
+        chat = ChatOpenAI(
+            model_name=get_model(),
+            openai_api_key=get_api_key(),
+            openai_api_base=get_api_url(),
+            temperature=0.8,
+            max_tokens=4096,
+        )
+        chat_template = ChatPromptTemplate.from_messages(
+            [
+                SystemMessagePromptTemplate.from_template(
+                    "你是一个专业的翻译助手，擅长将{source_lang}翻译成{dest_lang}, 对输入的文本进行翻译"
+                ),
+                HumanMessagePromptTemplate.from_template("{text}"),
+            ]
+        )
+        self.chain = chat_template | chat
+
+        result = self.result.text()
+        splitstr = "\n----------------翻译----------------------\n"
+        self.result.setText(result + splitstr)
+        # TODO: 多语言兼容
+        msg = {"source_lang": "英语", "dest_lang": "中文", "text": result}
+        self.thread = WorkThread(msg, self.chain)
+        self.thread.messageChanged.connect(self.onTranslateResultUpdate)
+        self.thread.started.connect(self.workerStart)
+        # self.thread.finished.connect(self.workerStop)
+        self.thread.start()
+
+    @Slot()
+    def workerStop(self):
+        if not self.translate_button.isHidden():
+            self.translate_button.setEnabled(True)
+        self.thread = None
+
+    @Slot()
+    def workerStart(self):
+        if not self.translate_button.isHidden():
+            self.translate_button.setEnabled(False)

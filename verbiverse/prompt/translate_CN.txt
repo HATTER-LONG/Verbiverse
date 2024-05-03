@@ -18,14 +18,16 @@
 question: <select>subcommands<select>/<text>The tool has several subcommands. New projects can be created using the below commands, passing the project name (directory)<text>
 answer:
 Explain: "subcommand" 表示一个更大命令的一部分，"command"有多种含义，但通常指的是给予某人或某物的指令或命令。它也可以指对某物进行控制或指导的能力。
-Analysis: 单词 "subcommands" 在句中表示作为一个新工程创建所用的子命令。 
+Analysis: 单词 "subcommands" 在句中表示作为一个新工程创建所用的子命令。
 Example: The powerful image editing software allows users to perform a wide range of tasks, from basic image adjustments to complex photo manipulations, using various "subcommands".
 
 question: <select>helps<select>/<text>I hope this helps! Let me know if you have any other questions.<text>
+answer:
 Explain: 单词 "helps" 是一个动词，具有多重含义。它可以用来表示某物为某人或某物提供帮助、支持或利益。它还可以用来表示某物使其他事物更容易或更成功。
 Analysis: 单词 "helps" 用于表达说话者希望他们所提供的信息或帮助对听者有所裨益。它传达了一种善意和愿意在需要时进一步提供帮助的意愿。
 Example: Regular exercise and a balanced diet can "help" you maintain a healthy weight and reduce your risk of chronic diseases.
 
-请回答如下问题：
+回答如下问题：
 
 question: <select>{word}<select>/<text>{data}<text>
+answer:
