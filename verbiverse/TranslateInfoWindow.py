@@ -1,5 +1,6 @@
 from enum import Enum
 
+from ChatWorkerThread import ChatWorkThread
 from langchain_core.prompts import (
     ChatPromptTemplate,
     HumanMessagePromptTemplate,
@@ -8,7 +9,7 @@ from langchain_core.prompts import (
 )
 from langchain_openai import ChatOpenAI
 from LLMServerInfo import get_api_key, get_api_url, get_model
-from PySide6.QtCore import QThread, Signal, Slot
+from PySide6.QtCore import Slot
 from PySide6.QtWidgets import QWidget
 from UI import Ui_TranslateInfoWin
 
@@ -16,23 +17,6 @@ from UI import Ui_TranslateInfoWin
 class TranslationType(Enum):
     TARGET_LANGUAGE = 1
     MOTHER_TONGUE = 2
-
-
-# TODO: 冗余代码修正
-class WorkThread(QThread):
-    # Signal emitted when a new chunk of message content is ready
-    messageChanged = Signal(str)
-
-    def __init__(self, message, chat_chain) -> None:
-        super().__init__()  # Call the parent constructor
-        self.message = message
-        self.chat_chain = chat_chain
-
-    @Slot()
-    def run(self) -> None:
-        content = self.chat_chain.stream(self.message)
-        for chunk in content:
-            self.messageChanged.emit(chunk.content)
 
 
 class TranslateInfoWin(QWidget, Ui_TranslateInfoWin):
@@ -74,11 +58,13 @@ class TranslateInfoWin(QWidget, Ui_TranslateInfoWin):
         self.chain = prompt | chat
 
         msg = {"word": self.selected_text, "data": self.all_text}
-        self.thread = WorkThread(msg, self.chain)
-        self.thread.messageChanged.connect(self.onTranslateResultUpdate)
-        self.thread.started.connect(self.workerStart)
-        self.thread.finished.connect(self.workerStop)
-        self.thread.start()
+        self.worker = ChatWorkThread()
+        self.worker.setChain(self.chain)
+        self.worker.setMessage(msg)
+        self.worker.messageCallBackSignal.connect(self.onTranslateResultUpdate)
+        self.worker.started.connect(self.workerStart)
+        self.worker.finished.connect(self.workerStop)
+        self.worker.start()
 
     @Slot(str)
     def onTranslateResultUpdate(self, res: str):
@@ -86,7 +72,7 @@ class TranslateInfoWin(QWidget, Ui_TranslateInfoWin):
 
     @Slot()
     def onTranslateButtonClicked(self):
-        if self.thread is not None:
+        if self.worker is not None:
             print("onTranslateButtonClicked not running")
             return
 
@@ -112,17 +98,16 @@ class TranslateInfoWin(QWidget, Ui_TranslateInfoWin):
         self.result.setText(result + splitstr)
         # TODO: 多语言兼容
         msg = {"source_lang": "英语", "dest_lang": "中文", "text": result}
-        self.thread = WorkThread(msg, self.chain)
-        self.thread.messageChanged.connect(self.onTranslateResultUpdate)
-        self.thread.started.connect(self.workerStart)
-        # self.thread.finished.connect(self.workerStop)
-        self.thread.start()
+        self.worker.setChain(self.chain)
+        self.worker.setMessage(msg)
+        self.thread.finished.connect(None)
+        self.worker.start()
 
     @Slot()
     def workerStop(self):
         if not self.translate_button.isHidden():
             self.translate_button.setEnabled(True)
-        self.thread = None
+        self.worker = None
 
     @Slot()
     def workerStart(self):

@@ -1,8 +1,9 @@
 import sys
 
 from ChatLLM import ChatChain
+from ChatWorkerThread import ChatWorkThread
 from MessageBoxWidget import MessageBox
-from PySide6.QtCore import Qt, QThread, Signal, Slot
+from PySide6.QtCore import Qt, Slot
 from PySide6.QtWidgets import (
     QApplication,
     QMainWindow,
@@ -10,22 +11,6 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 from UI import Ui_MainWindow
-
-
-class WorkThread(QThread):
-    # Signal emitted when a new chunk of message content is ready
-    messageChanged = Signal(str)
-
-    def __init__(self, message: str, chat_chain: ChatChain) -> None:
-        super().__init__()  # Call the parent constructor
-        self.message = message
-        self.chat_chain = chat_chain
-
-    @Slot()
-    def run(self) -> None:
-        content = self.chat_chain.stream(self.message)
-        for chunk in content:
-            self.messageChanged.emit(chunk.content)
 
 
 class MainWindow(QMainWindow, Ui_MainWindow):
@@ -52,7 +37,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.userTextEdit.setPlaceholderText("输入消息")
         self.userSendButton.clicked.connect(self.send_Message)
         self.chat_chain = ChatChain()
-        self.worker = None
         self.need_update_label = None
 
         self.message_label1 = MessageBox("image", "User")
@@ -60,6 +44,11 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             "This is a test message, it's helpful to dev new function avoid input ever time"
         )
         self.messages_list.addWidget(self.message_label1)  # Add to QVBoxLayout
+        self.worker = ChatWorkThread()
+        self.worker.finished.connect(self.updateFinish)
+        self.worker.started.connect(self.updateStart)
+        self.worker.setChain(self.chat_chain)
+        self.worker.messageCallBackSignal.connect(self.update_label)
 
     @Slot()
     def updateFinish(self):
@@ -67,6 +56,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.worker = None
         self.messages_list.update()
         self.vscrollbar.setValue(self.vscrollbar.maximum())
+        self.need_update_label = None
 
     @Slot()
     def updateStart(self):
@@ -87,10 +77,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             self.need_update_label = MessageBox("image", "Robot")
             self.messages_list.addWidget(self.need_update_label)  # Add to QVBoxLayout
 
-            self.worker = WorkThread(message_text, self.chat_chain)
-            self.worker.finished.connect(self.updateFinish)
-            self.worker.started.connect(self.updateStart)
-            self.worker.messageChanged.connect(self.update_label)
+            self.worker.setMessage(message_text)
             self.worker.start()
         self.vscrollbar.setValue(self.vscrollbar.maximum())
 
@@ -109,9 +96,6 @@ def main():
     window.show()
 
     app.exec()
-    if window.worker is not None:
-        window.worker.quit()
-        window.worker.wait()
 
 
 if __name__ == "__main__":
