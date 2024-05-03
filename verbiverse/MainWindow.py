@@ -28,22 +28,22 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
         self.messages_list_widget.setContentsMargins(0, 0, 0, 0)
 
-        self.chatScrollArea.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-        self.vscrollbar = self.chatScrollArea.verticalScrollBar()
+        self.chat_scroll_area.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        self.vscrollbar = self.chat_scroll_area.verticalScrollBar()
 
-        self.chatScrollArea.setWidgetResizable(True)
-        self.chatScrollArea.setWidget(self.messages_list_widget)
+        self.chat_scroll_area.setWidgetResizable(True)
+        self.chat_scroll_area.setWidget(self.messages_list_widget)
 
-        self.userTextEdit.setPlaceholderText("输入消息")
-        self.userSendButton.clicked.connect(self.send_Message)
+        self.user_text_edit.setPlaceholderText("输入消息")
+        self.user_send_button.clicked.connect(self.send_Message)
         self.chat_chain = ChatChain()
         self.need_update_label = None
 
-        self.message_label1 = MessageBox("image", "User")
-        self.message_label1.setMessageText(
-            "This is a test message, it's helpful to dev new function avoid input ever time"
-        )
-        self.messages_list.addWidget(self.message_label1)  # Add to QVBoxLayout
+        # self.message_label1 = MessageBox("image", "User")
+        # self.message_label1.setMessageText(
+        #     "This is a test message, it's helpful to dev new function avoid input ever time"
+        # )
+        # self.messages_list.addWidget(self.message_label1)  # Add to QVBoxLayout
         self.worker = ChatWorkThread()
         self.worker.finished.connect(self.updateFinish)
         self.worker.started.connect(self.updateStart)
@@ -52,7 +52,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
     @Slot()
     def updateFinish(self):
-        self.userSendButton.setEnabled(True)
+        self.user_send_button.setEnabled(True)
         self.worker = None
         self.messages_list.update()
         self.vscrollbar.setValue(self.vscrollbar.maximum())
@@ -66,9 +66,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
     @Slot()
     def send_Message(self):
-        self.userSendButton.setEnabled(False)
-        message_text = self.userTextEdit.toPlainText()
-        self.userTextEdit.setText("")
+        self.user_send_button.setEnabled(False)
+        message_text = self.user_text_edit.toPlainText()
+        self.user_text_edit.setText("")
         if message_text:
             message_label = MessageBox("image", "User")
             message_label.setMessageText(message_text)
