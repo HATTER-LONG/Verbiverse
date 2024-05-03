@@ -39,11 +39,11 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.chat_chain = ChatChain()
         self.need_update_label = None
 
-        # self.message_label1 = MessageBox("image", "User")
-        # self.message_label1.setMessageText(
-        #     "This is a test message, it's helpful to dev new function avoid input ever time"
-        # )
-        # self.messages_list.addWidget(self.message_label1)  # Add to QVBoxLayout
+        self.message_label1 = MessageBox("image", "User")
+        self.message_label1.setMessageText(
+            "This is a test message, it's helpful to dev new function avoid input ever time"
+        )
+        self.messages_list.addWidget(self.message_label1)  # Add to QVBoxLayout
         self.worker = ChatWorkThread()
         self.worker.finished.connect(self.updateFinish)
         self.worker.started.connect(self.updateStart)
@@ -53,7 +53,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     @Slot()
     def updateFinish(self):
         self.user_send_button.setEnabled(True)
-        self.worker = None
         self.messages_list.update()
         self.vscrollbar.setValue(self.vscrollbar.maximum())
         self.need_update_label = None

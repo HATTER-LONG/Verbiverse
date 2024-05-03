@@ -69,13 +69,10 @@ class TranslateInfoWin(QWidget, Ui_TranslateInfoWin):
     @Slot(str)
     def onTranslateResultUpdate(self, res: str):
         self.result.setText(self.result.text() + res)
+        self.adjustSize()
 
     @Slot()
     def onTranslateButtonClicked(self):
-        if self.worker is not None:
-            print("onTranslateButtonClicked not running")
-            return
-
         chat = ChatOpenAI(
             model_name=get_model(),
             openai_api_key=get_api_key(),
@@ -94,20 +91,19 @@ class TranslateInfoWin(QWidget, Ui_TranslateInfoWin):
         self.chain = chat_template | chat
 
         result = self.result.text()
-        splitstr = "\n----------------翻译----------------------\n"
+        splitstr = "\n\n----------------翻译----------------------\n\n"
         self.result.setText(result + splitstr)
         # TODO: 多语言兼容
         msg = {"source_lang": "英语", "dest_lang": "中文", "text": result}
         self.worker.setChain(self.chain)
         self.worker.setMessage(msg)
-        self.thread.finished.connect(None)
+        self.worker.finished.disconnect(self.workerStop)
         self.worker.start()
 
     @Slot()
     def workerStop(self):
         if not self.translate_button.isHidden():
             self.translate_button.setEnabled(True)
-        self.worker = None
 
     @Slot()
     def workerStart(self):
