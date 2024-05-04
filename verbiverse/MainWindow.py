@@ -1,6 +1,7 @@
 import sys
 
 from ChatLLM import ChatChain
+from ChatLLMWithHistory import ChatLLMWithHistory
 from ChatWorkerThread import ChatWorkThread
 from MessageBoxWidget import MessageBox
 from PySide6.QtCore import Qt, Slot
@@ -11,7 +12,6 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 from UI import Ui_MainWindow
-from ChatLLMWithHistory import ChatLLMWithHistory
 
 
 class MainWindow(QMainWindow, Ui_MainWindow):
@@ -99,6 +99,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
     @Slot()
     def check_message(self):
+        # TODO: 使用单词提示词包括所有历史对话信息，避免影响 LLM 输出
         self.check_result.clear()
         if len(self.user_text_edit.toPlainText()) == 0:
             return
