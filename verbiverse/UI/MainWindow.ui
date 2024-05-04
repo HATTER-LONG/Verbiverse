@@ -6,9 +6,21 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>813</width>
-    <height>621</height>
+    <width>900</width>
+    <height>700</height>
    </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>900</width>
+    <height>700</height>
+   </size>
   </property>
   <property name="windowTitle">
    <string>MainWindow</string>
@@ -33,7 +45,7 @@
         <widget class="QWidget" name="scrollAreaWidgetContents_2">
          <property name="geometry">
           <rect>
-           <x>47</x>
+           <x>98</x>
            <y>0</y>
            <width>677</width>
            <height>392</height>
@@ -48,7 +60,7 @@
         <item>
          <widget class="QTextEdit" name="user_text_edit">
           <property name="sizePolicy">
-           <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+           <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
             <horstretch>0</horstretch>
             <verstretch>0</verstretch>
            </sizepolicy>
@@ -56,13 +68,13 @@
           <property name="minimumSize">
            <size>
             <width>600</width>
-            <height>100</height>
+            <height>80</height>
            </size>
           </property>
           <property name="maximumSize">
            <size>
             <width>16777215</width>
-            <height>500</height>
+            <height>200</height>
            </size>
           </property>
          </widget>
@@ -145,7 +157,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>813</width>
+     <width>900</width>
      <height>24</height>
     </rect>
    </property>

@@ -11,6 +11,7 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 from UI import Ui_MainWindow
+from ChatLLMWithHistory import ChatLLMWithHistory
 
 
 class MainWindow(QMainWindow, Ui_MainWindow):
@@ -36,7 +37,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
         self.user_text_edit.setPlaceholderText("输入消息")
         self.user_send_button.clicked.connect(self.send_Message)
+        self.user_check_button.clicked.connect(self.check_message)
         self.chat_chain = ChatChain()
+
+        self.checker = ChatLLMWithHistory()
         self.need_update_label = None
 
         self.message_label1 = MessageBox("image", "User")
@@ -44,11 +48,16 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             "This is a test message, it's helpful to dev new function avoid input ever time"
         )
         self.messages_list.addWidget(self.message_label1)  # Add to QVBoxLayout
-        self.worker = ChatWorkThread()
-        self.worker.finished.connect(self.updateFinish)
-        self.worker.started.connect(self.updateStart)
-        self.worker.setChain(self.chat_chain)
-        self.worker.messageCallBackSignal.connect(self.update_label)
+        self.chat_worker = ChatWorkThread()
+        self.chat_worker.finished.connect(self.updateFinish)
+        self.chat_worker.started.connect(self.updateStart)
+        self.chat_worker.setChain(self.chat_chain)
+        self.chat_worker.messageCallBackSignal.connect(self.update_label)
+        self.check_worker = ChatWorkThread()
+        self.check_worker.finished.connect(self.checkFinish)
+        self.check_worker.started.connect(self.checkStart)
+        self.check_worker.setChain(self.checker)
+        self.check_worker.messageCallBackSignal.connect(self.check_update_label)
 
     @Slot()
     def updateFinish(self):
@@ -76,8 +85,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             self.need_update_label = MessageBox("image", "Robot")
             self.messages_list.addWidget(self.need_update_label)  # Add to QVBoxLayout
 
-            self.worker.setMessage(message_text)
-            self.worker.start()
+            self.chat_worker.setMessage(message_text)
+            self.chat_worker.start()
         self.vscrollbar.setValue(self.vscrollbar.maximum())
 
     @Slot(str)
@@ -87,6 +96,33 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                 self.need_update_label.getMessageText() + message
             )
             self.vscrollbar.setValue(self.vscrollbar.maximum())
+
+    @Slot()
+    def check_message(self):
+        self.check_result.clear()
+        if len(self.user_text_edit.toPlainText()) == 0:
+            return
+        self.checker.setChatHistoryForChain(
+            self.chat_chain.demo_ephemeral_chat_history_for_chain
+        )
+        print(self.chat_chain.demo_ephemeral_chat_history_for_chain)
+        message_text = self.user_text_edit.toPlainText()
+        self.check_worker.setChain(self.checker)
+        self.check_worker.setMessage(message_text)
+        self.check_worker.start()
+
+    @Slot()
+    def checkStart(self):
+        pass
+
+    @Slot()
+    def checkFinish(self):
+        pass
+
+    @Slot(str)
+    def check_update_label(self, msg: str):
+        self.check_result.setText(self.check_result.text() + msg)
+        self.adjustSize()
 
 
 def main():
