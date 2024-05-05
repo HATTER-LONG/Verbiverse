@@ -13,6 +13,7 @@ from LLMServerInfo import get_api_key, get_api_url, get_model
 from PySide6.QtCore import Slot
 from PySide6.QtWidgets import QWidget
 from UI import Ui_TranslateInfoWin
+from WordsBookDatabase import WordsBookDatabase
 
 
 class TranslationType(Enum):
@@ -114,9 +115,10 @@ class TranslateInfoWin(QWidget, Ui_TranslateInfoWin):
 
     @Slot()
     def onAddDatabase(self):
+        db = WordsBookDatabase()
         sentences = re.split(r"[.!?]\s+", self.all_text)
         example = ""
         for sentence in sentences:
             if self.selected_text in sentence:
                 example = sentence.strip()
-        self.db.add_word(self.selected_text, example)
+        db.add_word(self.selected_text, example)
