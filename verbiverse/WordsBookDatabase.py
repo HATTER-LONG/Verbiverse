@@ -41,7 +41,19 @@ class Word:
 
 
 class WordsBookDatabase:
-    def __init__(self, db_path):
+    _instance = None
+
+    def __new__(cls, *args, **kwargs):
+        print("__new__", cls._instance)
+        if cls._instance is None:
+            cls._instance = super().__new__(cls)
+            cls._instance.alreadyInit = False
+        return cls._instance
+
+    def __init__(self, db_path="./wordbook.db"):
+        if self.alreadyInit:
+            return
+        print("__init__")
         self.db_path = db_path
         self.conn = sqlite3.connect(self.db_path)
         self.cursor = self.conn.cursor()
@@ -49,6 +61,7 @@ class WordsBookDatabase:
         self.init_table()
         # 初始化单词映射表
         self.word_map = self.get_all_words()
+        self.alreadyInit = True
 
     def __del__(self):
         self.conn.commit()
@@ -77,6 +90,7 @@ class WordsBookDatabase:
         return word_map
 
     def add_word(self, word, example):
+        word = word.lower()
         current_time = datetime.datetime.now()
         next_review_on = self.calculate_next_review_on(current_time)
         # 检查单词是否在词表中
@@ -128,10 +142,11 @@ class WordsBookDatabase:
 
 
 if __name__ == "__main__":
-    db = WordsBookDatabase("./vocab.db")
+    db = WordsBookDatabase()
+    # db2 = WordsBookDatabase()
     # # 添加单词
-    db.add_word("hello", "How are you?")
-    db.add_word("world", "The world is a beautiful place.")
+    # db.add_word("hello", "How are you?")
+    # db.add_word("world", "The world is a beautiful place.")
 
     for word in db.word_map:
         print(word, db.word_map[word])

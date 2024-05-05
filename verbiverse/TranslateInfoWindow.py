@@ -1,3 +1,4 @@
+import re
 from enum import Enum
 
 from ChatWorkerThread import ChatWorkThread
@@ -32,6 +33,7 @@ class TranslateInfoWin(QWidget, Ui_TranslateInfoWin):
         else:
             self.translate_button.clicked.connect(self.onTranslateButtonClicked)
 
+        self.add_database_button.clicked.connect(self.onAddDatabase)
         chat = ChatOpenAI(
             model_name=get_model(),
             openai_api_key=get_api_key(),
@@ -109,3 +111,12 @@ class TranslateInfoWin(QWidget, Ui_TranslateInfoWin):
     def workerStart(self):
         if not self.translate_button.isHidden():
             self.translate_button.setEnabled(False)
+
+    @Slot()
+    def onAddDatabase(self):
+        sentences = re.split(r"[.!?]\s+", self.all_text)
+        example = ""
+        for sentence in sentences:
+            if self.selected_text in sentence:
+                example = sentence.strip()
+        self.db.add_word(self.selected_text, example)
