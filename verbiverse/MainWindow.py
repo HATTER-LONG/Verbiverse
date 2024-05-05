@@ -30,24 +30,24 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.messages_list_widget.setContentsMargins(0, 0, 0, 0)
 
         self.chat_scroll_area.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-        self.vscrollbar = self.chat_scroll_area.verticalScrollBar()
+        # self.vscrollbar = self.chat_scroll_area.verticalScrollBar()
 
         self.chat_scroll_area.setWidgetResizable(True)
         self.chat_scroll_area.setWidget(self.messages_list_widget)
 
         self.user_text_edit.setPlaceholderText("输入消息")
-        self.user_send_button.clicked.connect(self.send_Message)
-        self.user_check_button.clicked.connect(self.check_message)
+        self.user_send_button.clicked.connect(self.sendMessage)
+        self.user_check_button.clicked.connect(self.checkMessage)
         self.chat_chain = ChatChain()
 
         self.checker = ChatLLMWithHistory()
         self.need_update_label = None
 
-        self.message_label1 = MessageBox("image", "User")
-        self.message_label1.setMessageText(
-            "This is a test message, it's helpful to dev new function avoid input ever time"
-        )
-        self.messages_list.addWidget(self.message_label1)  # Add to QVBoxLayout
+        # self.message_label1 = MessageBox("image", "User")
+        # self.message_label1.setMessageText(
+        #     "This is a test message, it's helpful to dev new function avoid input ever time"
+        # )
+        # self.messages_list.addWidget(self.message_label1)  # Add to QVBoxLayout
         self.chat_worker = ChatWorkThread()
         self.chat_worker.finished.connect(self.updateFinish)
         self.chat_worker.started.connect(self.updateStart)
@@ -63,17 +63,17 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     def updateFinish(self):
         self.user_send_button.setEnabled(True)
         self.messages_list.update()
-        self.vscrollbar.setValue(self.vscrollbar.maximum())
+        # self.vscrollbar.setValue(self.vscrollbar.maximum())
         self.need_update_label = None
 
     @Slot()
     def updateStart(self):
         self.messages_list.update()
-        QApplication.processEvents()
-        self.vscrollbar.setValue(self.vscrollbar.maximum())
+        # QApplication.processEvents()
+        # self.vscrollbar.setValue(self.vscrollbar.maximum())
 
     @Slot()
-    def send_Message(self):
+    def sendMessage(self):
         self.user_send_button.setEnabled(False)
         message_text = self.user_text_edit.toPlainText()
         self.user_text_edit.setText("")
@@ -87,7 +87,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
             self.chat_worker.setMessage(message_text)
             self.chat_worker.start()
-        self.vscrollbar.setValue(self.vscrollbar.maximum())
+        # self.vscrollbar.setValue(self.vscrollbar.maximum())
 
     @Slot(str)
     def update_label(self, message):
@@ -95,10 +95,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             self.need_update_label.setMessageText(
                 self.need_update_label.getMessageText() + message
             )
-            self.vscrollbar.setValue(self.vscrollbar.maximum())
+            # self.vscrollbar.setValue(self.vscrollbar.maximum())
 
     @Slot()
-    def check_message(self):
+    def checkMessage(self):
         # TODO: 使用单词提示词包括所有历史对话信息，避免影响 LLM 输出
         self.check_result.clear()
         if len(self.user_text_edit.toPlainText()) == 0:
@@ -106,7 +106,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.checker.setChatHistoryForChain(
             self.chat_chain.demo_ephemeral_chat_history_for_chain
         )
-        print(self.chat_chain.demo_ephemeral_chat_history_for_chain)
+        respone = str(self.chat_chain.demo_ephemeral_chat_history_for_chain)
+        print(respone)
+
         message_text = self.user_text_edit.toPlainText()
         self.check_worker.setChain(self.checker)
         self.check_worker.setMessage(message_text)

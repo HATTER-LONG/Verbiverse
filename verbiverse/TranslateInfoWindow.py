@@ -42,7 +42,7 @@ class TranslateInfoWin(QWidget, Ui_TranslateInfoWin):
             temperature=0.8,
             max_tokens=4096,
         )
-        # TODO: 完善提示词加载路径
+        # TODO: 修改硬编码路径
         message = ""
         if type == TranslationType.TARGET_LANGUAGE:
             with open(
