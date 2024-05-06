@@ -19,61 +19,65 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         super().__init__()
         self.setupUi(self)
 
+        # Set window title
         self.setWindowTitle("聊天界面")
 
-        self.messages_list_widget = QWidget()
-        self.messages_list = QVBoxLayout(
-            self.messages_list_widget
-        )  # Change to QVBoxLayout
+        # Set chat scroll arean laytou
+        self.messages_list_widget = QWidget(self.chat_scroll_area)
+        self.messages_list = QVBoxLayout(self.messages_list_widget)
         self.messages_list.setAlignment(Qt.AlignTop)
-
         self.messages_list_widget.setContentsMargins(0, 0, 0, 0)
 
+        # Link messages list to scroll arean
         self.chat_scroll_area.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-        # self.vscrollbar = self.chat_scroll_area.verticalScrollBar()
-
         self.chat_scroll_area.setWidgetResizable(True)
         self.chat_scroll_area.setWidget(self.messages_list_widget)
 
+        # Set user input widget
         self.user_text_edit.setPlaceholderText("输入消息")
         self.user_send_button.clicked.connect(self.sendMessage)
         self.user_check_button.clicked.connect(self.checkMessage)
+
+        # LLM Chat chain
         self.chat_chain = ChatChain()
-
         self.checker = ChatLLMWithHistory()
-        self.need_update_label = None
 
-        # self.message_label1 = MessageBox("image", "User")
-        # self.message_label1.setMessageText(
-        #     "This is a test message, it's helpful to dev new function avoid input ever time"
-        # )
-        # self.messages_list.addWidget(self.message_label1)  # Add to QVBoxLayout
         self.chat_worker = ChatWorkThread()
         self.chat_worker.finished.connect(self.updateFinish)
         self.chat_worker.started.connect(self.updateStart)
         self.chat_worker.setChain(self.chat_chain)
         self.chat_worker.messageCallBackSignal.connect(self.update_label)
+
         self.check_worker = ChatWorkThread()
         self.check_worker.finished.connect(self.checkFinish)
         self.check_worker.started.connect(self.checkStart)
         self.check_worker.setChain(self.checker)
         self.check_worker.messageCallBackSignal.connect(self.check_update_label)
 
+        # will updated by chat worker thread
+        self.need_update_label = None
+
+        # Test code
+        # self.message_label1 = MessageBox("image", "User")
+        # self.message_label1.setMessageText(
+        #     "This is a test message, it's helpful to dev new function avoid input ever time"
+        # )
+        # self.messages_list.addWidget(self.message_label1)  # Add to QVBoxLayout
+
     @Slot()
-    def updateFinish(self):
+    def updateFinish(self) -> None:
         self.user_send_button.setEnabled(True)
         self.messages_list.update()
-        # self.vscrollbar.setValue(self.vscrollbar.maximum())
         self.need_update_label = None
 
     @Slot()
-    def updateStart(self):
+    def updateStart(self) -> None:
         self.messages_list.update()
         # QApplication.processEvents()
         # self.vscrollbar.setValue(self.vscrollbar.maximum())
 
     @Slot()
-    def sendMessage(self):
+    def sendMessage(self) -> None:
         self.user_send_button.setEnabled(False)
         message_text = self.user_text_edit.toPlainText()
         self.user_text_edit.setText("")
@@ -90,7 +94,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         # self.vscrollbar.setValue(self.vscrollbar.maximum())
 
     @Slot(str)
-    def update_label(self, message):
+    def update_label(self, message: str) -> None:
         if self.need_update_label is not None:
             self.need_update_label.setMessageText(
                 self.need_update_label.getMessageText() + message
@@ -98,32 +102,28 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             # self.vscrollbar.setValue(self.vscrollbar.maximum())
 
     @Slot()
-    def checkMessage(self):
-        # TODO: 使用单词提示词包括所有历史对话信息，避免影响 LLM 输出
+    def checkMessage(self) -> None:
         self.check_result.clear()
         if len(self.user_text_edit.toPlainText()) == 0:
             return
         self.checker.setChatHistoryForChain(
             self.chat_chain.demo_ephemeral_chat_history_for_chain
         )
-        respone = str(self.chat_chain.demo_ephemeral_chat_history_for_chain)
-        print(respone)
 
-        message_text = self.user_text_edit.toPlainText()
         self.check_worker.setChain(self.checker)
-        self.check_worker.setMessage(message_text)
+        self.check_worker.setMessage(self.user_text_edit.toPlainText())
         self.check_worker.start()
 
     @Slot()
-    def checkStart(self):
+    def checkStart(self) -> None:
         pass
 
     @Slot()
-    def checkFinish(self):
+    def checkFinish(self) -> None:
         pass
 
     @Slot(str)
-    def check_update_label(self, msg: str):
+    def check_update_label(self, msg: str) -> None:
         self.check_result.setText(self.check_result.text() + msg)
         self.adjustSize()
 

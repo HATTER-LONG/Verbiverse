@@ -8,11 +8,12 @@ from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_core.runnables import RunnablePassthrough  # 新增
 from langchain_core.runnables.history import RunnableWithMessageHistory
 from langchain_openai import ChatOpenAI
+from LLMServerInfo import get_api_key, get_api_url, get_model
 
-api_key = "lm-studio"
-api_url = "http://localhost:1234/v1"
+api_key = get_api_key()
+api_url = get_api_url()
 
-model = "Qwen/Qwen1.5-14B-Chat-GGUF/qwen1_5-14b-chat-q5_k_m.gguf"
+model = get_model()
 
 
 class ChatMessageCallBack(BaseCallbackHandler):
