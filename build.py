@@ -13,6 +13,16 @@ def convert_ui_files(ui_file_path, py_file_path):
         print(f"Error converting {ui_file_path}: {e.output}")
 
 
+def convert_qrc_files(qrc_file_path, py_file_path):
+    """Converts a qrc file (.qrc) to a Python file (.py) using pyside6-rcc."""
+    command = ["pyside6-rcc", qrc_file_path, "-o", py_file_path]
+    try:
+        subprocess.run(command, check=True)
+        print(f"Successfully converted {qrc_file_path} to {py_file_path}")
+    except subprocess.CalledProcessError as e:
+        print(f"Error converting {qrc_file_path}: {e.output}")
+
+
 def build():
     for root, _, files in os.walk("."):
         for filename in files:
@@ -20,6 +30,10 @@ def build():
                 ui_file_path = os.path.join(root, filename)
                 py_file_path = ui_file_path.replace(".ui", ".py")
                 convert_ui_files(ui_file_path, py_file_path)
+            if filename.endswith(".qrc"):
+                qrc_file_path = os.path.join(root, filename)
+                py_file_path = qrc_file_path.replace(".qrc", "_rc.py")
+                convert_qrc_files(qrc_file_path, py_file_path)
 
 
 def run_app():

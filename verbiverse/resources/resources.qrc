@@ -1,0 +1,8 @@
+<RCC version="1.0">
+  <qresource>
+    <file>prompt/prompt.txt</file>
+    <file>prompt/check_CN.txt</file>
+    <file>prompt/translate_CN.txt</file>
+    <file>prompt/translate_EN.txt</file>
+  </qresource>
+</RCC>

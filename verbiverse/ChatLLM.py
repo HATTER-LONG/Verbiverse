@@ -1,6 +1,7 @@
 import asyncio
 from typing import Any, Dict, List
 
+import resources.resources_rc  # noqa: F401
 from langchain.memory import ChatMessageHistory
 from langchain_core.callbacks import BaseCallbackHandler
 from langchain_core.outputs import LLMResult
@@ -9,6 +10,7 @@ from langchain_core.runnables import RunnablePassthrough  # 新增
 from langchain_core.runnables.history import RunnableWithMessageHistory
 from langchain_openai import ChatOpenAI
 from LLMServerInfo import get_api_key, get_api_url, get_model
+from PySide6.QtCore import QFile, QIODevice
 
 api_key = get_api_key()
 api_url = get_api_url()
@@ -73,10 +75,13 @@ class ChatChain:
             )
 
         content = ""
-        with open(
-            "/Users/caolei/WorkSpace/Verbiverse/verbiverse/prompt/prompt.txt", "r"
-        ) as file:
-            content = file.read()
+        file = QFile(":/prompt/prompt.txt")
+        if file.open(QIODevice.ReadOnly | QIODevice.Text):
+            content = str(file.readAll(), encoding="utf-8")
+            print(content)
+            file.close()
+        else:
+            raise(f"Error opening file: {file.errorString()}")
 
         prompt = ChatPromptTemplate.from_messages(
             [

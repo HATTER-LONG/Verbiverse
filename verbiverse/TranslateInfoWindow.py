@@ -46,13 +46,13 @@ class TranslateInfoWin(QWidget, Ui_TranslateInfoWin):
         message = ""
         if type == TranslationType.TARGET_LANGUAGE:
             with open(
-                "/Users/caolei/WorkSpace/Verbiverse/verbiverse/prompt/translate_EN.txt",
+                "/Users/caolei/WorkSpace/Verbiverse/verbiverse/resources/prompt/translate_EN.txt",
                 "r",
             ) as file:
                 message = file.read()
         else:
             with open(
-                "/Users/caolei/WorkSpace/Verbiverse/verbiverse/prompt/translate_CN.txt",
+                "/Users/caolei/WorkSpace/Verbiverse/verbiverse/resources/prompt/translate_CN.txt",
                 "r",
             ) as file:
                 message = file.read()

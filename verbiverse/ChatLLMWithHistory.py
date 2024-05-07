@@ -15,7 +15,8 @@ class ChatLLMWithHistory:
         content = ""
         # TODO: 修改硬编码路径
         with open(
-            "/Users/caolei/WorkSpace/Verbiverse/verbiverse/prompt/check_CN.txt", "r"
+            "/Users/caolei/WorkSpace/Verbiverse/verbiverse/resources/prompt/check_CN.txt",
+            "r",
         ) as file:
             content = file.read()
         prompt = PromptTemplate.from_template(content)
