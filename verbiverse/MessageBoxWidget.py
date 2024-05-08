@@ -56,7 +56,8 @@ class MessageBox(QFrame, Ui_MessageBox):
         Args:
         - event (QPoint): The position of the mouse click.
         """
-        selected_text = self.user_message.text()
+        # get selected text
+        selected_text = self.user_message.selectedText()
 
         if len(selected_text) == 0:
             return

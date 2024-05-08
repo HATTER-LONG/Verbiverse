@@ -1,7 +1,6 @@
 import asyncio
 from typing import Any, Dict, List
 
-import resources.resources_rc  # noqa: F401
 from langchain.memory import ChatMessageHistory
 from langchain_core.callbacks import BaseCallbackHandler
 from langchain_core.outputs import LLMResult
@@ -9,13 +8,12 @@ from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_core.runnables import RunnablePassthrough  # 新增
 from langchain_core.runnables.history import RunnableWithMessageHistory
 from langchain_openai import ChatOpenAI
-from LLMServerInfo import get_api_key, get_api_url, get_model
-from PySide6.QtCore import QFile, QIODevice
+from LLMServerInfo import getApiKey, getApiUrl, getChatPrompt, getModelName
 
-api_key = get_api_key()
-api_url = get_api_url()
+api_key = getApiKey()
+api_url = getApiUrl()
 
-model = get_model()
+model = getModelName()
 
 
 class ChatMessageCallBack(BaseCallbackHandler):
@@ -74,14 +72,7 @@ class ChatChain:
                 callbacks=[callback],
             )
 
-        content = ""
-        file = QFile(":/prompt/prompt.txt")
-        if file.open(QIODevice.ReadOnly | QIODevice.Text):
-            content = str(file.readAll(), encoding="utf-8")
-            print(content)
-            file.close()
-        else:
-            raise(f"Error opening file: {file.errorString()}")
+        content = getChatPrompt()
 
         prompt = ChatPromptTemplate.from_messages(
             [

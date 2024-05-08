@@ -44,7 +44,6 @@ class WordsBookDatabase:
     _instance = None
 
     def __new__(cls, *args, **kwargs):
-        print("__new__", cls._instance)
         if cls._instance is None:
             cls._instance = super().__new__(cls)
             cls._instance.alreadyInit = False
@@ -53,7 +52,6 @@ class WordsBookDatabase:
     def __init__(self, db_path="./wordbook.db"):
         if self.alreadyInit:
             return
-        print("__init__")
         self.db_path = db_path
         self.conn = sqlite3.connect(self.db_path)
         self.cursor = self.conn.cursor()

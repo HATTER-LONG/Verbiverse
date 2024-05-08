@@ -1,24 +1,19 @@
 from langchain_core.prompts import PromptTemplate
 from langchain_openai import ChatOpenAI
-from LLMServerInfo import get_api_key, get_api_url, get_model
+from LLMServerInfo import getApiKey, getApiUrl, getCheckPrompt, getModelName
 
 
 class ChatLLMWithHistory:
     def __init__(self):
         chat = ChatOpenAI(
-            model_name=get_model(),
-            openai_api_key=get_api_key(),
-            openai_api_base=get_api_url(),
+            model_name=getModelName(),
+            openai_api_key=getApiKey(),
+            openai_api_base=getApiUrl(),
             temperature=0.7,
         )
 
-        content = ""
-        # TODO: 修改硬编码路径
-        with open(
-            "/Users/caolei/WorkSpace/Verbiverse/verbiverse/resources/prompt/check_CN.txt",
-            "r",
-        ) as file:
-            content = file.read()
+        content = getCheckPrompt()
+
         prompt = PromptTemplate.from_template(content)
 
         self.chain = prompt | chat

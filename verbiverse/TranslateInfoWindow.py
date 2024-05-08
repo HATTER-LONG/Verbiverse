@@ -9,7 +9,13 @@ from langchain_core.prompts import (
     SystemMessagePromptTemplate,
 )
 from langchain_openai import ChatOpenAI
-from LLMServerInfo import get_api_key, get_api_url, get_model
+from LLMServerInfo import (
+    getApiKey,
+    getApiUrl,
+    getModelName,
+    getTranslateByCNPrompt,
+    getTranslateByENPrompt,
+)
 from PySide6.QtCore import Slot
 from PySide6.QtWidgets import QWidget
 from UI import Ui_TranslateInfoWin
@@ -36,26 +42,17 @@ class TranslateInfoWin(QWidget, Ui_TranslateInfoWin):
 
         self.add_database_button.clicked.connect(self.onAddDatabase)
         chat = ChatOpenAI(
-            model_name=get_model(),
-            openai_api_key=get_api_key(),
-            openai_api_base=get_api_url(),
+            model_name=getModelName(),
+            openai_api_key=getApiKey(),
+            openai_api_base=getApiUrl(),
             temperature=0.8,
             max_tokens=4096,
         )
-        # TODO: 修改硬编码路径
         message = ""
         if type == TranslationType.TARGET_LANGUAGE:
-            with open(
-                "/Users/caolei/WorkSpace/Verbiverse/verbiverse/resources/prompt/translate_EN.txt",
-                "r",
-            ) as file:
-                message = file.read()
+            message = getTranslateByENPrompt()
         else:
-            with open(
-                "/Users/caolei/WorkSpace/Verbiverse/verbiverse/resources/prompt/translate_CN.txt",
-                "r",
-            ) as file:
-                message = file.read()
+            message = getTranslateByCNPrompt()
         prompt = PromptTemplate.from_template(message)
 
         self.chain = prompt | chat
@@ -77,9 +74,9 @@ class TranslateInfoWin(QWidget, Ui_TranslateInfoWin):
     @Slot()
     def onTranslateButtonClicked(self):
         chat = ChatOpenAI(
-            model_name=get_model(),
-            openai_api_key=get_api_key(),
-            openai_api_base=get_api_url(),
+            model_name=getModelName(),
+            openai_api_key=getApiKey(),
+            openai_api_base=getApiUrl(),
             temperature=0.8,
             max_tokens=4096,
         )
