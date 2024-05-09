@@ -1,7 +1,7 @@
 import sys
 
 from ChatLLM import ChatChain
-from ChatLLMWithHistory import ChatLLMWithHistory
+from ChatLLMWithHistory import ChatLLMWithCustomHistory
 from ChatWorkerThread import ChatWorkThread
 from MessageBoxWidget import MessageBox
 from PySide6.QtCore import Qt, Slot
@@ -40,7 +40,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
         # LLM Chat chain
         self.chat_chain = ChatChain()
-        self.checker = ChatLLMWithHistory()
+        self.checker = ChatLLMWithCustomHistory()
 
         self.chat_worker = ChatWorkThread()
         self.chat_worker.finished.connect(self.updateFinish)

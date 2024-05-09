@@ -1,27 +1,61 @@
 """
-##### 你是一个 python 专家，按如下要求请一步步创建以下功能代码，并给出解释 ######
+**Database Vocabulary**
 
-# 数据库单词本
+This section introduces the concept of a database-based vocabulary system.
 
-## 格式
+**Format**
 
-1. 使用 python 编写，sqlite3 为数据库；
-2. 表格格式分为5部分，word 为 key， example 为例句，added_on 为加入时间，next_review_on 是根据艾宾浩斯记忆曲线计算下次复习时间，review_times 是已经复习了的次数；
+- The vocabulary is stored in a SQLite database.
+- The table structure has five columns:
+    - `word`: The unique identifier for each word.
+    - `example`: An example sentence demonstrating the word's usage.
+    - `added_on`: The timestamp when the word was added to the vocabulary.
+    - `next_review_on`: The scheduled time for the next review of the word based on the Ebbinghaus memory curve.
+    - `review_times`: The number of times the word has been reviewed.
 
-## 功能
+**Functions**
 
-请一步步创建以下功能代码，并给出解释，一个操作数据库的类包含以下功能：
-1. 支持传入的数据库路径，判断如空表则自动按照对应格式创建数据库;
-2. 获取数据库中所有 word 及其他属性一个类成员放入 map 表中;
-3. 支持传入 word 与 example 添加到数据库中：
-        1. 如单词成员map 表中及不再数据库里，则正常插入单词，并更新 added_on 时间为当前时间，以及计算下次复习时间，最后更新成员map表；
-        2. 如单词在成员map表中及在数据库里，则更新对应单词加入时间与下次复习时间并且同步更新数据库;
-4. 支持传入单词获取对应单词的全部信息；
-5. 支持获取所欲需要复习的单词列表；
-6. 支持获取单词的复习次数；
+The provided text outlines the functionalities of a class that interacts with the vocabulary database:
 
-## 测试
-生成对应的测试代码覆盖上述的每个功能
+1. **Initialize with Database Path:**
+   - The constructor takes the database path as an argument.
+   - It checks if the table exists, and if not, creates it with the specified structure.
+   - It loads all words and their attributes into a `word_map` member variable.
+
+2. **Get All Words:**
+   - Retrieves all words and their corresponding information from the database.
+   - Stores the retrieved data in the `word_map` member variable.
+
+3. **Add Word and Example:**
+   - Checks if the word exists in the `word_map` and the database.
+   - If new:
+     - Inserts the word, example, and current timestamp into the database.
+     - Calculates the next review time using the Ebbinghaus memory curve.
+     - Updates the `word_map` with the new word information.
+   - If existing:
+     - Updates the `added_on` and `next_review_on` timestamps for the word in the database.
+     - Updates the `word_map` with the revised word information.
+
+4. **Get Word Information:**
+   - Takes a word as input.
+   - Checks if the word exists in the `word_map`.
+   - If found, returns a dictionary containing the word's information: example, added_on, next_review_on, and review_times.
+   - If not found, returns an empty dictionary.
+
+5. **Get Words for Review:**
+   - Identifies words that are scheduled for review based on their `next_review_on` timestamps.
+   - Returns a list of these words.
+
+6. **Get Review Times for a Word:**
+   - Takes a word as input.
+   - Retrieves the `review_times` value for the word from the database or `word_map`.
+   - Returns the number of times the word has been reviewed.
+
+**Testing**
+
+The text emphasizes the importance of creating comprehensive test cases to ensure the correct behavior of each function. These tests should cover all aspects of the functionality, including edge cases and error conditions.
+
+This translation aims to provide a clear and concise understanding of the provided
 """
 
 import datetime

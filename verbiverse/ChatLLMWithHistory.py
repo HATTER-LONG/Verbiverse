@@ -3,7 +3,7 @@ from langchain_openai import ChatOpenAI
 from LLMServerInfo import getApiKey, getApiUrl, getCheckPrompt, getModelName
 
 
-class ChatLLMWithHistory:
+class ChatLLMWithCustomHistory:
     def __init__(self):
         chat = ChatOpenAI(
             model_name=getModelName(),
