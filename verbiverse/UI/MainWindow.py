@@ -16,11 +16,13 @@ from PySide6.QtGui import (QAction, QBrush, QColor, QConicalGradient,
     QIcon, QImage, QKeySequence, QLinearGradient,
     QPainter, QPalette, QPixmap, QRadialGradient,
     QTransform)
-from PySide6.QtPdfWidgets import QPdfView
-from PySide6.QtWidgets import (QApplication, QGridLayout, QHBoxLayout, QHeaderView,
-    QLabel, QMainWindow, QPushButton, QScrollArea,
-    QSizePolicy, QSplitter, QTabWidget, QTextEdit,
-    QToolBar, QTreeView, QVBoxLayout, QWidget)
+from PySide6.QtWebEngineWidgets import QWebEngineView
+from PySide6.QtWidgets import (QApplication, QGridLayout, QHBoxLayout, QLabel,
+    QMainWindow, QPushButton, QScrollArea, QSizePolicy,
+    QSplitter, QTextEdit, QToolBar, QVBoxLayout,
+    QWidget)
+
+from WebPdfView import QWebPdfView
 import resources_rc
 
 class Ui_MainWindow(object):
@@ -113,67 +115,26 @@ class Ui_MainWindow(object):
         self.centralwidget.setObjectName(u"centralwidget")
         self.gridLayout = QGridLayout(self.centralwidget)
         self.gridLayout.setObjectName(u"gridLayout")
-        self.horizontalLayout = QHBoxLayout()
-        self.horizontalLayout.setObjectName(u"horizontalLayout")
         self.splitter = QSplitter(self.centralwidget)
         self.splitter.setObjectName(u"splitter")
-        sizePolicy1 = QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Preferred)
-        sizePolicy1.setHorizontalStretch(30)
-        sizePolicy1.setVerticalStretch(0)
-        sizePolicy1.setHeightForWidth(self.splitter.sizePolicy().hasHeightForWidth())
-        self.splitter.setSizePolicy(sizePolicy1)
-        self.splitter.setAcceptDrops(False)
         self.splitter.setOrientation(Qt.Orientation.Horizontal)
-        self.tabWidget = QTabWidget(self.splitter)
-        self.tabWidget.setObjectName(u"tabWidget")
-        sizePolicy2 = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Expanding)
-        sizePolicy2.setHorizontalStretch(0)
-        sizePolicy2.setVerticalStretch(0)
-        sizePolicy2.setHeightForWidth(self.tabWidget.sizePolicy().hasHeightForWidth())
-        self.tabWidget.setSizePolicy(sizePolicy2)
-        self.tabWidget.setTabPosition(QTabWidget.TabPosition.West)
-        self.tabWidget.setDocumentMode(False)
-        self.bookmarkTab = QWidget()
-        self.bookmarkTab.setObjectName(u"bookmarkTab")
-        self.verticalLayout_8 = QVBoxLayout(self.bookmarkTab)
-        self.verticalLayout_8.setSpacing(0)
-        self.verticalLayout_8.setObjectName(u"verticalLayout_8")
-        self.verticalLayout_8.setContentsMargins(2, 2, 2, 2)
-        self.bookmarkView = QTreeView(self.bookmarkTab)
-        self.bookmarkView.setObjectName(u"bookmarkView")
-        sizePolicy2.setHeightForWidth(self.bookmarkView.sizePolicy().hasHeightForWidth())
-        self.bookmarkView.setSizePolicy(sizePolicy2)
-        self.bookmarkView.setMinimumSize(QSize(150, 0))
-        self.bookmarkView.setHeaderHidden(True)
-
-        self.verticalLayout_8.addWidget(self.bookmarkView)
-
-        self.tabWidget.addTab(self.bookmarkTab, "")
-        self.pagesTab = QWidget()
-        self.pagesTab.setObjectName(u"pagesTab")
-        self.tabWidget.addTab(self.pagesTab, "")
-        self.splitter.addWidget(self.tabWidget)
-        self.pdf_view = QPdfView(self.splitter)
-        self.pdf_view.setObjectName(u"pdf_view")
-        sizePolicy3 = QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
-        sizePolicy3.setHorizontalStretch(10)
-        sizePolicy3.setVerticalStretch(0)
-        sizePolicy3.setHeightForWidth(self.pdf_view.sizePolicy().hasHeightForWidth())
-        self.pdf_view.setSizePolicy(sizePolicy3)
-        self.pdf_view.setMinimumSize(QSize(300, 0))
-        self.splitter.addWidget(self.pdf_view)
-
-        self.horizontalLayout.addWidget(self.splitter)
-
-        self.verticalLayout_5 = QVBoxLayout()
+        self.viewer_widget = QWebPdfView(self.splitter)
+        self.viewer_widget.setObjectName(u"viewer_widget")
+        self.viewer_widget.setMinimumSize(QSize(600, 0))
+        self.viewer_widget.setUrl(QUrl(u"about:blank"))
+        self.splitter.addWidget(self.viewer_widget)
+        self.widget = QWidget(self.splitter)
+        self.widget.setObjectName(u"widget")
+        self.verticalLayout_5 = QVBoxLayout(self.widget)
         self.verticalLayout_5.setObjectName(u"verticalLayout_5")
-        self.chat_scroll_area = QScrollArea(self.centralwidget)
+        self.verticalLayout_5.setContentsMargins(0, 0, 0, 0)
+        self.chat_scroll_area = QScrollArea(self.widget)
         self.chat_scroll_area.setObjectName(u"chat_scroll_area")
-        sizePolicy4 = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Preferred)
-        sizePolicy4.setHorizontalStretch(0)
-        sizePolicy4.setVerticalStretch(0)
-        sizePolicy4.setHeightForWidth(self.chat_scroll_area.sizePolicy().hasHeightForWidth())
-        self.chat_scroll_area.setSizePolicy(sizePolicy4)
+        sizePolicy1 = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Preferred)
+        sizePolicy1.setHorizontalStretch(0)
+        sizePolicy1.setVerticalStretch(0)
+        sizePolicy1.setHeightForWidth(self.chat_scroll_area.sizePolicy().hasHeightForWidth())
+        self.chat_scroll_area.setSizePolicy(sizePolicy1)
         font = QFont()
         font.setFamilies([u".AppleSystemUIFont"])
         self.chat_scroll_area.setFont(font)
@@ -190,13 +151,13 @@ class Ui_MainWindow(object):
 
         self.horizontalLayout_5 = QHBoxLayout()
         self.horizontalLayout_5.setObjectName(u"horizontalLayout_5")
-        self.user_text_edit = QTextEdit(self.centralwidget)
+        self.user_text_edit = QTextEdit(self.widget)
         self.user_text_edit.setObjectName(u"user_text_edit")
-        sizePolicy5 = QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
-        sizePolicy5.setHorizontalStretch(0)
-        sizePolicy5.setVerticalStretch(0)
-        sizePolicy5.setHeightForWidth(self.user_text_edit.sizePolicy().hasHeightForWidth())
-        self.user_text_edit.setSizePolicy(sizePolicy5)
+        sizePolicy2 = QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
+        sizePolicy2.setHorizontalStretch(0)
+        sizePolicy2.setVerticalStretch(0)
+        sizePolicy2.setHeightForWidth(self.user_text_edit.sizePolicy().hasHeightForWidth())
+        self.user_text_edit.setSizePolicy(sizePolicy2)
         self.user_text_edit.setMinimumSize(QSize(40, 80))
         self.user_text_edit.setMaximumSize(QSize(16777215, 200))
 
@@ -204,22 +165,22 @@ class Ui_MainWindow(object):
 
         self.verticalLayout_2 = QVBoxLayout()
         self.verticalLayout_2.setObjectName(u"verticalLayout_2")
-        self.user_send_button = QPushButton(self.centralwidget)
+        self.user_send_button = QPushButton(self.widget)
         self.user_send_button.setObjectName(u"user_send_button")
-        sizePolicy6 = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Fixed)
-        sizePolicy6.setHorizontalStretch(0)
-        sizePolicy6.setVerticalStretch(0)
-        sizePolicy6.setHeightForWidth(self.user_send_button.sizePolicy().hasHeightForWidth())
-        self.user_send_button.setSizePolicy(sizePolicy6)
+        sizePolicy3 = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Fixed)
+        sizePolicy3.setHorizontalStretch(0)
+        sizePolicy3.setVerticalStretch(0)
+        sizePolicy3.setHeightForWidth(self.user_send_button.sizePolicy().hasHeightForWidth())
+        self.user_send_button.setSizePolicy(sizePolicy3)
         self.user_send_button.setMinimumSize(QSize(0, 40))
         self.user_send_button.setMaximumSize(QSize(16777215, 16777215))
 
         self.verticalLayout_2.addWidget(self.user_send_button)
 
-        self.user_check_button = QPushButton(self.centralwidget)
+        self.user_check_button = QPushButton(self.widget)
         self.user_check_button.setObjectName(u"user_check_button")
-        sizePolicy6.setHeightForWidth(self.user_check_button.sizePolicy().hasHeightForWidth())
-        self.user_check_button.setSizePolicy(sizePolicy6)
+        sizePolicy3.setHeightForWidth(self.user_check_button.sizePolicy().hasHeightForWidth())
+        self.user_check_button.setSizePolicy(sizePolicy3)
         self.user_check_button.setMinimumSize(QSize(0, 40))
 
         self.verticalLayout_2.addWidget(self.user_check_button)
@@ -230,23 +191,19 @@ class Ui_MainWindow(object):
 
         self.verticalLayout_5.addLayout(self.horizontalLayout_5)
 
-        self.check_result = QLabel(self.centralwidget)
+        self.check_result = QLabel(self.widget)
         self.check_result.setObjectName(u"check_result")
-        sizePolicy6.setHeightForWidth(self.check_result.sizePolicy().hasHeightForWidth())
-        self.check_result.setSizePolicy(sizePolicy6)
+        sizePolicy3.setHeightForWidth(self.check_result.sizePolicy().hasHeightForWidth())
+        self.check_result.setSizePolicy(sizePolicy3)
         self.check_result.setAlignment(Qt.AlignmentFlag.AlignLeading|Qt.AlignmentFlag.AlignLeft|Qt.AlignmentFlag.AlignTop)
         self.check_result.setWordWrap(True)
         self.check_result.setMargin(0)
 
         self.verticalLayout_5.addWidget(self.check_result)
 
+        self.splitter.addWidget(self.widget)
 
-        self.horizontalLayout.addLayout(self.verticalLayout_5)
-
-        self.horizontalLayout.setStretch(0, 2)
-        self.horizontalLayout.setStretch(1, 1)
-
-        self.gridLayout.addLayout(self.horizontalLayout, 0, 0, 1, 1)
+        self.gridLayout.addWidget(self.splitter, 0, 0, 1, 1)
 
         MainWindow.setCentralWidget(self.centralwidget)
         self.mainToolBar = QToolBar(MainWindow)
@@ -254,17 +211,10 @@ class Ui_MainWindow(object):
         MainWindow.addToolBar(Qt.ToolBarArea.TopToolBarArea, self.mainToolBar)
 
         self.mainToolBar.addAction(self.actionOpen)
-        self.mainToolBar.addSeparator()
-        self.mainToolBar.addAction(self.actionZoom_Out)
-        self.mainToolBar.addAction(self.actionZoom_In)
-        self.mainToolBar.addSeparator()
-        self.mainToolBar.addAction(self.actionBack)
-        self.mainToolBar.addAction(self.actionForward)
+        self.mainToolBar.addAction(self.actionPrevious_Page)
+        self.mainToolBar.addAction(self.actionNext_Page)
 
         self.retranslateUi(MainWindow)
-
-        self.tabWidget.setCurrentIndex(0)
-
 
         QMetaObject.connectSlotsByName(MainWindow)
     # setupUi
@@ -306,8 +256,6 @@ class Ui_MainWindow(object):
 #if QT_CONFIG(tooltip)
         self.actionForward.setToolTip(QCoreApplication.translate("MainWindow", u"forward to next view", None))
 #endif // QT_CONFIG(tooltip)
-        self.tabWidget.setTabText(self.tabWidget.indexOf(self.bookmarkTab), QCoreApplication.translate("MainWindow", u"Bookmarks", None))
-        self.tabWidget.setTabText(self.tabWidget.indexOf(self.pagesTab), QCoreApplication.translate("MainWindow", u"Pages", None))
         self.user_send_button.setText(QCoreApplication.translate("MainWindow", u"Send", None))
         self.user_check_button.setText(QCoreApplication.translate("MainWindow", u"check", None))
         self.check_result.setText("")

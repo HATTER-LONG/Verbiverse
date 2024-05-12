@@ -1,12 +1,11 @@
+import os
 import sys
 
 from ChatLLM import ChatChain
 from ChatLLMWithHistory import ChatLLMWithCustomHistory
 from ChatWorkerThread import ChatWorkThread
 from MessageBoxWidget import MessageBox
-from PySide6.QtCore import QModelIndex, QPoint, QStandardPaths, Qt, QUrl, Slot
-from PySide6.QtPdf import QPdfBookmarkModel, QPdfDocument
-from PySide6.QtPdfWidgets import QPdfView
+from PySide6.QtCore import QStandardPaths, Qt, QUrl, Slot
 from PySide6.QtWidgets import (
     QApplication,
     QDialog,
@@ -63,8 +62,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
         # will updated by chat worker thread
         self.need_update_label = None
-        self.pdfWidgetsInit()
 
+        self.initWebView()
         # Test code
         # self.message_label1 = MessageBox("image", "User")
         # self.message_label1.setMessageText(
@@ -72,32 +71,14 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         # )
         # self.messages_list.addWidget(self.message_label1)  # Add to QVBoxLayout
 
-    def pdfWidgetsInit(self) -> None:
-        # self.m_zoomSelector = ZoomSelector(self)
-        self.m_pageSelector = QSpinBox(self)
-        self.m_document = QPdfDocument(self)
+    def initWebView(self) -> None:
         self.m_fileDialog = None
-        self.mainToolBar.insertWidget(self.actionForward, self.m_pageSelector)
-        self.m_pageSelector.valueChanged.connect(self.page_selected)
-
-        nav = self.pdf_view.pageNavigator()
-        nav.currentPageChanged.connect(self.m_pageSelector.setValue)
-        nav.backAvailableChanged.connect(self.actionBack.setEnabled)
-        nav.forwardAvailableChanged.connect(self.actionForward.setEnabled)
-
-        bookmark_model = QPdfBookmarkModel(self)
-        bookmark_model.setDocument(self.m_document)
-
-        self.bookmarkView.setModel(bookmark_model)
-        self.bookmarkView.activated.connect(self.bookmark_selected)
-        self.tabWidget.setTabEnabled(1, False)  # disable 'Pages' tab for now
-
-        self.pdf_view.setDocument(self.m_document)
-        self.pdf_view.setZoomMode(QPdfView.ZoomMode.FitInView)
-        self.pdf_view.setPageMode(QPdfView.PageMode.MultiPage)
-        self.pdf_view.verticalScrollBar().setSingleStep(25)
-        self.pdf_view.verticalScrollBar().setPageStep(1)
-        # self.pdfView.zoomFactorChanged.connect(self.m_zoomSelector.set_zoom_factor)
+        script_directory = os.path.dirname(os.path.abspath(__file__))
+        self.pdf_js_path = os.path.join(
+            script_directory, "PDF_js", "web", "viewer.html"
+        ).replace("\\", "/")
+        self.pdf_path = ""
+        self.current_page = 1
 
     @Slot()
     def updateFinish(self) -> None:
@@ -164,17 +145,37 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
     @Slot(QUrl)
     def open(self, doc_location):
-        print(doc_location)
         if doc_location.isLocalFile():
-            self.m_document.load(doc_location.toLocalFile())
-            document_title = self.m_document.metaData(QPdfDocument.MetaDataField.Title)
-            self.setWindowTitle(document_title if document_title else "PDF Viewer")
-            self.page_selected(0)
-            self.m_pageSelector.setMaximum(self.m_document.pageCount() - 1)
+            self.pdf_path = doc_location.url()
+            print(self.pdf_path)
+            self.viewer_widget.load(
+                QUrl.fromUserInput(
+                    f"file:///{self.pdf_js_path}?file={self.pdf_path}#page={self.current_page}"
+                )
+            )
         else:
             message = f"{doc_location} is not a valid local file"
             print(message, file=sys.stderr)
             QMessageBox.critical(self, "Failed to open", message)
+
+    @Slot()
+    def on_actionPrevious_Page_triggered(self):
+        if self.current_page > 1:
+            self.current_page -= 1
+            self.viewer_widget.load(
+                QUrl.fromUserInput(
+                    f"file:///{self.pdf_js_path}?file={self.pdf_path}#page={self.current_page}"
+                )
+            )
+
+    @Slot()
+    def on_actionNext_Page_triggered(self):
+        self.current_page += 1
+        self.viewer_widget.load(
+            QUrl.fromUserInput(
+                f"file:///{self.pdf_js_path}?file={self.pdf_path}#page={self.current_page}"
+            )
+        )
 
     @Slot()
     def on_actionOpen_triggered(self):
@@ -189,19 +190,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             to_open = self.m_fileDialog.selectedUrls()[0]
             if to_open.isValid():
                 self.open(to_open)
-
-    @Slot(int)
-    def page_selected(self, page):
-        nav = self.pdf_view.pageNavigator()
-        nav.jump(page, QPoint(), nav.currentZoom())
-
-    @Slot(QModelIndex)
-    def bookmark_selected(self, index):
-        if not index.isValid():
-            return
-        page = index.data(int(QPdfBookmarkModel.Role.Page))
-        zoom_level = index.data(int(QPdfBookmarkModel.Role.Level))
-        self.pdf_view.pageNavigator().jump(page, QPoint(), zoom_level)
 
 
 def main():
