@@ -5,19 +5,30 @@ from ChatLLM import ChatChain
 from ChatLLMWithHistory import ChatLLMWithCustomHistory
 from ChatWorkerThread import ChatWorkThread
 from MessageBoxWidget import MessageBox
-from PySide6.QtCore import QStandardPaths, Qt, QUrl, Slot
+from PySide6.QtCore import QFile, QFileInfo, QObject, QStandardPaths, Qt, QUrl, Slot
+from PySide6.QtWebChannel import QWebChannel
 from PySide6.QtWidgets import (
     QApplication,
     QDialog,
     QFileDialog,
     QMainWindow,
     QMessageBox,
-    QSpinBox,
     QVBoxLayout,
     QWidget,
 )
 from resources import resources_rc  # noqa: F401
 from UI import Ui_MainWindow
+
+
+class BridgeClass(QObject):
+    """
+    一个槽函数供js调用(内部最终将js的调用转化为了信号),
+    一个信号供js绑定,
+    这个一个交互对象最基本的组成部分.
+    """
+    @Slot(int)
+    def pageChanged(self, page_num):
+        print("get pagenum ", page_num)
 
 
 class MainWindow(QMainWindow, Ui_MainWindow):
@@ -79,6 +90,38 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         ).replace("\\", "/")
         self.pdf_path = ""
         self.current_page = 1
+        self.channel = QWebChannel()
+        self.bridgeClass = BridgeClass()
+        self.channel.registerObject("bridgeClass", self.bridgeClass)
+        self.viewer_widget.page().setWebChannel(self.channel)
+        # self.viewer_widget.setHtml('''
+        # <html>
+        #     <head>
+        #         <script type="text/javascript" src="qrc:///qtwebchannel/qwebchannel.js"></script>
+        #         <script type="text/javascript">
+        #             var pymsg
+        #             new QWebChannel(qt.webChannelTransport, function(channel) {
+        #                 pymsg = function (msg, cb = Function.prototype) {
+        #                     channel.objects.bridgeClass.pageChanged(msg, (res) => cb(JSON.parse(res)))
+        #                     return false
+        #                 }
+        #             })
+        #         </script>
+        #     </head>
+        #     <body>
+        #         <button onclick="pymsg('button clicked', (res) => {alert(res)})">click me</button>
+        #     </body>
+        # </html>
+        # ''')
+        # js_path = os.path.join(script_directory, "PDF_js", "web").replace("\\", "/")
+        # print(js_path)
+        # js_file_info = QFileInfo(f"{js_path}/qwebchannel.js")
+        # print(js_file_info.absoluteFilePath())
+        # if not js_file_info.exists():
+        #     QFile.copy(":/qtwebchannel/qwebchannel.js",
+        #             js_file_info.absoluteFilePath())
+        #### TEST CODE
+        self.open(QUrl("file:///Users/caolei/Downloads/01 Dinosaurs Before Dark - Mary Pope Osborne.pdf"))
 
     @Slot()
     def updateFinish(self) -> None:

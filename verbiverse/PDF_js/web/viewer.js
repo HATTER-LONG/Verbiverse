@@ -8475,6 +8475,7 @@ class PDFViewer {
     if (resetCurrentPageView) {
       this.#resetCurrentPageView();
     }
+    bridge.pageChanged(val)
     return true;
   }
   get currentPageLabel() {
@@ -8491,6 +8492,7 @@ class PDFViewer {
         page = i + 1;
       }
     }
+
     if (!this._setCurrentPageNumber(page, true)) {
       console.error(`currentPageLabel: "${val}" is not a valid page.`);
     }
@@ -13792,6 +13794,10 @@ function webViewerLoad() {
     console.error(`webviewerloaded: ${ex}`);
     document.dispatchEvent(event);
   }
+  new QWebChannel(qt.webChannelTransport, function(channel) {
+  window.
+      window.bridge = channel.objects.bridgeClass;
+  });
   _app.PDFViewerApplication.run(config);
 }
 document.blockUnblockOnload?.(true);
