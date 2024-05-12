@@ -28,9 +28,9 @@
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout">
     <item row="0" column="0">
-     <layout class="QHBoxLayout" name="horizontalLayout" stretch="6,2">
+     <layout class="QHBoxLayout" name="horizontalLayout" stretch="2,1">
       <item>
-       <widget class="QSplitter" name="splitter_2">
+       <widget class="QSplitter" name="splitter">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
           <horstretch>30</horstretch>
@@ -43,7 +43,7 @@
         <property name="orientation">
          <enum>Qt::Orientation::Horizontal</enum>
         </property>
-        <widget class="QTabWidget" name="tabWidget_4">
+        <widget class="QTabWidget" name="tabWidget">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
            <horstretch>0</horstretch>
@@ -59,7 +59,7 @@
          <property name="documentMode">
           <bool>false</bool>
          </property>
-         <widget class="QWidget" name="bookmarkTab_4">
+         <widget class="QWidget" name="bookmarkTab">
           <attribute name="title">
            <string>Bookmarks</string>
           </attribute>
@@ -80,7 +80,7 @@
             <number>2</number>
            </property>
            <item>
-            <widget class="QTreeView" name="bookmarkView_4">
+            <widget class="QTreeView" name="bookmarkView">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
                <horstretch>0</horstretch>
@@ -100,13 +100,13 @@
            </item>
           </layout>
          </widget>
-         <widget class="QWidget" name="pagesTab_4">
+         <widget class="QWidget" name="pagesTab">
           <attribute name="title">
            <string>Pages</string>
           </attribute>
          </widget>
         </widget>
-        <widget class="QPdfView" name="pdfView_4" native="true">
+        <widget class="QPdfView" name="pdf_view" native="true">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
            <horstretch>10</horstretch>

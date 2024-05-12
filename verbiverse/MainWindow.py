@@ -4,10 +4,16 @@ from ChatLLM import ChatChain
 from ChatLLMWithHistory import ChatLLMWithCustomHistory
 from ChatWorkerThread import ChatWorkThread
 from MessageBoxWidget import MessageBox
-from PySide6.QtCore import Qt, Slot
+from PySide6.QtCore import QModelIndex, QPoint, QStandardPaths, Qt, QUrl, Slot
+from PySide6.QtPdf import QPdfBookmarkModel, QPdfDocument
+from PySide6.QtPdfWidgets import QPdfView
 from PySide6.QtWidgets import (
     QApplication,
+    QDialog,
+    QFileDialog,
     QMainWindow,
+    QMessageBox,
+    QSpinBox,
     QVBoxLayout,
     QWidget,
 )
@@ -21,7 +27,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.setupUi(self)
 
         # Set window title
-        self.setWindowTitle("聊天界面")
+        # self.setWindowTitle("聊天界面")
 
         # Set chat scroll arean laytou
         self.messages_list_widget = QWidget(self.chat_scroll_area)
@@ -57,6 +63,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
         # will updated by chat worker thread
         self.need_update_label = None
+        self.pdfWidgetsInit()
 
         # Test code
         # self.message_label1 = MessageBox("image", "User")
@@ -64,6 +71,33 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         #     "This is a test message, it's helpful to dev new function avoid input ever time"
         # )
         # self.messages_list.addWidget(self.message_label1)  # Add to QVBoxLayout
+
+    def pdfWidgetsInit(self) -> None:
+        # self.m_zoomSelector = ZoomSelector(self)
+        self.m_pageSelector = QSpinBox(self)
+        self.m_document = QPdfDocument(self)
+        self.m_fileDialog = None
+        self.mainToolBar.insertWidget(self.actionForward, self.m_pageSelector)
+        self.m_pageSelector.valueChanged.connect(self.page_selected)
+
+        nav = self.pdf_view.pageNavigator()
+        nav.currentPageChanged.connect(self.m_pageSelector.setValue)
+        nav.backAvailableChanged.connect(self.actionBack.setEnabled)
+        nav.forwardAvailableChanged.connect(self.actionForward.setEnabled)
+
+        bookmark_model = QPdfBookmarkModel(self)
+        bookmark_model.setDocument(self.m_document)
+
+        self.bookmarkView.setModel(bookmark_model)
+        self.bookmarkView.activated.connect(self.bookmark_selected)
+        self.tabWidget.setTabEnabled(1, False)  # disable 'Pages' tab for now
+
+        self.pdf_view.setDocument(self.m_document)
+        self.pdf_view.setZoomMode(QPdfView.ZoomMode.FitInView)
+        self.pdf_view.setPageMode(QPdfView.PageMode.MultiPage)
+        self.pdf_view.verticalScrollBar().setSingleStep(25)
+        self.pdf_view.verticalScrollBar().setPageStep(1)
+        # self.pdfView.zoomFactorChanged.connect(self.m_zoomSelector.set_zoom_factor)
 
     @Slot()
     def updateFinish(self) -> None:
@@ -127,6 +161,47 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     def check_update_label(self, msg: str) -> None:
         self.check_result.setText(self.check_result.text() + msg)
         self.adjustSize()
+
+    @Slot(QUrl)
+    def open(self, doc_location):
+        print(doc_location)
+        if doc_location.isLocalFile():
+            self.m_document.load(doc_location.toLocalFile())
+            document_title = self.m_document.metaData(QPdfDocument.MetaDataField.Title)
+            self.setWindowTitle(document_title if document_title else "PDF Viewer")
+            self.page_selected(0)
+            self.m_pageSelector.setMaximum(self.m_document.pageCount() - 1)
+        else:
+            message = f"{doc_location} is not a valid local file"
+            print(message, file=sys.stderr)
+            QMessageBox.critical(self, "Failed to open", message)
+
+    @Slot()
+    def on_actionOpen_triggered(self):
+        if not self.m_fileDialog:
+            directory = QStandardPaths.writableLocation(
+                QStandardPaths.DocumentsLocation
+            )
+            self.m_fileDialog = QFileDialog(self, "Choose a PDF", directory)
+            self.m_fileDialog.setAcceptMode(QFileDialog.AcceptOpen)
+            self.m_fileDialog.setMimeTypeFilters(["application/pdf"])
+        if self.m_fileDialog.exec() == QDialog.Accepted:
+            to_open = self.m_fileDialog.selectedUrls()[0]
+            if to_open.isValid():
+                self.open(to_open)
+
+    @Slot(int)
+    def page_selected(self, page):
+        nav = self.pdf_view.pageNavigator()
+        nav.jump(page, QPoint(), nav.currentZoom())
+
+    @Slot(QModelIndex)
+    def bookmark_selected(self, index):
+        if not index.isValid():
+            return
+        page = index.data(int(QPdfBookmarkModel.Role.Page))
+        zoom_level = index.data(int(QPdfBookmarkModel.Role.Level))
+        self.pdf_view.pageNavigator().jump(page, QPoint(), zoom_level)
 
 
 def main():
