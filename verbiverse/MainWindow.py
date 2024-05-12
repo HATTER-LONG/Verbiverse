@@ -11,6 +11,7 @@ from PySide6.QtWidgets import (
     QVBoxLayout,
     QWidget,
 )
+from resources import resources_rc  # noqa: F401
 from UI import Ui_MainWindow
 
 

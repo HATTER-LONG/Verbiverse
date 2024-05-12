@@ -1,8 +1,17 @@
 <RCC version="1.0">
-  <qresource>
-    <file>prompt/prompt.txt</file>
-    <file>prompt/check_CN.txt</file>
-    <file>prompt/translate_CN.txt</file>
-    <file>prompt/translate_EN.txt</file>
-  </qresource>
+	<qresource>
+		<file>prompt/prompt.txt</file>
+		<file>prompt/check_CN.txt</file>
+		<file>prompt/translate_CN.txt</file>
+		<file>prompt/translate_EN.txt</file>
+	</qresource>
+	<qresource prefix="/icons">
+		<file>images/document-open.svgz</file>
+		<file>images/go-next-view.svgz</file>
+		<file>images/go-previous-view.svgz</file>
+		<file>images/go-next-view-page.svgz</file>
+		<file>images/go-previous-view-page.svgz</file>
+		<file>images/zoom-in.svgz</file>
+		<file>images/zoom-out.svgz</file>
+	</qresource>
 </RCC>
