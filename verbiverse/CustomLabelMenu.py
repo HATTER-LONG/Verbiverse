@@ -10,6 +10,7 @@ from WordsBookDatabase import WordsBookDatabase
 # TODO: 多语言兼容
 class LabelMenu(QMenu):
     def __init__(self, parent, selected_text, all_text):
+        print("selected text: ", selected_text, " , all text : ", all_text)
         super().__init__(parent)
         self.user_selected_text = selected_text
         self.all_text = all_text

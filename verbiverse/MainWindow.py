@@ -4,8 +4,9 @@ import sys
 from ChatLLM import ChatChain
 from ChatLLMWithHistory import ChatLLMWithCustomHistory
 from ChatWorkerThread import ChatWorkThread
+from CustomLabelMenu import LabelMenu
 from MessageBoxWidget import MessageBox
-from PySide6.QtCore import QFile, QFileInfo, QObject, QStandardPaths, Qt, QUrl, Slot
+from PySide6.QtCore import QObject, QPoint, QStandardPaths, Qt, QUrl, Slot
 from PySide6.QtWebChannel import QWebChannel
 from PySide6.QtWidgets import (
     QApplication,
@@ -26,6 +27,7 @@ class BridgeClass(QObject):
     一个信号供js绑定,
     这个一个交互对象最基本的组成部分.
     """
+
     @Slot(int)
     def pageChanged(self, page_num):
         print("get pagenum ", page_num)
@@ -94,6 +96,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.bridgeClass = BridgeClass()
         self.channel.registerObject("bridgeClass", self.bridgeClass)
         self.viewer_widget.page().setWebChannel(self.channel)
+        self.viewer_widget.setContextMenuPolicy(Qt.CustomContextMenu)
+        self.viewer_widget.customContextMenuRequested.connect(self.pdfContextMenu)
         # self.viewer_widget.setHtml('''
         # <html>
         #     <head>
@@ -121,9 +125,23 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         #     QFile.copy(":/qtwebchannel/qwebchannel.js",
         #             js_file_info.absoluteFilePath())
         #### TEST CODE
-        self.open(QUrl("file:///Users/caolei/Downloads/01 Dinosaurs Before Dark - Mary Pope Osborne.pdf"))
+        self.open(
+            QUrl(
+                "file:///Users/caolei/Downloads/01 Dinosaurs Before Dark - Mary Pope Osborne.pdf"
+            )
+        )
 
-    @Slot()
+    @Slot(QPoint)
+    def pdfContextMenu(self, event: QPoint):
+        selected_text = self.viewer_widget.selectedText()
+
+        if len(selected_text) == 0:
+            return
+        all_text = ""
+
+        menu = LabelMenu(self, selected_text, all_text)
+        menu.popup(self.mapToGlobal(event))
+
     def updateFinish(self) -> None:
         self.user_send_button.setEnabled(True)
         self.messages_list.update()
