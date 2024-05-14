@@ -6,7 +6,7 @@ from ChatLLMWithHistory import ChatLLMWithCustomHistory
 from ChatWorkerThread import ChatWorkThread
 from CustomLabelMenu import LabelMenu
 from MessageBoxWidget import MessageBox
-from PySide6.QtCore import QObject, QPoint, QStandardPaths, Qt, QUrl, Slot
+from PySide6.QtCore import QPoint, QStandardPaths, Qt, QUrl, Slot
 from PySide6.QtWebChannel import QWebChannel
 from PySide6.QtWidgets import (
     QApplication,
@@ -19,12 +19,7 @@ from PySide6.QtWidgets import (
 )
 from resources import resources_rc  # noqa: F401
 from UI import Ui_MainWindow
-
-
-class BridgeClass(QObject):
-    @Slot(int)
-    def pageChanged(self, page_num):
-        print("get pagenum ", page_num)
+from WebChannelBridge import BridgeClass
 
 
 class MainWindow(QMainWindow, Ui_MainWindow):
@@ -88,6 +83,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.current_page = 1
         self.channel = QWebChannel()
         self.bridgeClass = BridgeClass()
+        # connect signal
+        self.bridgeClass.pageNumChangedSignal.connect(self.updatePageNum)
         self.channel.registerObject("bridgeClass", self.bridgeClass)
         self.viewer_widget.page().setWebChannel(self.channel)
         self.viewer_widget.setContextMenuPolicy(Qt.CustomContextMenu)
@@ -99,6 +96,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                 "file:///Users/caolei/Downloads/01 Dinosaurs Before Dark - Mary Pope Osborne.pdf"
             )
         )
+
+    @Slot(int)
+    def updatePageNum(self, page_num: int) -> None:
+        self.current_page = page_num
 
     @Slot(QPoint)
     def pdfContextMenu(self, event: QPoint):
