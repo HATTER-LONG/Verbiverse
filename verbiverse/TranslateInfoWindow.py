@@ -35,8 +35,9 @@ class TranslateInfoWin(QWidget, Ui_TranslateInfoWin):
     def __init__(self, type, selected_text, all_text):
         super(TranslateInfoWin, self).__init__()
         self.setupUi(self)
-        self.selected_text = selected_text.replace("\n", " ")
-        self.setWindowTitle(self.selected_text)
+        # self.selected_text = selected_text.replace("\n", " ")
+        self.selected_text = selected_text
+        self.setWindowTitle(selected_text.replace("\n", " "))
         self.all_text = all_text
         self.type = type
         if type == TranslationType.MOTHER_TONGUE:
@@ -62,6 +63,7 @@ class TranslateInfoWin(QWidget, Ui_TranslateInfoWin):
         self.chain = prompt | chat
 
         msg = {"word": self.selected_text, "data": self.all_text}
+        print("send msg = ", msg)
         self.worker = ChatWorkThread()
         self.worker.setChain(self.chain)
         self.worker.setMessage(msg)

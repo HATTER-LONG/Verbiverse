@@ -5,6 +5,7 @@ from ChatLLM import ChatChain
 from ChatLLMWithHistory import ChatLLMWithCustomHistory
 from ChatWorkerThread import ChatWorkThread
 from CustomLabelMenu import LabelMenu
+from LoadPdfText import PdfReader
 from MessageBoxWidget import MessageBox
 from PySide6.QtCore import QPoint, QStandardPaths, Qt, QUrl, Slot
 from PySide6.QtWebChannel import QWebChannel
@@ -91,6 +92,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.viewer_widget.setContextMenuPolicy(Qt.CustomContextMenu)
         self.viewer_widget.customContextMenuRequested.connect(self.pdfContextMenu)
 
+        self.pdf_reader: PdfReader = None
+
         #### TEST CODE
         self.open(
             QUrl(
@@ -108,7 +111,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
         if len(selected_text) == 0:
             return
-        all_text = ""
+        all_text = self.pdf_reader.getTextByPageNum(self.current_page - 1)
 
         menu = LabelMenu(self, selected_text, all_text)
         menu.popup(self.mapToGlobal(event))
@@ -174,11 +177,11 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.check_result.setText(self.check_result.text() + msg)
         self.adjustSize()
 
-    @Slot(QUrl)
-    def open(self, doc_location):
+    def open(self, doc_location: QUrl):
         if doc_location.isLocalFile():
             self.pdf_path = doc_location.url()
-            print(self.pdf_path)
+            print(doc_location.toLocalFile())
+            self.pdf_reader = PdfReader(doc_location.toLocalFile())
             self.viewer_widget.load(
                 QUrl.fromUserInput(
                     f"file:///{self.pdf_js_path}?file={self.pdf_path}#page={self.current_page}"

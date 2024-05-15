@@ -54,5 +54,7 @@ class LabelMenu(QMenu):
         example = ""
         for sentence in sentences:
             if self.user_selected_text in sentence:
-                example = sentence.strip()
+                example = example + "\n" + sentence.strip()
+        if len(example) == 0:
+            example = self.all_text
         self.db.add_word(self.user_selected_text, example)
