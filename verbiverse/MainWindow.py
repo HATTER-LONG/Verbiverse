@@ -81,11 +81,12 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         ).replace("\\", "/")
         self.pdf_path = ""
         self.current_page = 1
+
         self.channel = QWebChannel()
         self.bridgeClass = BridgeClass()
-        # connect signal
         self.bridgeClass.pageNumChangedSignal.connect(self.updatePageNum)
         self.channel.registerObject("bridgeClass", self.bridgeClass)
+
         self.viewer_widget.page().setWebChannel(self.channel)
         self.viewer_widget.setContextMenuPolicy(Qt.CustomContextMenu)
         self.viewer_widget.customContextMenuRequested.connect(self.pdfContextMenu)
@@ -112,6 +113,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         menu = LabelMenu(self, selected_text, all_text)
         menu.popup(self.mapToGlobal(event))
 
+    @Slot()
     def updateFinish(self) -> None:
         self.user_send_button.setEnabled(True)
         self.messages_list.update()
@@ -138,7 +140,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
             self.chat_worker.setMessage(message_text)
             self.chat_worker.start()
-        # self.vscrollbar.setValue(self.vscrollbar.maximum())
 
     @Slot(str)
     def update_label(self, message: str) -> None:
@@ -146,7 +147,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             self.need_update_label.setMessageText(
                 self.need_update_label.getMessageText() + message
             )
-            # self.vscrollbar.setValue(self.vscrollbar.maximum())
 
     @Slot()
     def checkMessage(self) -> None:

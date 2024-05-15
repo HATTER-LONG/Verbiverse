@@ -27,12 +27,16 @@ class TranslationType(Enum):
     MOTHER_TONGUE = 2
 
 
+def isWord(string) -> bool:
+    return " " not in string
+
+
 class TranslateInfoWin(QWidget, Ui_TranslateInfoWin):
     def __init__(self, type, selected_text, all_text):
         super(TranslateInfoWin, self).__init__()
         self.setupUi(self)
-        self.setWindowTitle(selected_text)
-        self.selected_text = selected_text
+        self.selected_text = selected_text.replace("\n", " ")
+        self.setWindowTitle(self.selected_text)
         self.all_text = all_text
         self.type = type
         if type == TranslationType.MOTHER_TONGUE:
