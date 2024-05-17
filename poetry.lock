@@ -295,6 +295,23 @@ files = [
 ]
 
 [[package]]
+name = "dashscope"
+version = "1.19.0"
+description = "dashscope client sdk library"
+optional = false
+python-versions = ">=3.8.0"
+files = [
+    {file = "dashscope-1.19.0-py3-none-any.whl", hash = "sha256:d865fa60c8662bd7694bf592cfaf496802af23eebf18cf1e867f8381cb372eea"},
+]
+
+[package.dependencies]
+aiohttp = "*"
+requests = "*"
+
+[package.extras]
+tokenizer = ["tiktoken"]
+
+[[package]]
 name = "dataclasses-json"
 version = "0.6.4"
 description = "Easily serialize dataclasses to and from JSON."
@@ -1729,4 +1746,4 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "2.0"
 python-versions = "<3.13, >=3.9"
-content-hash = "7d653b407d25b46c531aaf2b0b770e47ac1cac906cf5b91ec083e4a22fe48f43"
+content-hash = "29ec69e6622fa0a21691a9dc9479bb65e0811b8c80840ef8f9d14627d60f4de1"

@@ -17,10 +17,9 @@ from PySide6.QtGui import (QAction, QBrush, QColor, QConicalGradient,
     QPainter, QPalette, QPixmap, QRadialGradient,
     QTransform)
 from PySide6.QtWebEngineWidgets import QWebEngineView
-from PySide6.QtWidgets import (QApplication, QGridLayout, QHBoxLayout, QLabel,
-    QMainWindow, QPushButton, QScrollArea, QSizePolicy,
-    QSplitter, QTextEdit, QToolBar, QVBoxLayout,
-    QWidget)
+from PySide6.QtWidgets import (QApplication, QGridLayout, QHBoxLayout, QMainWindow,
+    QPushButton, QScrollArea, QSizePolicy, QSplitter,
+    QTextEdit, QToolBar, QVBoxLayout, QWidget)
 
 from WebPdfView import QWebPdfView
 import resources_rc
@@ -191,16 +190,6 @@ class Ui_MainWindow(object):
 
         self.verticalLayout_5.addLayout(self.horizontalLayout_5)
 
-        self.check_result = QLabel(self.widget)
-        self.check_result.setObjectName(u"check_result")
-        sizePolicy3.setHeightForWidth(self.check_result.sizePolicy().hasHeightForWidth())
-        self.check_result.setSizePolicy(sizePolicy3)
-        self.check_result.setAlignment(Qt.AlignmentFlag.AlignLeading|Qt.AlignmentFlag.AlignLeft|Qt.AlignmentFlag.AlignTop)
-        self.check_result.setWordWrap(True)
-        self.check_result.setMargin(0)
-
-        self.verticalLayout_5.addWidget(self.check_result)
-
         self.splitter.addWidget(self.widget)
 
         self.gridLayout.addWidget(self.splitter, 0, 0, 1, 1)
@@ -258,7 +247,6 @@ class Ui_MainWindow(object):
 #endif // QT_CONFIG(tooltip)
         self.user_send_button.setText(QCoreApplication.translate("MainWindow", u"Send", None))
         self.user_check_button.setText(QCoreApplication.translate("MainWindow", u"check", None))
-        self.check_result.setText("")
         self.mainToolBar.setWindowTitle(QCoreApplication.translate("MainWindow", u"toolBar", None))
     # retranslateUi
 

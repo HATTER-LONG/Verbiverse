@@ -61,7 +61,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.check_worker.finished.connect(self.checkFinish)
         self.check_worker.started.connect(self.checkStart)
         self.check_worker.setChain(self.checker)
-        self.check_worker.messageCallBackSignal.connect(self.check_update_label)
+        self.check_worker.messageCallBackSignal.connect(self.update_label)
 
         # will updated by chat worker thread
         self.need_update_label = None
@@ -130,6 +130,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
     @Slot()
     def sendMessage(self) -> None:
+        if self.need_update_label is not None:
+            return
         self.user_send_button.setEnabled(False)
         message_text = self.user_text_edit.toPlainText()
         self.user_text_edit.setText("")
@@ -153,12 +155,16 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
     @Slot()
     def checkMessage(self) -> None:
-        self.check_result.clear()
+        if self.need_update_label is not None:
+            return
         if len(self.user_text_edit.toPlainText()) == 0:
             return
         self.checker.setChatHistoryForChain(
             self.chat_chain.demo_ephemeral_chat_history_for_chain
         )
+
+        self.need_update_label = MessageBox("image", "Robot")
+        self.messages_list.addWidget(self.need_update_label)  # Add to QVBoxLayout
 
         self.check_worker.setChain(self.checker)
         self.check_worker.setMessage(self.user_text_edit.toPlainText())
@@ -170,12 +176,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
     @Slot()
     def checkFinish(self) -> None:
-        pass
-
-    @Slot(str)
-    def check_update_label(self, msg: str) -> None:
-        self.check_result.setText(self.check_result.text() + msg)
-        self.adjustSize()
+        self.need_update_label = None
 
     def open(self, doc_location: QUrl):
         if doc_location.isLocalFile():
