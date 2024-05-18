@@ -29,7 +29,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.setupUi(self)
 
         # Set window title
-        # self.setWindowTitle("聊天界面")
+        self.setWindowTitle("Verbiverse")
 
         # Set chat scroll arean laytou
         self.messages_list_widget = QWidget(self.chat_scroll_area)
