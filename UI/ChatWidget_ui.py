@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'ChatWindow.ui'
+## Form generated from reading UI file 'ChatWidget.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.6.2
 ##
@@ -15,25 +15,22 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QFont, QFontDatabase, QGradient, QIcon,
     QImage, QKeySequence, QLinearGradient, QPainter,
     QPalette, QPixmap, QRadialGradient, QTransform)
-from PySide6.QtWidgets import (QApplication, QFrame, QGridLayout, QHBoxLayout,
-    QSizePolicy, QVBoxLayout, QWidget)
+from PySide6.QtWidgets import (QApplication, QGridLayout, QHBoxLayout, QSizePolicy,
+    QVBoxLayout, QWidget)
 
 from qfluentwidgets import (PushButton, SmoothScrollArea, TextEdit)
-import resources_rc
 
-class Ui_ChatWindow(object):
-    def setupUi(self, ChatWindow):
-        if not ChatWindow.objectName():
-            ChatWindow.setObjectName(u"ChatWindow")
-        ChatWindow.resize(482, 495)
-        ChatWindow.setFrameShape(QFrame.Shape.Box)
-        ChatWindow.setFrameShadow(QFrame.Shadow.Raised)
-        self.gridLayout = QGridLayout(ChatWindow)
+class Ui_ChatWidget(object):
+    def setupUi(self, ChatWidget):
+        if not ChatWidget.objectName():
+            ChatWidget.setObjectName(u"ChatWidget")
+        ChatWidget.resize(598, 437)
+        self.gridLayout = QGridLayout(ChatWidget)
         self.gridLayout.setObjectName(u"gridLayout")
-        self.gridLayout.setContentsMargins(2, 2, 2, 2)
+        self.gridLayout.setContentsMargins(5, 5, 5, 5)
         self.verticalLayout_5 = QVBoxLayout()
         self.verticalLayout_5.setObjectName(u"verticalLayout_5")
-        self.chat_scroll_area = SmoothScrollArea(ChatWindow)
+        self.chat_scroll_area = SmoothScrollArea(ChatWidget)
         self.chat_scroll_area.setObjectName(u"chat_scroll_area")
         sizePolicy = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Preferred)
         sizePolicy.setHorizontalStretch(0)
@@ -41,19 +38,20 @@ class Ui_ChatWindow(object):
         sizePolicy.setHeightForWidth(self.chat_scroll_area.sizePolicy().hasHeightForWidth())
         self.chat_scroll_area.setSizePolicy(sizePolicy)
         self.chat_scroll_area.setWidgetResizable(False)
-        self.chat_scroll_area.setAlignment(Qt.AlignmentFlag.AlignHCenter|Qt.AlignmentFlag.AlignTop)
+        self.chat_scroll_area.setAlignment(Qt.AlignHCenter|Qt.AlignTop)
         self.scrollAreaWidgetContents_2 = QWidget()
         self.scrollAreaWidgetContents_2.setObjectName(u"scrollAreaWidgetContents_2")
         self.scrollAreaWidgetContents_2.setGeometry(QRect(0, 0, 677, 392))
         self.verticalLayout = QVBoxLayout(self.scrollAreaWidgetContents_2)
         self.verticalLayout.setObjectName(u"verticalLayout")
+        self.verticalLayout.setContentsMargins(12, -1, -1, -1)
         self.chat_scroll_area.setWidget(self.scrollAreaWidgetContents_2)
 
         self.verticalLayout_5.addWidget(self.chat_scroll_area)
 
         self.horizontalLayout_5 = QHBoxLayout()
         self.horizontalLayout_5.setObjectName(u"horizontalLayout_5")
-        self.user_text_edit = TextEdit(ChatWindow)
+        self.user_text_edit = TextEdit(ChatWidget)
         self.user_text_edit.setObjectName(u"user_text_edit")
         sizePolicy1 = QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
         sizePolicy1.setHorizontalStretch(0)
@@ -67,7 +65,7 @@ class Ui_ChatWindow(object):
 
         self.verticalLayout_2 = QVBoxLayout()
         self.verticalLayout_2.setObjectName(u"verticalLayout_2")
-        self.user_send_button = PushButton(ChatWindow)
+        self.user_send_button = PushButton(ChatWidget)
         self.user_send_button.setObjectName(u"user_send_button")
         sizePolicy2 = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Fixed)
         sizePolicy2.setHorizontalStretch(0)
@@ -79,7 +77,7 @@ class Ui_ChatWindow(object):
 
         self.verticalLayout_2.addWidget(self.user_send_button)
 
-        self.user_check_button = PushButton(ChatWindow)
+        self.user_check_button = PushButton(ChatWidget)
         self.user_check_button.setObjectName(u"user_check_button")
         sizePolicy2.setHeightForWidth(self.user_check_button.sizePolicy().hasHeightForWidth())
         self.user_check_button.setSizePolicy(sizePolicy2)
@@ -97,14 +95,14 @@ class Ui_ChatWindow(object):
         self.gridLayout.addLayout(self.verticalLayout_5, 0, 0, 1, 1)
 
 
-        self.retranslateUi(ChatWindow)
+        self.retranslateUi(ChatWidget)
 
-        QMetaObject.connectSlotsByName(ChatWindow)
+        QMetaObject.connectSlotsByName(ChatWidget)
     # setupUi
 
-    def retranslateUi(self, ChatWindow):
-        ChatWindow.setWindowTitle(QCoreApplication.translate("ChatWindow", u"Frame", None))
-        self.user_send_button.setText(QCoreApplication.translate("ChatWindow", u"Send", None))
-        self.user_check_button.setText(QCoreApplication.translate("ChatWindow", u"check", None))
+    def retranslateUi(self, ChatWidget):
+        ChatWidget.setWindowTitle(QCoreApplication.translate("ChatWidget", u"Form", None))
+        self.user_send_button.setText(QCoreApplication.translate("ChatWidget", u"Send", None))
+        self.user_check_button.setText(QCoreApplication.translate("ChatWidget", u"check", None))
     # retranslateUi
 

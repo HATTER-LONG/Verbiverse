@@ -29,7 +29,7 @@ def build():
         for filename in files:
             if filename.endswith(".ui"):
                 ui_file_path = os.path.join(root, filename)
-                py_file_path = ui_file_path.replace(".ui", ".py")
+                py_file_path = ui_file_path.replace(".ui", "_ui.py")
                 convert_ui_files(ui_file_path, py_file_path)
             if filename.endswith(".qrc"):
                 qrc_file_path = os.path.join(root, filename)

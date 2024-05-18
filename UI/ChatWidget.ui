@@ -1,36 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>ChatWindow</class>
- <widget class="QFrame" name="ChatWindow">
+ <class>ChatWidget</class>
+ <widget class="QWidget" name="ChatWidget">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>482</width>
-    <height>495</height>
+    <width>598</width>
+    <height>437</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Frame</string>
-  </property>
-  <property name="frameShape">
-   <enum>QFrame::Shape::Box</enum>
-  </property>
-  <property name="frameShadow">
-   <enum>QFrame::Shadow::Raised</enum>
+   <string>Form</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <property name="leftMargin">
-    <number>2</number>
+    <number>5</number>
    </property>
    <property name="topMargin">
-    <number>2</number>
+    <number>5</number>
    </property>
    <property name="rightMargin">
-    <number>2</number>
+    <number>5</number>
    </property>
    <property name="bottomMargin">
-    <number>2</number>
+    <number>5</number>
    </property>
    <item row="0" column="0">
     <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -46,7 +40,7 @@
         <bool>false</bool>
        </property>
        <property name="alignment">
-        <set>Qt::AlignmentFlag::AlignHCenter|Qt::AlignmentFlag::AlignTop</set>
+        <set>Qt::AlignHCenter|Qt::AlignTop</set>
        </property>
        <widget class="QWidget" name="scrollAreaWidgetContents_2">
         <property name="geometry">
@@ -57,7 +51,11 @@
           <height>392</height>
          </rect>
         </property>
-        <layout class="QVBoxLayout" name="verticalLayout"/>
+        <layout class="QVBoxLayout" name="verticalLayout">
+         <property name="leftMargin">
+          <number>12</number>
+         </property>
+        </layout>
        </widget>
       </widget>
      </item>
@@ -157,8 +155,6 @@
    <container>1</container>
   </customwidget>
  </customwidgets>
- <resources>
-  <include location="../resources/resources.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>

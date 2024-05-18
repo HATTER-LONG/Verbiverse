@@ -1,14 +1,14 @@
 import sys
 
 from PySide6.QtGui import QFontDatabase
-from PySide6.QtWidgets import QApplication, QFrame
+from PySide6.QtWidgets import QApplication, QWidget
 
 import resources  # noqa: F401
 import src  # noqa: F401
-from UI import Ui_ChatWindow
+from UI import Ui_ChatWidget
 
 
-class MainWindow(QFrame, Ui_ChatWindow):
+class MainWindow(QWidget, Ui_ChatWidget):
     def __init__(self):
         super().__init__()
         QFontDatabase.addApplicationFont(":/fonts/SEGOEUI.TTF")
