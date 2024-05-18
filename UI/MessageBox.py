@@ -16,28 +16,29 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QImage, QKeySequence, QLinearGradient, QPainter,
     QPalette, QPixmap, QRadialGradient, QTransform)
 from PySide6.QtWidgets import (QApplication, QFrame, QGridLayout, QHBoxLayout,
-    QLabel, QSizePolicy, QSpacerItem, QVBoxLayout,
-    QWidget)
+    QSizePolicy, QSpacerItem, QVBoxLayout, QWidget)
+
+from qfluentwidgets import (BodyLabel, ImageLabel, SubtitleLabel)
 
 class Ui_MessageBox(object):
     def setupUi(self, MessageBox):
         if not MessageBox.objectName():
             MessageBox.setObjectName(u"MessageBox")
         MessageBox.resize(365, 86)
-        MessageBox.setStyleSheet(u"border: 1px solid #000000; border-radius: 5px; padding: 5px")
-        MessageBox.setFrameShape(QFrame.Shape.NoFrame)
-        MessageBox.setFrameShadow(QFrame.Shadow.Plain)
+        MessageBox.setStyleSheet(u"")
+        MessageBox.setFrameShape(QFrame.Box)
+        MessageBox.setFrameShadow(QFrame.Plain)
         MessageBox.setLineWidth(1)
         self.gridLayout = QGridLayout(MessageBox)
         self.gridLayout.setObjectName(u"gridLayout")
-        self.gridLayout.setContentsMargins(0, 0, 0, 0)
+        self.gridLayout.setContentsMargins(5, 5, 5, 5)
         self.verticalLayout = QVBoxLayout()
         self.verticalLayout.setObjectName(u"verticalLayout")
         self.horizontalLayout_2 = QHBoxLayout()
         self.horizontalLayout_2.setObjectName(u"horizontalLayout_2")
         self.horizontalLayout = QHBoxLayout()
         self.horizontalLayout.setObjectName(u"horizontalLayout")
-        self.user_image = QLabel(MessageBox)
+        self.user_image = ImageLabel(MessageBox)
         self.user_image.setObjectName(u"user_image")
         sizePolicy = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Fixed)
         sizePolicy.setHorizontalStretch(0)
@@ -47,10 +48,11 @@ class Ui_MessageBox(object):
 
         self.horizontalLayout.addWidget(self.user_image)
 
-        self.user_name = QLabel(MessageBox)
+        self.user_name = SubtitleLabel(MessageBox)
         self.user_name.setObjectName(u"user_name")
         sizePolicy.setHeightForWidth(self.user_name.sizePolicy().hasHeightForWidth())
         self.user_name.setSizePolicy(sizePolicy)
+        self.user_name.setMaximumSize(QSize(16777215, 20))
 
         self.horizontalLayout.addWidget(self.user_name)
 
@@ -70,13 +72,14 @@ class Ui_MessageBox(object):
 
         self.horizontalLayout_3.addItem(self.horizontalSpacer_2)
 
-        self.user_message = QLabel(MessageBox)
+        self.user_message = BodyLabel(MessageBox)
         self.user_message.setObjectName(u"user_message")
         sizePolicy.setHeightForWidth(self.user_message.sizePolicy().hasHeightForWidth())
         self.user_message.setSizePolicy(sizePolicy)
         self.user_message.setMouseTracking(False)
+        self.user_message.setStyleSheet(u"border: 1px solid #000000; border-radius: 5px; padding: 5px")
         self.user_message.setWordWrap(True)
-        self.user_message.setTextInteractionFlags(Qt.TextInteractionFlag.LinksAccessibleByMouse|Qt.TextInteractionFlag.TextSelectableByKeyboard|Qt.TextInteractionFlag.TextSelectableByMouse)
+        self.user_message.setTextInteractionFlags(Qt.LinksAccessibleByMouse|Qt.TextSelectableByKeyboard|Qt.TextSelectableByMouse)
 
         self.horizontalLayout_3.addWidget(self.user_message)
 

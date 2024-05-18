@@ -14,29 +14,29 @@
    <string>Frame</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">border: 1px solid #000000; border-radius: 5px; padding: 5px</string>
+   <string notr="true"/>
   </property>
   <property name="frameShape">
-   <enum>QFrame::Shape::NoFrame</enum>
+   <enum>QFrame::Box</enum>
   </property>
   <property name="frameShadow">
-   <enum>QFrame::Shadow::Plain</enum>
+   <enum>QFrame::Plain</enum>
   </property>
   <property name="lineWidth">
    <number>1</number>
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <property name="leftMargin">
-    <number>0</number>
+    <number>5</number>
    </property>
    <property name="topMargin">
-    <number>0</number>
+    <number>5</number>
    </property>
    <property name="rightMargin">
-    <number>0</number>
+    <number>5</number>
    </property>
    <property name="bottomMargin">
-    <number>0</number>
+    <number>5</number>
    </property>
    <item row="0" column="0">
     <layout class="QVBoxLayout" name="verticalLayout">
@@ -45,7 +45,7 @@
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout">
          <item>
-          <widget class="QLabel" name="user_image">
+          <widget class="ImageLabel" name="user_image">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
              <horstretch>0</horstretch>
@@ -58,12 +58,18 @@
           </widget>
          </item>
          <item>
-          <widget class="QLabel" name="user_name">
+          <widget class="SubtitleLabel" name="user_name">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
              <horstretch>0</horstretch>
              <verstretch>0</verstretch>
             </sizepolicy>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>16777215</width>
+             <height>20</height>
+            </size>
            </property>
            <property name="text">
             <string/>
@@ -75,7 +81,7 @@
        <item>
         <spacer name="horizontalSpacer">
          <property name="orientation">
-          <enum>Qt::Orientation::Horizontal</enum>
+          <enum>Qt::Horizontal</enum>
          </property>
          <property name="sizeHint" stdset="0">
           <size>
@@ -92,10 +98,10 @@
        <item>
         <spacer name="horizontalSpacer_2">
          <property name="orientation">
-          <enum>Qt::Orientation::Horizontal</enum>
+          <enum>Qt::Horizontal</enum>
          </property>
          <property name="sizeType">
-          <enum>QSizePolicy::Policy::Fixed</enum>
+          <enum>QSizePolicy::Fixed</enum>
          </property>
          <property name="sizeHint" stdset="0">
           <size>
@@ -106,7 +112,7 @@
         </spacer>
        </item>
        <item>
-        <widget class="QLabel" name="user_message">
+        <widget class="BodyLabel" name="user_message">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
            <horstretch>0</horstretch>
@@ -116,6 +122,9 @@
          <property name="mouseTracking">
           <bool>false</bool>
          </property>
+         <property name="styleSheet">
+          <string notr="true">border: 1px solid #000000; border-radius: 5px; padding: 5px</string>
+         </property>
          <property name="text">
           <string/>
          </property>
@@ -123,7 +132,7 @@
           <bool>true</bool>
          </property>
          <property name="textInteractionFlags">
-          <set>Qt::TextInteractionFlag::LinksAccessibleByMouse|Qt::TextInteractionFlag::TextSelectableByKeyboard|Qt::TextInteractionFlag::TextSelectableByMouse</set>
+          <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
          </property>
         </widget>
        </item>
@@ -133,6 +142,23 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>SubtitleLabel</class>
+   <extends>QLabel</extends>
+   <header location="global">qfluentwidgets</header>
+  </customwidget>
+  <customwidget>
+   <class>BodyLabel</class>
+   <extends>QLabel</extends>
+   <header location="global">qfluentwidgets</header>
+  </customwidget>
+  <customwidget>
+   <class>ImageLabel</class>
+   <extends>QLabel</extends>
+   <header location="global">qfluentwidgets</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>
