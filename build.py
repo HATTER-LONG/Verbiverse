@@ -1,4 +1,5 @@
 import argparse
+import importlib
 import os
 import subprocess
 
@@ -46,9 +47,36 @@ def run_app():
         print(f"Error running application: {e}")
 
 
+def demo(module_name):
+    """Runs the demo application."""
+    try:
+        import resources  # noqa: F401
+
+        module = importlib.import_module(f"tests.UI.{module_name}.demo")
+        function = getattr(module, "main")
+        function()
+    except Exception as e:
+        print(f"Error running demo: {e}")
+
+
 def test():
     """use pytest to run unit tests"""
     subprocess.run(["pytest"])
+
+
+def get_directory_names(directory):
+    """Returns a list of directory names in the given directory."""
+    return [
+        name
+        for name in os.listdir(directory)
+        if os.path.isdir(os.path.join(directory, name))
+    ]
+
+
+def check_directory_existence(directory, name):
+    """Checks if the given name exists in the directory."""
+    directory_names = get_directory_names(directory)
+    return name in directory_names
 
 
 def main():
@@ -57,8 +85,11 @@ def main():
         description="Engineering Project Management Script"
     )
     parser.add_argument(
-        "command", choices=["run", "build", "br", "test"], help="Command to execute"
+        "command",
+        choices=["run", "build", "br", "test", "demo"],
+        help="Command to execute",
     )
+    parser.add_argument("name", nargs="?", default=None, help="Name for demo")
 
     args = parser.parse_args()
 
@@ -71,8 +102,15 @@ def main():
         run_app()
     elif args.command == "test":
         test()
+    elif args.command == "demo":
+        tests_directory = "./tests/UI/"
+        if check_directory_existence(tests_directory, args.name):
+            print(f"Demo with name: {args.name}")
+            demo(args.name)
+        else:
+            print("Demo command requires a name of tests/UI/[name]")
     else:
-        print("Invalid command. Use 'run', 'build', 'test' or 'br'.")
+        print("Invalid command. Use 'run', 'build', 'test', 'br', or 'demo'.")
 
 
 if __name__ == "__main__":

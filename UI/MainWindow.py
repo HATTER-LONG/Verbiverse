@@ -3,7 +3,7 @@
 ################################################################################
 ## Form generated from reading UI file 'MainWindow.ui'
 ##
-## Created by: Qt User Interface Compiler version 6.7.0
+## Created by: Qt User Interface Compiler version 6.6.2
 ##
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
@@ -122,12 +122,12 @@ class Ui_MainWindow(object):
         self.viewer_widget.setMinimumSize(QSize(600, 0))
         self.viewer_widget.setUrl(QUrl(u"about:blank"))
         self.splitter.addWidget(self.viewer_widget)
-        self.widget = QWidget(self.splitter)
-        self.widget.setObjectName(u"widget")
-        self.verticalLayout_5 = QVBoxLayout(self.widget)
+        self.layoutWidget = QWidget(self.splitter)
+        self.layoutWidget.setObjectName(u"layoutWidget")
+        self.verticalLayout_5 = QVBoxLayout(self.layoutWidget)
         self.verticalLayout_5.setObjectName(u"verticalLayout_5")
         self.verticalLayout_5.setContentsMargins(0, 0, 0, 0)
-        self.chat_scroll_area = QScrollArea(self.widget)
+        self.chat_scroll_area = QScrollArea(self.layoutWidget)
         self.chat_scroll_area.setObjectName(u"chat_scroll_area")
         sizePolicy1 = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Preferred)
         sizePolicy1.setHorizontalStretch(0)
@@ -150,7 +150,7 @@ class Ui_MainWindow(object):
 
         self.horizontalLayout_5 = QHBoxLayout()
         self.horizontalLayout_5.setObjectName(u"horizontalLayout_5")
-        self.user_text_edit = QTextEdit(self.widget)
+        self.user_text_edit = QTextEdit(self.layoutWidget)
         self.user_text_edit.setObjectName(u"user_text_edit")
         sizePolicy2 = QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
         sizePolicy2.setHorizontalStretch(0)
@@ -164,7 +164,7 @@ class Ui_MainWindow(object):
 
         self.verticalLayout_2 = QVBoxLayout()
         self.verticalLayout_2.setObjectName(u"verticalLayout_2")
-        self.user_send_button = QPushButton(self.widget)
+        self.user_send_button = QPushButton(self.layoutWidget)
         self.user_send_button.setObjectName(u"user_send_button")
         sizePolicy3 = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Fixed)
         sizePolicy3.setHorizontalStretch(0)
@@ -176,7 +176,7 @@ class Ui_MainWindow(object):
 
         self.verticalLayout_2.addWidget(self.user_send_button)
 
-        self.user_check_button = QPushButton(self.widget)
+        self.user_check_button = QPushButton(self.layoutWidget)
         self.user_check_button.setObjectName(u"user_check_button")
         sizePolicy3.setHeightForWidth(self.user_check_button.sizePolicy().hasHeightForWidth())
         self.user_check_button.setSizePolicy(sizePolicy3)
@@ -190,14 +190,14 @@ class Ui_MainWindow(object):
 
         self.verticalLayout_5.addLayout(self.horizontalLayout_5)
 
-        self.splitter.addWidget(self.widget)
+        self.splitter.addWidget(self.layoutWidget)
 
         self.gridLayout.addWidget(self.splitter, 0, 0, 1, 1)
 
         MainWindow.setCentralWidget(self.centralwidget)
         self.mainToolBar = QToolBar(MainWindow)
         self.mainToolBar.setObjectName(u"mainToolBar")
-        MainWindow.addToolBar(Qt.ToolBarArea.TopToolBarArea, self.mainToolBar)
+        MainWindow.addToolBar(Qt.TopToolBarArea, self.mainToolBar)
 
         self.mainToolBar.addAction(self.actionOpen)
         self.mainToolBar.addAction(self.actionPrevious_Page)
