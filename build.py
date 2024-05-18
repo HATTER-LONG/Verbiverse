@@ -37,13 +37,18 @@ def build():
 
 
 def run_app():
-    """Runs the main application (__init__.py)."""
+    """Runs the main application."""
     try:
-        import verbiverse  # Assuming the main application is in __init__.py
+        import main
 
-        verbiverse.MainWindow.main()
+        main.main()
     except Exception as e:
         print(f"Error running application: {e}")
+
+
+def test():
+    """use pytest to run unit tests"""
+    subprocess.run(["pytest"])
 
 
 def main():
@@ -52,7 +57,7 @@ def main():
         description="Engineering Project Management Script"
     )
     parser.add_argument(
-        "command", choices=["run", "build", "br"], help="Command to execute"
+        "command", choices=["run", "build", "br", "test"], help="Command to execute"
     )
 
     args = parser.parse_args()
@@ -64,8 +69,10 @@ def main():
     elif args.command == "br":
         build()
         run_app()
+    elif args.command == "test":
+        test()
     else:
-        print("Invalid command. Use 'run', 'build' or 'br'.")
+        print("Invalid command. Use 'run', 'build', 'test' or 'br'.")
 
 
 if __name__ == "__main__":
