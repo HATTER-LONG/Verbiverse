@@ -5,11 +5,15 @@ from PySide6.QtWidgets import (
     QApplication,
 )
 from qfluentwidgets import FluentIcon as FIF
-from qfluentwidgets import FluentWindow, InfoBadge, InfoBadgePosition
+from qfluentwidgets import (
+    FluentWindow,
+    Theme,
+    setTheme,
+)
 
 import resources  # noqa: F401
 import src  # noqa: F401
-from UI import ChatWidget
+from UI import ChatWidget, MessageBox
 
 
 class MainWindow(FluentWindow):
@@ -17,7 +21,14 @@ class MainWindow(FluentWindow):
         super().__init__()
         QFontDatabase.addApplicationFont(":/fonts/SEGOEUI.TTF")
         self.home_page = ChatWidget(self)
+        for i in range(0, 10):
+            message_label1 = MessageBox(":/title/github.png", "User", self)
+            message_label1.setMessageText(
+                "This is a test message, it's helpful to dev new function avoid input ever time"
+            )
+            self.home_page.messages_list.addWidget(message_label1)
         self.initNavigation()
+        self.initWindow()
 
     def initNavigation(self):
         self.addSubInterface(self.home_page, FIF.HOME, "Home")
@@ -30,8 +41,12 @@ class MainWindow(FluentWindow):
         #     position=InfoBadgePosition.NAVIGATION_ITEM,
         # )
 
+    def initWindow(self):
+        self.resize(900, 700)
+
 
 def main():
+    setTheme(Theme.DARK)
     app = QApplication(sys.argv)
     window = MainWindow()
     window.show()

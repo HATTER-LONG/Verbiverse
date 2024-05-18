@@ -6,35 +6,31 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>598</width>
-    <height>437</height>
+    <width>582</width>
+    <height>500</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <property name="leftMargin">
-    <number>5</number>
-   </property>
-   <property name="topMargin">
-    <number>5</number>
-   </property>
-   <property name="rightMargin">
-    <number>5</number>
-   </property>
-   <property name="bottomMargin">
-    <number>5</number>
-   </property>
    <item row="0" column="0">
     <layout class="QVBoxLayout" name="verticalLayout_5">
      <item>
-      <widget class="SmoothScrollArea" name="chat_scroll_area">
+      <widget class="QScrollArea" name="chat_scroll_area">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
          <horstretch>0</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
+       </property>
+       <property name="font">
+        <font>
+         <family>.AppleSystemUIFont</family>
+        </font>
+       </property>
+       <property name="styleSheet">
+        <string notr="true"/>
        </property>
        <property name="widgetResizable">
         <bool>false</bool>
@@ -51,11 +47,7 @@
           <height>392</height>
          </rect>
         </property>
-        <layout class="QVBoxLayout" name="verticalLayout">
-         <property name="leftMargin">
-          <number>12</number>
-         </property>
-        </layout>
+        <layout class="QVBoxLayout" name="verticalLayout"/>
        </widget>
       </widget>
      </item>
@@ -147,12 +139,6 @@
    <class>TextEdit</class>
    <extends>QTextEdit</extends>
    <header location="global">qfluentwidgets</header>
-  </customwidget>
-  <customwidget>
-   <class>SmoothScrollArea</class>
-   <extends>QScrollArea</extends>
-   <header location="global">qfluentwidgets</header>
-   <container>1</container>
   </customwidget>
  </customwidgets>
  <resources/>

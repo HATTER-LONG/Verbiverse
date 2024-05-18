@@ -15,28 +15,31 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QFont, QFontDatabase, QGradient, QIcon,
     QImage, QKeySequence, QLinearGradient, QPainter,
     QPalette, QPixmap, QRadialGradient, QTransform)
-from PySide6.QtWidgets import (QApplication, QGridLayout, QHBoxLayout, QSizePolicy,
-    QVBoxLayout, QWidget)
+from PySide6.QtWidgets import (QApplication, QGridLayout, QHBoxLayout, QScrollArea,
+    QSizePolicy, QVBoxLayout, QWidget)
 
-from qfluentwidgets import (PushButton, SmoothScrollArea, TextEdit)
+from qfluentwidgets import (PushButton, TextEdit)
 
 class Ui_ChatWidget(object):
     def setupUi(self, ChatWidget):
         if not ChatWidget.objectName():
             ChatWidget.setObjectName(u"ChatWidget")
-        ChatWidget.resize(598, 437)
+        ChatWidget.resize(582, 500)
         self.gridLayout = QGridLayout(ChatWidget)
         self.gridLayout.setObjectName(u"gridLayout")
-        self.gridLayout.setContentsMargins(5, 5, 5, 5)
         self.verticalLayout_5 = QVBoxLayout()
         self.verticalLayout_5.setObjectName(u"verticalLayout_5")
-        self.chat_scroll_area = SmoothScrollArea(ChatWidget)
+        self.chat_scroll_area = QScrollArea(ChatWidget)
         self.chat_scroll_area.setObjectName(u"chat_scroll_area")
         sizePolicy = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Preferred)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.chat_scroll_area.sizePolicy().hasHeightForWidth())
         self.chat_scroll_area.setSizePolicy(sizePolicy)
+        font = QFont()
+        font.setFamilies([u".AppleSystemUIFont"])
+        self.chat_scroll_area.setFont(font)
+        self.chat_scroll_area.setStyleSheet(u"")
         self.chat_scroll_area.setWidgetResizable(False)
         self.chat_scroll_area.setAlignment(Qt.AlignHCenter|Qt.AlignTop)
         self.scrollAreaWidgetContents_2 = QWidget()
@@ -44,7 +47,6 @@ class Ui_ChatWidget(object):
         self.scrollAreaWidgetContents_2.setGeometry(QRect(0, 0, 677, 392))
         self.verticalLayout = QVBoxLayout(self.scrollAreaWidgetContents_2)
         self.verticalLayout.setObjectName(u"verticalLayout")
-        self.verticalLayout.setContentsMargins(12, -1, -1, -1)
         self.chat_scroll_area.setWidget(self.scrollAreaWidgetContents_2)
 
         self.verticalLayout_5.addWidget(self.chat_scroll_area)
