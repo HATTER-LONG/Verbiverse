@@ -27,6 +27,7 @@ class Ui_ChatWidget(object):
         ChatWidget.resize(582, 500)
         self.gridLayout = QGridLayout(ChatWidget)
         self.gridLayout.setObjectName(u"gridLayout")
+        self.gridLayout.setContentsMargins(5, 5, 5, 5)
         self.verticalLayout_5 = QVBoxLayout()
         self.verticalLayout_5.setObjectName(u"verticalLayout_5")
         self.chat_scroll_area = QScrollArea(ChatWidget)
