@@ -1,9 +1,9 @@
-from PySide6.QtWebEngineWidgets import QWebEngineView
+from qframelesswindow.webengine import FramelessWebEngineView
 
 
-class QWebPdfView(QWebEngineView):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+class WebView(FramelessWebEngineView):
+    def __init__(self, parent=None):
+        super().__init__(parent)
 
     # def contextMenuEvent(self, event):
     #     selected_text = self.selectedText()

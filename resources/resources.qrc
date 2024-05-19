@@ -14,4 +14,10 @@
 		<file>images/zoom-in.svgz</file>
 		<file>images/zoom-out.svgz</file>
 	</qresource>
+	<qresource>
+		<file>fonts/SEGOEUI.TTF</file>
+	</qresource>
+	<qresource>
+		<file>title/github.png</file>
+	</qresource>
 </RCC>

@@ -1,3 +1,4 @@
 *.db
 PDF_js
 .vscode
+.DS_*
