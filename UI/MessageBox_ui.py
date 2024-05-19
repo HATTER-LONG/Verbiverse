@@ -26,7 +26,7 @@ class Ui_MessageBox(object):
             MessageBox.setObjectName(u"MessageBox")
         MessageBox.resize(365, 86)
         MessageBox.setStyleSheet(u"")
-        MessageBox.setFrameShape(QFrame.Box)
+        MessageBox.setFrameShape(QFrame.NoFrame)
         MessageBox.setFrameShadow(QFrame.Plain)
         MessageBox.setLineWidth(1)
         self.gridLayout = QGridLayout(MessageBox)
