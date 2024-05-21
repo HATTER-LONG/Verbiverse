@@ -1,19 +1,22 @@
 import sys
 
 from PySide6.QtGui import QFontDatabase
+from PySide6.QtCore import Qt
 from PySide6.QtWidgets import (
     QApplication,
 )
 from qfluentwidgets import FluentIcon as FIF
-from qfluentwidgets import (
-    FluentWindow,
-    Theme,
-    setTheme,
-)
+from qfluentwidgets import FluentWindow, Theme, qconfig, setTheme, toggleTheme
 
 import resources  # noqa: F401
 import src  # noqa: F401
 from UI import MessageBox, ReadAndChatWidget
+
+# import sleep function
+from time import sleep
+
+# 导入定时器
+from PySide6.QtCore import QTimer
 
 
 class MainWindow(FluentWindow):
@@ -43,10 +46,21 @@ class MainWindow(FluentWindow):
 
     def initWindow(self):
         self.resize(900, 700)
+        print("test")
+        # 使用定时器创建一个10 秒延时函数
+        self.timer = QTimer(self)
+        self.timer.setInterval(5000)
+        self.timer.timeout.connect(self.autoTheme)
+        self.timer.start(5000)
+    def autoTheme(self):
+        print("change color")
+        toggleTheme()
+
+
 
 
 def main():
-    setTheme(Theme.DARK)
+    setTheme(Theme.AUTO)
     app = QApplication(sys.argv)
     window = MainWindow()
     window.show()
