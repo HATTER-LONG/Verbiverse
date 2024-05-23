@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
 from PySide6.QtWidgets import QFrame
+from qfluentwidgets import (
+    FluentStyleSheet,
+)
 
 from UI import Ui_MessageBox
 
@@ -12,6 +15,7 @@ class MessageBox(QFrame, Ui_MessageBox):
         self.user_image.scaledToHeight(30)
         self.user_image.setBorderRadius(8, 8, 8, 8)
         self.user_name.setText(name)
+        FluentStyleSheet.MESSAGE_DIALOG.apply(self.user_message)
 
     def setMessageText(self, text: str):
         self.user_message.setText(text)

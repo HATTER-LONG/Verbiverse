@@ -123,7 +123,7 @@
           <bool>false</bool>
          </property>
          <property name="styleSheet">
-          <string notr="true">border: 1px solid #000000; border-radius: 5px; padding: 5px</string>
+          <string notr="true"/>
          </property>
          <property name="text">
           <string/>

@@ -77,7 +77,7 @@ class Ui_MessageBox(object):
         sizePolicy.setHeightForWidth(self.user_message.sizePolicy().hasHeightForWidth())
         self.user_message.setSizePolicy(sizePolicy)
         self.user_message.setMouseTracking(False)
-        self.user_message.setStyleSheet(u"border: 1px solid #000000; border-radius: 5px; padding: 5px")
+        self.user_message.setStyleSheet(u"")
         self.user_message.setWordWrap(True)
         self.user_message.setTextInteractionFlags(Qt.LinksAccessibleByMouse|Qt.TextSelectableByKeyboard|Qt.TextSelectableByMouse)
 
