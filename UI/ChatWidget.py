@@ -18,9 +18,9 @@ class ChatWidget(QWidget, Ui_ChatWidget):
         self.chat_scroll_area.setWidgetResizable(True)
         self.chat_scroll_area.setWidget(self.messages_list_widget)
 
-        # self.chat_scroll_area.setStyleSheet(
-        #     "QScrollArea{background: transparent; border: none}"
-        # )
+        self.chat_scroll_area.setStyleSheet(
+            "QScrollArea{background: transparent; border: none}"
+        )
 
-        # # 必须给内部的视图也加上透明背景样式
-        # self.messages_list_widget.setStyleSheet("QWidget{background: transparent}")
+        # 必须给内部的视图也加上透明背景样式
+        self.messages_list_widget.setStyleSheet("QWidget{background: transparent}")
