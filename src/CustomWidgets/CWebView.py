@@ -38,20 +38,19 @@ class CWebView(FramelessWebEngineView):
         self.setContextMenuPolicy(Qt.CustomContextMenu)
         self.customContextMenuRequested.connect(self.ContextMenu)
 
-        qconfig.themeChanged.connect(self.themechanged)
+        qconfig.themeChanged.connect(self.themeChanged)
 
-    def themechanged(self):
-        print("change color")
+    def themeChanged(self):
+        # TODO: https://github.com/shivaprsd/doq use this to support pdf dark mode
         if isDarkTheme():
-            print("change to dark")
             self.page().runJavaScript(
                 'document.documentElement.classList.add("is-dark")'
             )
         else:
-            print("change to light")
-            self.page().runJavaScript(
-                'document.documentElement.classList.add("is-light")'
-            )
+            self.reload()  # just reload to default light mode
+            # self.page().runJavaScript(
+            #     'document.documentElement.classList.add("is-light")'
+            # )
 
     def initWebPdfView(self) -> None:
         """
