@@ -35,7 +35,7 @@ class MainWindow(FluentWindow):
         self.addSubInterface(self.home_page, FIF.HOME, "Home")
 
     def initWindow(self):
-        self.resize(900, 700)
+        self.resize(1000, 800)
         self.setCustomBackgroundColor(*FluentBackgroundTheme.DEFAULT_BLUE)
 
 

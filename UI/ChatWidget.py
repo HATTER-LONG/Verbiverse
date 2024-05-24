@@ -1,6 +1,5 @@
 from ChatWidget_ui import Ui_ChatWidget
-from PySide6.QtCore import Qt
-from PySide6.QtWidgets import QVBoxLayout, QWidget
+from PySide6.QtWidgets import QWidget
 
 
 class ChatWidget(QWidget, Ui_ChatWidget):
