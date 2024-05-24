@@ -18,7 +18,8 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
 from PySide6.QtWidgets import (QApplication, QFrame, QGridLayout, QHBoxLayout,
     QSizePolicy, QSpacerItem, QVBoxLayout, QWidget)
 
-from qfluentwidgets import (BodyLabel, ImageLabel, SubtitleLabel)
+from CustomWidgets import CBodyLabel
+from qfluentwidgets import (ImageLabel, SubtitleLabel)
 
 class Ui_MessageBox(object):
     def setupUi(self, MessageBox):
@@ -72,7 +73,7 @@ class Ui_MessageBox(object):
 
         self.horizontalLayout_3.addItem(self.horizontalSpacer_2)
 
-        self.user_message = BodyLabel(MessageBox)
+        self.user_message = CBodyLabel(MessageBox)
         self.user_message.setObjectName(u"user_message")
         sizePolicy.setHeightForWidth(self.user_message.sizePolicy().hasHeightForWidth())
         self.user_message.setSizePolicy(sizePolicy)
