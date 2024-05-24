@@ -19,7 +19,7 @@ from PySide6.QtWebEngineWidgets import QWebEngineView
 from PySide6.QtWidgets import (QApplication, QGridLayout, QSizePolicy, QSplitter,
     QWidget)
 
-from CustomWidgets import WebView
+from CustomWidgets import CWebView
 from UI import ChatWidget
 
 class Ui_ReadAndChatWidget(object):
@@ -34,7 +34,7 @@ class Ui_ReadAndChatWidget(object):
         self.splitter.setObjectName(u"splitter")
         self.splitter.setOrientation(Qt.Horizontal)
         self.splitter.setHandleWidth(15)
-        self.web_view = WebView(self.splitter)
+        self.web_view = CWebView(self.splitter)
         self.web_view.setObjectName(u"web_view")
         self.web_view.setMinimumSize(QSize(500, 0))
         self.web_view.setUrl(QUrl(u"about:blank"))

@@ -13,7 +13,7 @@ from PySide6.QtWidgets import (
 from qframelesswindow.webengine import FramelessWebEngineView
 
 
-class WebView(FramelessWebEngineView):
+class CWebView(FramelessWebEngineView):
     """
     This class represents a web view for displaying PDF documents and url.
 

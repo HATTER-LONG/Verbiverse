@@ -34,7 +34,7 @@
      <property name="handleWidth">
       <number>15</number>
      </property>
-     <widget class="WebView" name="web_view">
+     <widget class="CWebView" name="web_view">
       <property name="minimumSize">
        <size>
         <width>500</width>
@@ -59,7 +59,7 @@
    <header location="global">QtWebEngineWidgets/QWebEngineView</header>
   </customwidget>
   <customwidget>
-   <class>WebView</class>
+   <class>CWebView</class>
    <extends>QWebEngineView</extends>
    <header>CustomWidgets</header>
   </customwidget>
