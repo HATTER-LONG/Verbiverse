@@ -22,7 +22,7 @@ class MainWindow(FluentWindow):
         super().__init__()
         QFontDatabase.addApplicationFont(":/fonts/SEGOEUI.TTF")
         self.home_page = ReadAndChatWidget(self)
-        for i in range(0, 20):
+        for i in range(0, 15):
             message_label1 = MessageBox(":/title/github.png", "User", self)
             message_label1.setMessageText(
                 "This is a test message, it's helpful to dev new function avoid input ever time"
