@@ -10,6 +10,7 @@ from PySide6.QtWebEngineCore import QWebEnginePage
 from PySide6.QtWidgets import (
     QMessageBox,
 )
+from qfluentwidgets import isDarkTheme, qconfig
 from qframelesswindow.webengine import FramelessWebEngineView
 
 
@@ -36,6 +37,21 @@ class CWebView(FramelessWebEngineView):
         self.initWebPdfView()
         self.setContextMenuPolicy(Qt.CustomContextMenu)
         self.customContextMenuRequested.connect(self.ContextMenu)
+
+        qconfig.themeChanged.connect(self.themechanged)
+
+    def themechanged(self):
+        print("change color")
+        if isDarkTheme():
+            print("change to dark")
+            self.page().runJavaScript(
+                'document.documentElement.classList.add("is-dark")'
+            )
+        else:
+            print("change to light")
+            self.page().runJavaScript(
+                'document.documentElement.classList.add("is-light")'
+            )
 
     def initWebPdfView(self) -> None:
         """
@@ -108,7 +124,5 @@ class CWebView(FramelessWebEngineView):
         @param:
             event: The context menu event.
         """
-        print("custom context menu")
-
         menu = CContexMenu(parent=self)
         menu.exec(self.mapToGlobal(event))
