@@ -1,125 +1,29 @@
-import sys
-from enum import Enum
-
-from PySide6.QtCore import QLocale, QStandardPaths, Qt, QUrl
+from Functions.Config import AUTHOR, FEEDBACK_URL, HELP_URL, VERSION, YEAR, cfg, isWin11
+from PySide6.QtCore import QStandardPaths, Qt, QUrl
 from PySide6.QtGui import QDesktopServices
-from PySide6.QtWidgets import QFileDialog, QLabel, QWidget
+from PySide6.QtWidgets import QFileDialog, QWidget
 
 # from ..common.signal_bus import signalBus
 # from ..common.style_sheet import StyleSheet
 from qfluentwidgets import (
-    LargeTitleLabel,
-    BoolValidator,
     ComboBoxSettingCard,
-    ConfigItem,
-    ConfigSerializer,
     CustomColorSettingCard,
     ExpandLayout,
-    FolderListSettingCard,
-    FolderListValidator,
-    FolderValidator,
     HyperlinkCard,
     InfoBar,
-    OptionsConfigItem,
+    LargeTitleLabel,
     OptionsSettingCard,
-    OptionsValidator,
     PrimaryPushSettingCard,
     PushSettingCard,
-    QConfig,
-    RangeConfigItem,
-    RangeSettingCard,
-    RangeValidator,
     ScrollArea,
     SettingCardGroup,
-    StyleSheetBase,
     SwitchSettingCard,
-    Theme,
-    __version__,
-    qconfig,
     setTheme,
     setThemeColor,
 )
 from qfluentwidgets import FluentIcon as FIF
 
 from .common.StyleSheet import StyleSheet
-
-
-class Language(Enum):
-    """Language enumeration"""
-
-    CHINESE_SIMPLIFIED = QLocale(QLocale.Chinese, QLocale.China)
-    CHINESE_TRADITIONAL = QLocale(QLocale.Chinese, QLocale.HongKong)
-    ENGLISH = QLocale(QLocale.English)
-    AUTO = QLocale()
-
-
-class LanguageSerializer(ConfigSerializer):
-    """Language serializer"""
-
-    def serialize(self, language):
-        return language.value.name() if language != Language.AUTO else "Auto"
-
-    def deserialize(self, value: str):
-        return Language(QLocale(value)) if value != "Auto" else Language.AUTO
-
-
-def isWin11():
-    return sys.platform == "win32" and sys.getwindowsversion().build >= 22000
-
-
-class Config(QConfig):
-    """Config of application"""
-
-    # folders
-    musicFolders = ConfigItem("Folders", "LocalMusic", [], FolderListValidator())
-    downloadFolder = ConfigItem(
-        "Folders", "Download", "app/download", FolderValidator()
-    )
-
-    # main window
-    micaEnabled = ConfigItem("MainWindow", "MicaEnabled", isWin11(), BoolValidator())
-    dpiScale = OptionsConfigItem(
-        "MainWindow",
-        "DpiScale",
-        "Auto",
-        OptionsValidator([1, 1.25, 1.5, 1.75, 2, "Auto"]),
-        restart=True,
-    )
-    language = OptionsConfigItem(
-        "MainWindow",
-        "Language",
-        Language.AUTO,
-        OptionsValidator(Language),
-        LanguageSerializer(),
-        restart=True,
-    )
-
-    # Material
-    blurRadius = RangeConfigItem(
-        "Material", "AcrylicBlurRadius", 15, RangeValidator(0, 40)
-    )
-
-    # software update
-    checkUpdateAtStartUp = ConfigItem(
-        "Update", "CheckUpdateAtStartUp", True, BoolValidator()
-    )
-
-
-YEAR = 2023
-AUTHOR = "zhiyiYo"
-VERSION = __version__
-HELP_URL = "https://qfluentwidgets.com"
-REPO_URL = "https://github.com/zhiyiYo/PyQt-Fluent-Widgets"
-EXAMPLE_URL = "https://github.com/zhiyiYo/PyQt-Fluent-Widgets/tree/PySide6/examples"
-FEEDBACK_URL = "https://github.com/zhiyiYo/PyQt-Fluent-Widgets/issues"
-RELEASE_URL = "https://github.com/zhiyiYo/PyQt-Fluent-Widgets/releases/latest"
-ZH_SUPPORT_URL = "https://qfluentwidgets.com/zh/price/"
-EN_SUPPORT_URL = "https://qfluentwidgets.com/price/"
-
-
-cfg = Config()
-cfg.themeMode.value = Theme.AUTO
-qconfig.load("app/config/config.json", cfg)
 
 
 class SettingInterface(ScrollArea):
@@ -133,22 +37,16 @@ class SettingInterface(ScrollArea):
         # setting label
         self.settingLabel = LargeTitleLabel(self.tr("Settings"), self)
 
-        # music folders
-        self.musicInThisPCGroup = SettingCardGroup(
-            self.tr("Music on this PC"), self.scrollWidget
-        )
-        self.musicFolderCard = FolderListSettingCard(
-            cfg.musicFolders,
-            self.tr("Local music library"),
-            directory=QStandardPaths.writableLocation(QStandardPaths.MusicLocation),
-            parent=self.musicInThisPCGroup,
+        # database folders
+        self.DatabaseInThisPCGroup = SettingCardGroup(
+            self.tr("Database on this PC"), self.scrollWidget
         )
         self.downloadFolderCard = PushSettingCard(
             self.tr("Choose folder"),
-            FIF.DOWNLOAD,
-            self.tr("Download directory"),
-            cfg.get(cfg.downloadFolder),
-            self.musicInThisPCGroup,
+            FIF.CLOUD,
+            self.tr("Database directory"),
+            cfg.get(cfg.databaseFolder),
+            self.DatabaseInThisPCGroup,
         )
 
         # personalization
@@ -199,16 +97,6 @@ class SettingInterface(ScrollArea):
             self.tr("Set your preferred language for UI"),
             texts=["简体中文", "繁體中文", "English", self.tr("Use system setting")],
             parent=self.personalGroup,
-        )
-
-        # material
-        self.materialGroup = SettingCardGroup(self.tr("Material"), self.scrollWidget)
-        self.blurRadiusCard = RangeSettingCard(
-            cfg.blurRadius,
-            FIF.ALBUM,
-            self.tr("Acrylic blur radius"),
-            self.tr("The greater the radius, the more blurred the image"),
-            self.materialGroup,
         )
 
         # update software
@@ -280,16 +168,13 @@ class SettingInterface(ScrollArea):
         self.settingLabel.move(36, 30)
 
         # add cards to group
-        self.musicInThisPCGroup.addSettingCard(self.musicFolderCard)
-        self.musicInThisPCGroup.addSettingCard(self.downloadFolderCard)
+        self.DatabaseInThisPCGroup.addSettingCard(self.downloadFolderCard)
 
         self.personalGroup.addSettingCard(self.micaCard)
         self.personalGroup.addSettingCard(self.themeCard)
         self.personalGroup.addSettingCard(self.themeColorCard)
         self.personalGroup.addSettingCard(self.zoomCard)
         self.personalGroup.addSettingCard(self.languageCard)
-
-        self.materialGroup.addSettingCard(self.blurRadiusCard)
 
         self.updateSoftwareGroup.addSettingCard(self.updateOnStartUpCard)
 
@@ -300,9 +185,8 @@ class SettingInterface(ScrollArea):
         # add setting card group to layout
         self.expandLayout.setSpacing(28)
         self.expandLayout.setContentsMargins(36, 10, 36, 0)
-        self.expandLayout.addWidget(self.musicInThisPCGroup)
+        self.expandLayout.addWidget(self.DatabaseInThisPCGroup)
         self.expandLayout.addWidget(self.personalGroup)
-        self.expandLayout.addWidget(self.materialGroup)
         self.expandLayout.addWidget(self.updateSoftwareGroup)
         self.expandLayout.addWidget(self.aboutGroup)
 
@@ -318,10 +202,10 @@ class SettingInterface(ScrollArea):
     def __onDownloadFolderCardClicked(self):
         """download folder card clicked slot"""
         folder = QFileDialog.getExistingDirectory(self, self.tr("Choose folder"), "./")
-        if not folder or cfg.get(cfg.downloadFolder) == folder:
+        if not folder or cfg.get(cfg.databaseFolder) == folder:
             return
 
-        cfg.set(cfg.downloadFolder, folder)
+        cfg.set(cfg.databaseFolder, folder)
         self.downloadFolderCard.setContent(folder)
 
     def __connectSignalToSlot(self):

@@ -1,6 +1,6 @@
 import sys
 
-from PySide6.QtCore import Qt
+from PySide6.QtCore import Qt, QTranslator
 from PySide6.QtGui import QFontDatabase
 from PySide6.QtWidgets import (
     QApplication,
@@ -9,6 +9,7 @@ from PySide6.QtWidgets import (
 )
 from qfluentwidgets import (
     FluentBackgroundTheme,
+    FluentTranslator,
     FluentWindow,
     NavigationItemPosition,
     SubtitleLabel,
@@ -19,7 +20,7 @@ from qfluentwidgets import (
 from qfluentwidgets import FluentIcon as FIF
 
 import resources  # noqa: F401
-import src  # noqa: F401
+from src.Functions.Config import cfg
 from UI import CMessageBox, ReadAndChatWidget, SettingInterface
 
 
@@ -76,6 +77,17 @@ def main():
     setTheme(Theme.LIGHT)
 
     app = QApplication(sys.argv)
+
+    app.setAttribute(Qt.AA_DontCreateNativeWidgetSiblings)
+
+    # internationalization
+    locale = cfg.get(cfg.language).value
+    translator = FluentTranslator(locale)
+    galleryTranslator = QTranslator()
+    galleryTranslator.load(locale, "verbiverse", ".", ":/i18n")
+
+    app.installTranslator(translator)
+    app.installTranslator(galleryTranslator)
     window = MainWindow()
     window.show()
 

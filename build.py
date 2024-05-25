@@ -24,17 +24,33 @@ def convert_qrc_files(qrc_file_path, py_file_path):
         print(f"Error converting {qrc_file_path}: {e.output}")
 
 
+def convert_qm_files(ts_file_path, qm_file_path):
+    """Converts a qm file (.qm) to a .ts file (.ts) using lrelease."""
+    command = ["pyside6-lrelease", ts_file_path, "-qm", qm_file_path]
+    try:
+        subprocess.run(command, check=True)
+        print(f"Successfully converted {ts_file_path} to {qm_file_path}")
+    except subprocess.CalledProcessError as e:
+        print(f"Error converting {qm_file_path}: {e.output}")
+
+
 def build():
+    qrc_file_path = []
     for root, _, files in os.walk("."):
         for filename in files:
             if filename.endswith(".ui"):
                 ui_file_path = os.path.join(root, filename)
                 py_file_path = ui_file_path.replace(".ui", "_ui.py")
                 convert_ui_files(ui_file_path, py_file_path)
+            if filename.endswith(".ts") and ".TMP." not in filename:
+                ts_file_path = os.path.join(root, filename)
+                qm_file_path = ts_file_path.replace(".ts", ".qm")
+                convert_qm_files(ts_file_path, qm_file_path)
             if filename.endswith(".qrc"):
-                qrc_file_path = os.path.join(root, filename)
-                py_file_path = qrc_file_path.replace(".qrc", "_rc.py")
-                convert_qrc_files(qrc_file_path, py_file_path)
+                qrc_file_path.append(os.path.join(root, filename))
+    for qrc_file_path in qrc_file_path:
+        py_file_path = qrc_file_path.replace(".qrc", "_rc.py")
+        convert_qrc_files(qrc_file_path, py_file_path)
 
 
 def run_app():
@@ -79,6 +95,31 @@ def check_directory_existence(directory, name):
     return name in directory_names
 
 
+def update_py_to_ts(py_file_path: list[str], prefix: str, resource_path: str):
+    for py_file in py_file_path:
+        if py_file.endswith(".py"):
+            ts_file_path = py_file.replace(".py", f".TMP.{prefix}.ts")
+            ts_file_path = resource_path + os.path.basename(ts_file_path)
+            command = ["pyside6-lupdate", py_file, "-ts", ts_file_path]
+            try:
+                subprocess.run(command, check=True)
+                print(f"Successfully converted {py_file} to {ts_file_path}")
+            except subprocess.CalledProcessError as e:
+                print(f"Error converting {py_file}: {e.output}")
+
+
+def convert_all_ts_to_one(ts_file_path):
+    pass
+    # for py_file in py_file_path:
+    #     if py_file.endswith(".py"):
+    #         command = ["pyside6-lupdate", py_file, "-ts", ts_file_path]
+    #         try:
+    #             subprocess.run(command, check=True)
+    #             print(f"Successfully converted {py_file} to {ts_file_path}")
+    #         except subprocess.CalledProcessError as e:
+    #             print(f"Error converting {py_file}: {e.output}")
+
+
 def main():
     """Parses command-line arguments and executes corresponding actions."""
     parser = argparse.ArgumentParser(
@@ -86,7 +127,7 @@ def main():
     )
     parser.add_argument(
         "command",
-        choices=["run", "build", "br", "test", "demo"],
+        choices=["run", "build", "br", "test", "demo", "pyts"],
         help="Command to execute",
     )
     parser.add_argument("name", nargs="?", default=None, help="Name for demo")
@@ -109,6 +150,15 @@ def main():
             demo(args.name)
         else:
             print("Demo command requires a name of tests/UI/[name]")
+    # 增加一个命令用来使用指定 py 代码生成 ts
+    elif args.command == "pyts":
+        cn_ts_file_path = "./resources/i18n/verbiverse.zh_CN.ts"
+        hk_ts_file_path = "./resources/i18n/verbiverse.zh_HK.ts"
+        py_file_path = ["./UI/SettingInterface.py", "./main.py"]
+        resource_path = "./resources/i18n/"
+        update_py_to_ts(py_file_path, "zh_CN", resource_path)
+        update_py_to_ts(py_file_path, "zh_HK", resource_path)
+
     else:
         print("Invalid command. Use 'run', 'build', 'test', 'br', or 'demo'.")
 
