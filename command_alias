@@ -1,0 +1,4 @@
+#!/bin/bash
+
+alias run="python main.py"
+alias build="python build.py build"

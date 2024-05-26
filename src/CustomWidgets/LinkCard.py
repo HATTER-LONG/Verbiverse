@@ -43,9 +43,11 @@ class LinkCard(QFrame):
 
 
 class ButtonCard(QFrame):
-    def __init__(self, icon, title, content, callback, parent=None):
+    def __init__(self, icon, title, content, callback, args, parent=None):
         super().__init__(parent=parent)
+
         self.callback = callback
+        self.args = args
         self.setFixedSize(198, 220)
         self.iconWidget = IconWidget(icon, self)
         self.titleLabel = QLabel(title, self)
@@ -76,7 +78,7 @@ class ButtonCard(QFrame):
 
     def mouseReleaseEvent(self, e):
         super().mouseReleaseEvent(e)
-        self.callback()
+        self.callback(self.args)
 
 
 class LinkCardView(SingleDirectionScrollArea):
@@ -104,7 +106,7 @@ class LinkCardView(SingleDirectionScrollArea):
         card = LinkCard(icon, title, content, url, self.view)
         self.hBoxLayout.addWidget(card, 0, Qt.AlignLeft)
 
-    def addButtonCard(self, icon, title, content, callback):
+    def addButtonCard(self, icon, title, content, callback, args):
         """add link card"""
-        card = ButtonCard(icon, title, content, callback, self.view)
+        card = ButtonCard(icon, title, content, callback, args, self.view)
         self.hBoxLayout.addWidget(card, 0, Qt.AlignLeft)

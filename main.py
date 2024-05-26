@@ -1,4 +1,4 @@
-import sys
+import sys  # noqa: I001
 
 from PySide6.QtCore import Qt, QTranslator
 from PySide6.QtGui import QFontDatabase
@@ -20,8 +20,15 @@ from qfluentwidgets import (
 from qfluentwidgets import FluentIcon as FIF
 
 import resources  # noqa: F401
-from src.Functions.Config import cfg
-from UI import CMessageBox, HomeInterface, ReadAndChatWidget, SettingInterface
+import src  # noqa: F401
+from Functions.Config import cfg
+from Functions.SignalBus import signalBus
+from UI import (
+    CMessageBox,
+    HomeInterface,
+    ReadAndChatWidget,
+    SettingInterface,
+)
 
 
 class Widget(QFrame):
@@ -43,23 +50,30 @@ class MainWindow(FluentWindow):
     def __init__(self):
         super().__init__()
         QFontDatabase.addApplicationFont(":/fonts/SEGOEUI.TTF")
+        self.interfaceList = []
         self.home_page = HomeInterface(self)
         self.read_page = ReadAndChatWidget(self)
 
         for i in range(0, 15):
-            message_label1 = CMessageBox(":/title/github_rebot.png", "Rebot", self)
+            message_label1 = CMessageBox(":/images/github_rebot.png", "Rebot", self)
             message_label1.setMessageText(
                 "This is a test message, it's helpful to dev new function avoid input ever time"
             )
             self.read_page.chat_widget.messages_list.addWidget(message_label1)
 
         self.setting_page = SettingInterface(self)
+
+        self.interfaceList.append(self.home_page)
+        self.interfaceList.append(self.read_page)
+        self.interfaceList.append(self.setting_page)
+
         self.initNavigation()
         self.initWindow()
+        self.connectSignalToSlot()
 
     def initNavigation(self):
         self.addSubInterface(self.home_page, FIF.HOME, "Home")
-        self.addSubInterface(self.read_page, FIF.CHAT, "Read & Chat")
+        self.addSubInterface(self.read_page, FIF.CHAT, "Read with LLM")
 
         self.addSubInterface(
             self.setting_page,
@@ -71,6 +85,16 @@ class MainWindow(FluentWindow):
     def initWindow(self):
         self.resize(1000, 800)
         self.setCustomBackgroundColor(*FluentBackgroundTheme.DEFAULT_BLUE)
+
+    def connectSignalToSlot(self):
+        signalBus.switch_page_signal.connect(
+            lambda page_name: self.switchPage(page_name)
+        )
+
+    def switchPage(self, page_name: str):
+        for w in self.interfaceList:
+            if w.objectName() == page_name:
+                self.stackedWidget.setCurrentWidget(w, False)
 
 
 def main():

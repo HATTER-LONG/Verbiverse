@@ -1,20 +1,17 @@
-import json
-
-from PySide6.QtCore import Qt, Signal, QRectF
-from PySide6.QtGui import (
-    QPixmap,
-    QPainter,
-    QColor,
-    QBrush,
-    QPainterPath,
-    QLinearGradient,
-)
-from PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel
-
-from qfluentwidgets import ScrollArea, isDarkTheme, FluentIcon
 from CustomWidgets import LinkCardView, StyleSheet
-
-from Functions.Config import cfg, HELP_URL, REPO_URL, EXAMPLE_URL, FEEDBACK_URL
+from Functions.Config import REPO_URL
+from Functions.SignalBus import signalBus
+from PySide6.QtCore import QRectF, Qt
+from PySide6.QtGui import (
+    QBrush,
+    QColor,
+    QLinearGradient,
+    QPainter,
+    QPainterPath,
+    QPixmap,
+)
+from PySide6.QtWidgets import QLabel, QVBoxLayout, QWidget
+from qfluentwidgets import FluentIcon, ScrollArea, isDarkTheme
 
 # from ..common.icon import Icon, FluentIconBase
 # from ..components.link_card import LinkCardView
@@ -44,20 +41,21 @@ class BannerWidget(QWidget):
         self.vBoxLayout.setAlignment(Qt.AlignLeft | Qt.AlignTop)
 
         self.link_card_view.addButtonCard(
-            FluentIcon.GITHUB,
+            FluentIcon.LIBRARY,
             self.tr("Getting started"),
-            self.tr("An overview of app development options and samples."),
+            self.tr("Open a local pdf file."),
             self.callback,
+            "ReadAndChatWidget",
         )
         self.link_card_view.addCard(
             FluentIcon.GITHUB,
-            self.tr("Getting started"),
-            self.tr("An overview of app development options and samples."),
-            HELP_URL,
+            self.tr("GitHub repo"),
+            self.tr("Check."),
+            REPO_URL,
         )
 
-    def callback(self):
-        print("back to here")
+    def callback(self, args):
+        signalBus.switch_page_signal.emit(args)
 
     def paintEvent(self, e):
         super().paintEvent(e)
