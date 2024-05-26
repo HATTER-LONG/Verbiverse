@@ -1,5 +1,6 @@
+from CustomWidgets import StyleSheet
 from Functions.Config import AUTHOR, FEEDBACK_URL, HELP_URL, VERSION, YEAR, cfg, isWin11
-from PySide6.QtCore import QStandardPaths, Qt, QUrl
+from PySide6.QtCore import Qt, QUrl
 from PySide6.QtGui import QDesktopServices
 from PySide6.QtWidgets import QFileDialog, QWidget
 
@@ -22,8 +23,6 @@ from qfluentwidgets import (
     setThemeColor,
 )
 from qfluentwidgets import FluentIcon as FIF
-
-from .common.StyleSheet import StyleSheet
 
 
 class SettingInterface(ScrollArea):

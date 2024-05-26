@@ -21,7 +21,7 @@ from qfluentwidgets import FluentIcon as FIF
 
 import resources  # noqa: F401
 from src.Functions.Config import cfg
-from UI import CMessageBox, ReadAndChatWidget, SettingInterface
+from UI import CMessageBox, HomeInterface, ReadAndChatWidget, SettingInterface
 
 
 class Widget(QFrame):
@@ -43,11 +43,11 @@ class MainWindow(FluentWindow):
     def __init__(self):
         super().__init__()
         QFontDatabase.addApplicationFont(":/fonts/SEGOEUI.TTF")
-        self.home_page = Widget("Home", self)
+        self.home_page = HomeInterface(self)
         self.read_page = ReadAndChatWidget(self)
 
         for i in range(0, 15):
-            message_label1 = CMessageBox(":/title/github.png", "User", self)
+            message_label1 = CMessageBox(":/title/github_rebot.png", "Rebot", self)
             message_label1.setMessageText(
                 "This is a test message, it's helpful to dev new function avoid input ever time"
             )

@@ -3,7 +3,6 @@
 		<file>fonts/SEGOEUI.TTF</file>
 	</qresource>
 	<qresource>
-		<file>title/github.png</file>
 	</qresource>
 	<qresource>
 		<file>prompt/prompt.txt</file>
@@ -31,5 +30,8 @@
 
 		<file>i18n/verbiverse.zh_CN.qm</file>
 		<file>i18n/verbiverse.zh_HK.qm</file>
+
+		<file>images/github_rebot.png</file>
+		<file>images/banner_1920.png</file>
 	</qresource>
 </RCC>

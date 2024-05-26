@@ -27,3 +27,15 @@ LinkCardView {
 #view {
     background-color: transparent;
 }
+
+ButtonCard {
+    border: 1px solid rgb(234, 234, 234);
+    border-radius: 10px;
+    background-color: rgba(249, 249, 249, 0.95);
+}
+
+ButtonCard:hover {
+    background-color: rgba(249, 249, 249, 0.93);
+    border: 1px solid rgb(220, 220, 220);
+}
+

@@ -9,7 +9,7 @@ QScrollArea {
 }
 
 
-BannerWidget > #galleryLabel {
+BannerWidget > #verbiverse_label {
     font: 42px 'Segoe UI SemiBold', 'Microsoft YaHei SemiBold';
     background-color: transparent;
     color: white;

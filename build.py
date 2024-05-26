@@ -150,10 +150,9 @@ def main():
             demo(args.name)
         else:
             print("Demo command requires a name of tests/UI/[name]")
-    # 增加一个命令用来使用指定 py 代码生成 ts
     elif args.command == "pyts":
-        cn_ts_file_path = "./resources/i18n/verbiverse.zh_CN.ts"
-        hk_ts_file_path = "./resources/i18n/verbiverse.zh_HK.ts"
+        # cn_ts_file_path = "./resources/i18n/verbiverse.zh_CN.ts"
+        # hk_ts_file_path = "./resources/i18n/verbiverse.zh_HK.ts"
         py_file_path = ["./UI/SettingInterface.py", "./main.py"]
         resource_path = "./resources/i18n/"
         update_py_to_ts(py_file_path, "zh_CN", resource_path)
