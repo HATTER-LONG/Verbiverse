@@ -1,0 +1,16 @@
+SettingInterface, #scrollWidget {
+    background-color: transparent;
+}
+
+QScrollArea {
+    background-color: transparent;
+    border: none;
+}
+
+
+/* 标签 */
+QLabel#settingLabel {
+    font: 33px 'Segoe UI';
+    background-color: transparent;
+    color: dark;
+}

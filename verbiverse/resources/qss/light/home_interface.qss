@@ -1,0 +1,19 @@
+SettingInterface,
+#view {
+    background-color: transparent;
+}
+
+QScrollArea {
+    border: none;
+    background-color: transparent;
+}
+
+
+BannerWidget > #verbiverse_label {
+    font: bold 42px 'Segoe UI';
+    background-color: transparent;
+    color: black;
+    padding-left: 28px;
+}
+
+
