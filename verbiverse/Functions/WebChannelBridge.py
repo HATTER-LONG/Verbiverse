@@ -3,6 +3,7 @@ from PySide6.QtCore import QObject, Signal, Slot
 
 class BridgeClass(QObject):
     pageNumChangedSignal = Signal(int)
+    pageOpenErrorSignal = Signal(str)
 
     @Slot(int)
     def pageChanged(self, page_num):
@@ -10,5 +11,5 @@ class BridgeClass(QObject):
 
     @Slot(str)
     def openFailed(self, err: str):
-        print("failed")
-        print(err)
+        if "[ERROR]" in err:
+            self.pageOpenErrorSignal.emit(err)

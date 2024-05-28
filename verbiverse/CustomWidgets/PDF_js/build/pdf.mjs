@@ -21525,10 +21525,10 @@ function extractFilenameFromHeader(getResponseHeader) {
 }
 function createResponseStatusError(status, url) {
   if (status === 404 || status === 0 && url.startsWith("file:")) {
-    bridge.openFailed("Missing PDF");
+    bridge.openFailed('[ERROR] Missing PDF "' + url + '".');
     return new util.MissingPDFException('Missing PDF "' + url + '".');
   }
-  bridge.openFailed(`"Unexpected server response (${status}) while retrieving PDF "${url}"`);
+  bridge.openFailed(`"[ERROR] Unexpected server response (${status}) while retrieving PDF "${url}"`);
   return new util.UnexpectedResponseException(`Unexpected server response (${status}) while retrieving PDF "${url}".`, status);
 }
 function validateResponseStatus(status) {

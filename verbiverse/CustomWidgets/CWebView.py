@@ -1,10 +1,10 @@
 import os
 import sys
-
 import urllib.parse
 
 from CContexMenu import CContexMenu
 from Functions.LoadPdfText import PdfReader
+from Functions.SignalBus import signalBus
 from Functions.WebChannelBridge import BridgeClass
 from PySide6.QtCore import QPoint, Qt, QUrl, Slot
 from PySide6.QtWebChannel import QWebChannel
@@ -69,12 +69,17 @@ class CWebView(FramelessWebEngineView):
         self.__channel = QWebChannel()
         self.__bridge_class = BridgeClass()
         self.__bridge_class.pageNumChangedSignal.connect(self.updatePdfPageNum)
+        self.__bridge_class.pageOpenErrorSignal.connect(self.updateOpenStatus)
         self.__channel.registerObject("bridgeClass", self.__bridge_class)
-
         self.page().setWebChannel(self.__channel)
         self.pdf_reader: PdfReader = None
 
-    def openLocalPdfDoc(self, doc_location: QUrl) -> None:
+    @Slot(str)
+    def updateOpenStatus(self, error_message):
+        print("pupdateOpenStatus", error_message)
+        signalBus.open_localfile_error_signal.emit(error_message)
+
+    def openLocalPdfDoc(self, doc_location: QUrl):
         """
         Opens a local PDF document.
 
@@ -84,15 +89,23 @@ class CWebView(FramelessWebEngineView):
         self.pdf_current_page = 1
         if doc_location.isLocalFile():
             self.pdf_path = urllib.parse.quote(doc_location.url().encode("utf-8"))
-            self.pdf_reader = PdfReader(doc_location.toLocalFile())
+            # self.pdf_path = doc_location.url().encode("utf-8")
+            # TODO: 异步处理
+            # self.pdf_reader = PdfReader(doc_location.toLocalFile())
             print(
                 f"open url: [file:///{self.pdf_js_path}?file={self.pdf_path}#page={self.pdf_current_page}]"
             )
-            self.load(
-                QUrl.fromUserInput(
-                    f"file:///{self.pdf_js_path}?file={self.pdf_path}#page={self.pdf_current_page}"
-                )
+
+            self.loadStarted.connect(lambda: signalBus.load_localfile_signal.emit(0))
+            self.loadProgress.connect(
+                lambda process: signalBus.load_localfile_signal.emit(process)
             )
+            self.loadFinished.connect(lambda: signalBus.load_localfile_signal.emit(100))
+
+            url = QUrl.fromUserInput(
+                f"file:///{self.pdf_js_path}?file={self.pdf_path}#page={self.pdf_current_page}"
+            )
+            self.load(url)
         else:
             message = f"{doc_location} is not a valid local file"
             print(message, file=sys.stderr)
