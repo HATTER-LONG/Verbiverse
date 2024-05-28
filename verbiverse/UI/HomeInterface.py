@@ -1,7 +1,7 @@
 from CustomWidgets import LinkCardView, StyleSheet
 from Functions.Config import REPO_URL
 from Functions.SignalBus import signalBus
-from PySide6.QtCore import QRectF, Qt
+from PySide6.QtCore import QRectF, QStandardPaths, Qt
 from PySide6.QtGui import (
     QBrush,
     QColor,
@@ -10,7 +10,7 @@ from PySide6.QtGui import (
     QPainterPath,
     QPixmap,
 )
-from PySide6.QtWidgets import QLabel, QVBoxLayout, QWidget
+from PySide6.QtWidgets import QDialog, QFileDialog, QLabel, QVBoxLayout, QWidget
 from qfluentwidgets import FluentIcon, ScrollArea, isDarkTheme
 
 # from ..common.icon import Icon, FluentIconBase
@@ -54,8 +54,23 @@ class BannerWidget(QWidget):
             REPO_URL,
         )
 
+        self.m_fileDialog = None
+
     def callback(self, args):
-        signalBus.switch_page_signal.emit(args)
+        if not self.m_fileDialog:
+            directory = QStandardPaths.writableLocation(
+                QStandardPaths.DocumentsLocation
+            )
+            self.m_fileDialog = QFileDialog(self, "Choose a PDF", directory)
+            self.m_fileDialog.setFileMode(QFileDialog.FileMode.ExistingFile)
+            self.m_fileDialog.setAcceptMode(QFileDialog.AcceptOpen)
+            self.m_fileDialog.setMimeTypeFilters(["application/pdf"])
+        if self.m_fileDialog.exec() == QDialog.Accepted:
+            to_open = self.m_fileDialog.selectedUrls()[0]
+            print(to_open)
+            if to_open.isValid():
+                signalBus.open_localfile_signal.emit(to_open)
+                signalBus.switch_page_signal.emit(args)
 
     def paintEvent(self, e):
         super().paintEvent(e)

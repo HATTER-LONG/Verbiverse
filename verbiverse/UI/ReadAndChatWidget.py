@@ -1,4 +1,5 @@
-from PySide6.QtCore import QUrl
+from Functions.SignalBus import signalBus
+from PySide6.QtCore import QUrl, Slot
 from PySide6.QtWidgets import QWidget
 from ReadAndChatWidget_ui import Ui_ReadAndChatWidget
 
@@ -8,9 +9,14 @@ class ReadAndChatWidget(QWidget, Ui_ReadAndChatWidget):
         super().__init__(parent)
         self.setupUi(self)
 
-        #### TEST CODE
-        self.web_view.openLocalPdfDoc(
-            QUrl(
-                "file:///Users/caolei/Downloads/01 Dinosaurs Before Dark - Mary Pope Osborne.pdf"
-            )
-        )
+        # #### TEST CODE
+        # self.web_view.openLocalPdfDoc(
+        #     QUrl(
+        #         "file:///Users/caolei/Downloads/01 Dinosaurs Before Dark - Mary Pope Osborne.pdf"
+        #     )
+        # )
+        signalBus.open_localfile_signal.connect(self.openLocalPdfDoc)
+
+    @Slot(QUrl)
+    def openLocalPdfDoc(self, doc_location: QUrl):
+        self.web_view.openLocalPdfDoc(doc_location)

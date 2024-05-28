@@ -1,5 +1,5 @@
 *.db
-PDF_js
+# PDF_js
 .vscode
 .DS_*
 app

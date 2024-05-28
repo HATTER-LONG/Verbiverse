@@ -1,6 +1,8 @@
 import os
 import sys
 
+import urllib.parse
+
 from CContexMenu import CContexMenu
 from Functions.LoadPdfText import PdfReader
 from Functions.WebChannelBridge import BridgeClass
@@ -81,8 +83,11 @@ class CWebView(FramelessWebEngineView):
         """
         self.pdf_current_page = 1
         if doc_location.isLocalFile():
-            self.pdf_path = doc_location.url()
+            self.pdf_path = urllib.parse.quote(doc_location.url().encode("utf-8"))
             self.pdf_reader = PdfReader(doc_location.toLocalFile())
+            print(
+                f"open url: [file:///{self.pdf_js_path}?file={self.pdf_path}#page={self.pdf_current_page}]"
+            )
             self.load(
                 QUrl.fromUserInput(
                     f"file:///{self.pdf_js_path}?file={self.pdf_path}#page={self.pdf_current_page}"

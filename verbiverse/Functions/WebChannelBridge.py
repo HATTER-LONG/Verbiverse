@@ -7,3 +7,8 @@ class BridgeClass(QObject):
     @Slot(int)
     def pageChanged(self, page_num):
         self.pageNumChangedSignal.emit(page_num)
+
+    @Slot(str)
+    def openFailed(self, err: str):
+        print("failed")
+        print(err)
