@@ -1,5 +1,3 @@
-from time import sleep
-
 from CustomWidgets import LinkCardView, StyleSheet
 from Functions.Config import REPO_URL
 from Functions.SignalBus import signalBus
@@ -62,10 +60,7 @@ class BannerWidget(QWidget):
         )
 
         self.m_fileDialog = None
-        self.openlocalfile_finished_message = None
         signalBus.load_localfile_signal.connect(self.processCall)
-        # TODO: 错误处理放到 ReadAndChatWidget 中
-        signalBus.open_localfile_error_signal.connect(self.getErrorMessage)
         self.process = 0
 
     # TODO: add process dialogs
@@ -74,14 +69,7 @@ class BannerWidget(QWidget):
         if process == 100:
             signalBus.switch_page_signal.emit("ReadAndChatWidget")
 
-    def getErrorMessage(self, error_message: str):
-        # TODO: add dialogs
-        print("test: ", error_message)
-        self.openlocalfile_finished_message = error_message
-
     def callback(self, args):
-        # TODO: add clean function
-        self.openlocalfile_finished_message = None
         if not self.m_fileDialog:
             directory = QStandardPaths.writableLocation(
                 QStandardPaths.DocumentsLocation

@@ -2,7 +2,7 @@ import sys
 
 from Functions.Config import cfg
 from Functions.SignalBus import signalBus
-from PySide6.QtCore import Qt, QTranslator
+from PySide6.QtCore import Qt, QTranslator, Slot
 from PySide6.QtGui import QFontDatabase
 from PySide6.QtWidgets import (
     QApplication,
@@ -13,6 +13,8 @@ from qfluentwidgets import (
     FluentBackgroundTheme,
     FluentTranslator,
     FluentWindow,
+    InfoBar,
+    InfoBarPosition,
     NavigationItemPosition,
     SubtitleLabel,
     Theme,
@@ -87,14 +89,53 @@ class MainWindow(FluentWindow):
         self.setCustomBackgroundColor(*FluentBackgroundTheme.DEFAULT_BLUE)
 
     def connectSignalToSlot(self):
-        signalBus.switch_page_signal.connect(
-            lambda page_name: self.switchPage(page_name)
-        )
+        signalBus.switch_page_signal.connect(self.switchPage)
+        signalBus.info_signal.connect(self.showInfoMessage)
+        signalBus.warning_signal.connect(self.showWarningMessage)
+        signalBus.error_signal.connect(self.showErrorMessage)
 
+    @Slot(str)
     def switchPage(self, page_name: str):
         for w in self.interfaceList:
             if w.objectName() == page_name:
                 self.stackedWidget.setCurrentWidget(w, False)
+
+    @Slot(str)
+    def showInfoMessage(self, info_message: str):
+        InfoBar.info(
+            title="INFO",
+            content=info_message,
+            orient=Qt.Horizontal,
+            isClosable=True,
+            position=InfoBarPosition.TOP_RIGHT,
+            duration=-1,
+            parent=self,
+        )
+
+    @Slot(str)
+    def showWarningMessage(self, warning_message: str):
+        InfoBar.warning(
+            title="WARN",
+            content=warning_message,
+            orient=Qt.Horizontal,
+            isClosable=True,
+            position=InfoBarPosition.TOP_RIGHT,
+            duration=-1,
+            parent=self,
+        )
+
+    @Slot(str)
+    def showErrorMessage(self, error_message: str):
+        print("test: ", error_message)
+        InfoBar.error(
+            title="Error",
+            content=error_message,
+            orient=Qt.Horizontal,
+            isClosable=True,
+            position=InfoBarPosition.TOP_RIGHT,
+            duration=-1,
+            parent=self,
+        )
 
 
 def main():

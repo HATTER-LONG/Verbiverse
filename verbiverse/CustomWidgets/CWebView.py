@@ -1,19 +1,50 @@
 import os
 import sys
 import urllib.parse
+from time import sleep
+import itertools
 
 from CContexMenu import CContexMenu
 from Functions.LoadPdfText import PdfReader
 from Functions.SignalBus import signalBus
 from Functions.WebChannelBridge import BridgeClass
-from PySide6.QtCore import QPoint, Qt, QUrl, Slot
+from PySide6.QtCore import QMutex, QPoint, Qt, QThread, QUrl, Signal, Slot
 from PySide6.QtWebChannel import QWebChannel
 from PySide6.QtWebEngineCore import QWebEnginePage
-from PySide6.QtWidgets import (
-    QMessageBox,
-)
+from PySide6.QtWidgets import QApplication, QMessageBox
 from qfluentwidgets import isDarkTheme, qconfig
 from qframelesswindow.webengine import FramelessWebEngineView
+
+
+class LoadPdfText(QThread):
+    """Signal to load pdf text"""
+
+    load_pdf_finish = Signal(PdfReader)
+
+    def __init__(self, pdf_loc_path: str):
+        super().__init__()
+        self.pdf_loc_path = pdf_loc_path
+        self.stop = False
+
+    def stopRead(self):
+        print("stop")
+        self.stop = True
+
+    def run(self):
+        print("ready to read")
+        pdf_reader = PdfReader(self.pdf_loc_path)
+        pages = pdf_reader.loader.lazy_load()
+        print("start to load")
+        # TODO: 优化这里打开大文件 PDF 耗时
+        for page in pages:
+            sleep(0.01)
+            if not self.stop:
+                pdf_reader.pages.append(page)
+            else:
+                print("stop read")
+                return
+        print("read finish ", len(pdf_reader.pages))
+        self.load_pdf_finish.emit(pdf_reader)
 
 
 class CWebView(FramelessWebEngineView):
@@ -42,6 +73,30 @@ class CWebView(FramelessWebEngineView):
 
         qconfig.themeChanged.connect(self.themeChanged)
 
+    def initWebPdfView(self) -> None:
+        """
+        Initializes the web view for displaying PDF documents.
+        """
+        self.m_fileDialog = None
+        script_directory = os.path.dirname(os.path.abspath(__file__))
+        self.pdf_js_path = os.path.join(
+            script_directory, "PDF_js", "web", "viewer.html"
+        ).replace("\\", "/")
+
+        self.__channel = QWebChannel()
+        self.__bridge_class = BridgeClass()
+        self.__bridge_class.pageNumChangedSignal.connect(self.updatePdfPageNum)
+        self.__bridge_class.pageOpenErrorSignal.connect(self.updateOpenStatus)
+        self.__channel.registerObject("bridgeClass", self.__bridge_class)
+        self.page().setWebChannel(self.__channel)
+        self.mutex = QMutex()
+
+        self.loader: LoadPdfText = None
+        self.pdf_path = None
+        self.pdf_current_page = 1
+        self.pdf_reader: PdfReader = None
+        self.error_message = None
+
     def themeChanged(self):
         # TODO: https://github.com/shivaprsd/doq use this to support pdf dark mode
         if isDarkTheme():
@@ -54,30 +109,29 @@ class CWebView(FramelessWebEngineView):
             #     'document.documentElement.classList.add("is-light")'
             # )
 
-    def initWebPdfView(self) -> None:
-        """
-        Initializes the web view for displaying PDF documents.
-        """
-        self.m_fileDialog = None
-        script_directory = os.path.dirname(os.path.abspath(__file__))
-        self.pdf_js_path = os.path.join(
-            script_directory, "PDF_js", "web", "viewer.html"
-        ).replace("\\", "/")
-        self.pdf_path = ""
-        self.pdf_current_page = 1
-
-        self.__channel = QWebChannel()
-        self.__bridge_class = BridgeClass()
-        self.__bridge_class.pageNumChangedSignal.connect(self.updatePdfPageNum)
-        self.__bridge_class.pageOpenErrorSignal.connect(self.updateOpenStatus)
-        self.__channel.registerObject("bridgeClass", self.__bridge_class)
-        self.page().setWebChannel(self.__channel)
-        self.pdf_reader: PdfReader = None
-
     @Slot(str)
     def updateOpenStatus(self, error_message):
-        print("pupdateOpenStatus", error_message)
-        signalBus.open_localfile_error_signal.emit(error_message)
+        if self.error_message != error_message:
+            signalBus.error_signal.emit(error_message)
+            print("error alread to clean")
+            self.clean()
+            self.error_message = error_message
+            signalBus.info_signal.emit(self.tr("Already clean!!!"))
+
+    def clean(self):
+        if self.loader is not None and self.loader.isRunning():
+            self.loader.stopRead()
+            signalBus.warning_signal.emit(
+                self.tr("Need wait last loader stop, maybe cost some time!!!")
+            )
+            while not self.loader.wait(100):
+                QApplication.processEvents()
+
+        self.loader = None
+        self.error_message = None
+        self.pdf_current_page = 1
+        self.pdf_path = None
+        self.pdf_reader = None
 
     def openLocalPdfDoc(self, doc_location: QUrl):
         """
@@ -86,20 +140,20 @@ class CWebView(FramelessWebEngineView):
         @param:
             doc_location: The URL of the PDF document.
         """
-        self.pdf_current_page = 1
+        self.clean()
         if doc_location.isLocalFile():
             self.pdf_path = urllib.parse.quote(doc_location.url().encode("utf-8"))
+            # Test error load code
             # self.pdf_path = doc_location.url().encode("utf-8")
-            # TODO: 异步处理
-            # self.pdf_reader = PdfReader(doc_location.toLocalFile())
+            self.loader = LoadPdfText(doc_location.toLocalFile())
+            self.loader.load_pdf_finish.connect(self.updatePdfReader)
+            self.loader.setPriority(QThread.Priority.LowestPriority)
+            self.loader.start()
             print(
                 f"open url: [file:///{self.pdf_js_path}?file={self.pdf_path}#page={self.pdf_current_page}]"
             )
 
             self.loadStarted.connect(lambda: signalBus.load_localfile_signal.emit(0))
-            self.loadProgress.connect(
-                lambda process: signalBus.load_localfile_signal.emit(process)
-            )
             self.loadFinished.connect(lambda: signalBus.load_localfile_signal.emit(100))
 
             url = QUrl.fromUserInput(
@@ -110,6 +164,10 @@ class CWebView(FramelessWebEngineView):
             message = f"{doc_location} is not a valid local file"
             print(message, file=sys.stderr)
             QMessageBox.critical(self, "Failed to open", message)
+
+    @Slot(PdfReader)
+    def updatePdfReader(self, reader: PdfReader):
+        self.pdf_reader = reader
 
     @Slot(int)
     def updatePdfPageNum(self, page_num: int) -> None:
