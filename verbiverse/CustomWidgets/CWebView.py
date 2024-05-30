@@ -1,8 +1,7 @@
+import concurrent.futures
 import os
 import sys
 import urllib.parse
-from time import sleep
-import itertools
 
 from CContexMenu import CContexMenu
 from Functions.LoadPdfText import PdfReader
@@ -16,6 +15,10 @@ from qfluentwidgets import isDarkTheme, qconfig
 from qframelesswindow.webengine import FramelessWebEngineView
 
 
+def loadPdfFile(path: str) -> PdfReader:
+    return PdfReader(path)
+
+
 class LoadPdfText(QThread):
     """Signal to load pdf text"""
 
@@ -26,25 +29,11 @@ class LoadPdfText(QThread):
         self.pdf_loc_path = pdf_loc_path
         self.stop = False
 
-    def stopRead(self):
-        print("stop")
-        self.stop = True
-
     def run(self):
         print("ready to read")
-        pdf_reader = PdfReader(self.pdf_loc_path)
-        pages = pdf_reader.loader.lazy_load()
-        print("start to load")
-        # TODO: 优化这里打开大文件 PDF 耗时
-        for page in pages:
-            sleep(0.01)
-            if not self.stop:
-                pdf_reader.pages.append(page)
-            else:
-                print("stop read")
-                return
-        print("read finish ", len(pdf_reader.pages))
-        self.load_pdf_finish.emit(pdf_reader)
+        with concurrent.futures.ProcessPoolExecutor(max_workers=1) as executor:
+            future = executor.submit(loadPdfFile, self.pdf_loc_path)
+            self.load_pdf_finish.emit(future.result())
 
 
 class CWebView(FramelessWebEngineView):
@@ -116,11 +105,9 @@ class CWebView(FramelessWebEngineView):
             print("error alread to clean")
             self.clean()
             self.error_message = error_message
-            signalBus.info_signal.emit(self.tr("Already clean!!!"))
 
     def clean(self):
         if self.loader is not None and self.loader.isRunning():
-            self.loader.stopRead()
             signalBus.warning_signal.emit(
                 self.tr("Need wait last loader stop, maybe cost some time!!!")
             )
@@ -168,6 +155,7 @@ class CWebView(FramelessWebEngineView):
     @Slot(PdfReader)
     def updatePdfReader(self, reader: PdfReader):
         self.pdf_reader = reader
+        print("read finish ", len(self.pdf_reader.pages))
 
     @Slot(int)
     def updatePdfPageNum(self, page_num: int) -> None:
