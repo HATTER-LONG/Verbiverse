@@ -13,6 +13,7 @@ langchainhub = "^0.1.15"
 pypdf = "^4.2.0"
 dashscope = "^1.19.0"
 pyside6-fluent-widgets = {extras = ["full"], version = "^1.5.6"}
+pebble = "^5.0.7"
 
 
 [build-system]

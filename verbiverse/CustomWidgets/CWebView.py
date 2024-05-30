@@ -1,12 +1,13 @@
-import concurrent.futures
 import os
 import sys
 import urllib.parse
+from concurrent.futures import CancelledError
 
 from CContexMenu import CContexMenu
 from Functions.LoadPdfText import PdfReader
 from Functions.SignalBus import signalBus
 from Functions.WebChannelBridge import BridgeClass
+from pebble import concurrent
 from PySide6.QtCore import QMutex, QPoint, Qt, QThread, QUrl, Signal, Slot
 from PySide6.QtWebChannel import QWebChannel
 from PySide6.QtWebEngineCore import QWebEnginePage
@@ -15,8 +16,11 @@ from qfluentwidgets import isDarkTheme, qconfig
 from qframelesswindow.webengine import FramelessWebEngineView
 
 
+@concurrent.process()
 def loadPdfFile(path: str) -> PdfReader:
-    return PdfReader(path)
+    print(path)
+    ret = PdfReader(path)
+    return ret
 
 
 class LoadPdfText(QThread):
@@ -29,11 +33,20 @@ class LoadPdfText(QThread):
         self.pdf_loc_path = pdf_loc_path
         self.stop = False
 
+    def stopLoad(self):
+        self.future.cancel()
+
     def run(self):
         print("ready to read")
-        with concurrent.futures.ProcessPoolExecutor(max_workers=1) as executor:
-            future = executor.submit(loadPdfFile, self.pdf_loc_path)
-            self.load_pdf_finish.emit(future.result())
+        self.future = loadPdfFile(self.pdf_loc_path)
+        try:
+            self.load_pdf_finish.emit(self.future.result())
+        except CancelledError as error:
+            print("already cancel:", error)
+        except Exception as error:
+            print("error:", error)
+        else:
+            print("finish")
 
 
 class CWebView(FramelessWebEngineView):
@@ -107,7 +120,9 @@ class CWebView(FramelessWebEngineView):
             self.error_message = error_message
 
     def clean(self):
+        self.mutex.lock()
         if self.loader is not None and self.loader.isRunning():
+            self.loader.stopLoad()
             signalBus.warning_signal.emit(
                 self.tr("Need wait last loader stop, maybe cost some time!!!")
             )
@@ -119,6 +134,7 @@ class CWebView(FramelessWebEngineView):
         self.pdf_current_page = 1
         self.pdf_path = None
         self.pdf_reader = None
+        self.mutex.unlock()
 
     def openLocalPdfDoc(self, doc_location: QUrl):
         """
@@ -134,7 +150,6 @@ class CWebView(FramelessWebEngineView):
             # self.pdf_path = doc_location.url().encode("utf-8")
             self.loader = LoadPdfText(doc_location.toLocalFile())
             self.loader.load_pdf_finish.connect(self.updatePdfReader)
-            self.loader.setPriority(QThread.Priority.LowestPriority)
             self.loader.start()
             print(
                 f"open url: [file:///{self.pdf_js_path}?file={self.pdf_path}#page={self.pdf_current_page}]"
