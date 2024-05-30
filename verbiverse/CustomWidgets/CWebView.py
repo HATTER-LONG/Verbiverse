@@ -7,6 +7,7 @@ from CContexMenu import CContexMenu
 from Functions.LoadPdfText import PdfReader
 from Functions.SignalBus import signalBus
 from Functions.WebChannelBridge import BridgeClass
+from ModuleLogger import logger
 from pebble import concurrent
 from PySide6.QtCore import QMutex, QPoint, Qt, QThread, QUrl, Signal, Slot
 from PySide6.QtWebChannel import QWebChannel
@@ -18,7 +19,7 @@ from qframelesswindow.webengine import FramelessWebEngineView
 
 @concurrent.process()
 def loadPdfFile(path: str) -> PdfReader:
-    print(path)
+    logger.debug(f"start load pdf by new process: {path}")
     ret = PdfReader(path)
     return ret
 
@@ -37,16 +38,16 @@ class LoadPdfText(QThread):
         self.future.cancel()
 
     def run(self):
-        print("ready to read")
+        logger.info(f"ready to load pdf by new process: [{self.pdf_loc_path}]")
         self.future = loadPdfFile(self.pdf_loc_path)
         try:
             self.load_pdf_finish.emit(self.future.result())
-        except CancelledError as error:
-            print("already cancel:", error)
+        except CancelledError:
+            logger.info(f"already cancel current load: [{self.pdf_loc_path}]")
         except Exception as error:
-            print("error:", error)
+            logger.error(f"load pdf error: [{error}]")
         else:
-            print("finish")
+            logger.info(f"finish pdf load: [{self.pdf_loc_path}]")
 
 
 class CWebView(FramelessWebEngineView):
@@ -115,7 +116,9 @@ class CWebView(FramelessWebEngineView):
     def updateOpenStatus(self, error_message):
         if self.error_message != error_message:
             signalBus.error_signal.emit(error_message)
-            print("error alread to clean")
+            logger.error(
+                f"get a new error which need to clean webview: [{error_message}]"
+            )
             self.clean()
             self.error_message = error_message
 
@@ -151,7 +154,7 @@ class CWebView(FramelessWebEngineView):
             self.loader = LoadPdfText(doc_location.toLocalFile())
             self.loader.load_pdf_finish.connect(self.updatePdfReader)
             self.loader.start()
-            print(
+            logger.info(
                 f"open url: [file:///{self.pdf_js_path}?file={self.pdf_path}#page={self.pdf_current_page}]"
             )
 
@@ -164,13 +167,15 @@ class CWebView(FramelessWebEngineView):
             self.load(url)
         else:
             message = f"{doc_location} is not a valid local file"
-            print(message, file=sys.stderr)
+            logger.error(message)
             QMessageBox.critical(self, "Failed to open", message)
 
     @Slot(PdfReader)
     def updatePdfReader(self, reader: PdfReader):
         self.pdf_reader = reader
-        print("read finish ", len(self.pdf_reader.pages))
+        logger.info(
+            f"read pdf [{self.pdf_path}] finish get [{len(self.pdf_reader.pages)}] pages"
+        )
 
     @Slot(int)
     def updatePdfPageNum(self, page_num: int) -> None:

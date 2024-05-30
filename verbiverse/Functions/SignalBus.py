@@ -1,3 +1,4 @@
+from ModuleLogger import logger
 from PySide6.QtCore import QObject, QUrl, Signal
 
 
@@ -15,4 +16,4 @@ class SignalBus(QObject):
 
 
 signalBus = SignalBus()
-print(signalBus)
+logger.debug(signalBus)

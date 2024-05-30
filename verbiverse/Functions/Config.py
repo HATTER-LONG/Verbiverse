@@ -16,6 +16,7 @@ from qfluentwidgets import (
     Theme,
     qconfig,
 )
+from ModuleLogger import logger
 
 
 class Language(Enum):
@@ -94,4 +95,4 @@ EN_SUPPORT_URL = "https://qfluentwidgets.com/price/"
 cfg = Config()
 cfg.themeMode.value = Theme.AUTO
 qconfig.load("app/config/config.json", cfg)
-print(cfg)
+logger.debug(cfg)

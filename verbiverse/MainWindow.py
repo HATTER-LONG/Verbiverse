@@ -1,6 +1,7 @@
 import sys
 
 from Functions.Config import cfg
+from Functions.Log import get_logger
 from Functions.SignalBus import signalBus
 from PySide6.QtCore import Qt, QTranslator, Slot
 from PySide6.QtGui import QFontDatabase
@@ -139,6 +140,8 @@ class MainWindow(FluentWindow):
 
 
 def main():
+    logger = get_logger("main")
+    logger.info("start application...")
     setTheme(Theme.LIGHT)
 
     app = QApplication(sys.argv)
