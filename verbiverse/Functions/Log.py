@@ -9,9 +9,7 @@ class CustomFormatter(logging.Formatter):
     red = "\x1b[31;20m"
     bold_red = "\x1b[31;1m"
     reset = "\x1b[0m"
-    format = (
-        "[%(asctime)s %(name)s:%(levelname)s] %(message)s - (%(filename)s:%(lineno)d)"
-    )
+    format = "[%(asctime)s %(name)s:%(levelname)s %(process)d:%(thread)d:%(threadName)s] %(message)s - (%(filename)s:%(lineno)d)"
 
     FORMATS = {
         logging.DEBUG: grey + format + reset,
@@ -27,7 +25,7 @@ class CustomFormatter(logging.Formatter):
         return formatter.format(record)
 
 
-def get_logger(name: str, level=logging.INFO):
+def get_logger(name: str, level=logging.DEBUG):
     # create logger with 'spam_application'
     logger = logging.getLogger(name)
     logger.setLevel(level)
