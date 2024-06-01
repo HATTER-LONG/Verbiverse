@@ -13,6 +13,7 @@ class SignalBus(QObject):
     info_signal = Signal(str)
     warning_signal = Signal(str)
     error_signal = Signal(str)
+    mica_enable_change_signal = Signal(bool)
 
 
 signalBus = SignalBus()

@@ -89,11 +89,15 @@ class MainWindow(FluentWindow):
         self.resize(1000, 800)
         self.setCustomBackgroundColor(*FluentBackgroundTheme.DEFAULT_BLUE)
 
+        self.setMicaEffectEnabled(cfg.get(cfg.mica_enabled))
+
     def connectSignalToSlot(self):
         signalBus.switch_page_signal.connect(self.switchPage)
         signalBus.info_signal.connect(self.showInfoMessage)
         signalBus.warning_signal.connect(self.showWarningMessage)
         signalBus.error_signal.connect(self.showErrorMessage)
+
+        signalBus.mica_enable_change_signal.connect(self.setMicaEffectEnabled)
 
     @Slot(str)
     def switchPage(self, page_name: str):

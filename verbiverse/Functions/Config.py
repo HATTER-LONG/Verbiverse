@@ -1,6 +1,7 @@
 import sys
 from enum import Enum
 
+from ModuleLogger import logger
 from PySide6.QtCore import QLocale
 from qfluentwidgets import (
     BoolValidator,
@@ -16,7 +17,6 @@ from qfluentwidgets import (
     Theme,
     qconfig,
 )
-from ModuleLogger import logger
 
 
 class Language(Enum):
@@ -46,13 +46,14 @@ class Config(QConfig):
     """Config of application"""
 
     # folders
-    musicFolders = ConfigItem("Folders", "LocalMusic", [], FolderListValidator())
-    databaseFolder = ConfigItem(
-        "Folders", "Database", "app/database", FolderValidator()
+    database_folder = ConfigItem("LLM", "Database", "app/database", FolderValidator())
+
+    provider = OptionsConfigItem(
+        "LLM", "Provider", "openai", OptionsValidator(["openai", "tongyi"])
     )
 
     # main window
-    micaEnabled = ConfigItem("MainWindow", "MicaEnabled", isWin11(), BoolValidator())
+    mica_enabled = ConfigItem("MainWindow", "MicaEnabled", isWin11(), BoolValidator())
     dpiScale = OptionsConfigItem(
         "MainWindow",
         "DpiScale",

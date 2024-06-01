@@ -1,11 +1,9 @@
 from CustomWidgets import StyleSheet
 from Functions.Config import AUTHOR, FEEDBACK_URL, HELP_URL, VERSION, YEAR, cfg, isWin11
+from Functions.SignalBus import signalBus
 from PySide6.QtCore import Qt, QUrl
 from PySide6.QtGui import QDesktopServices
 from PySide6.QtWidgets import QFileDialog, QWidget
-
-# from ..common.signal_bus import signalBus
-# from ..common.style_sheet import StyleSheet
 from qfluentwidgets import (
     ComboBoxSettingCard,
     CustomColorSettingCard,
@@ -31,34 +29,42 @@ class SettingInterface(ScrollArea):
     def __init__(self, parent=None):
         super().__init__(parent=parent)
 
-        self.scrollWidget = QWidget()
-        self.expandLayout = ExpandLayout(self.scrollWidget)
+        self.scroll_widget = QWidget()
+        self.expand_layout = ExpandLayout(self.scroll_widget)
 
         # setting label
-        self.settingLabel = LargeTitleLabel(self.tr("Settings"), self)
+        self.setting_label = LargeTitleLabel(self.tr("Settings"), self)
 
         # database folders
-        self.DatabaseInThisPCGroup = SettingCardGroup(
-            self.tr("Database on this PC"), self.scrollWidget
+        self.function_info_group = SettingCardGroup(
+            self.tr("Main function settings"), self.scroll_widget
         )
-        self.downloadFolderCard = PushSettingCard(
+        self.provider_info = ComboBoxSettingCard(
+            cfg.provider,
+            FIF.ROBOT,
+            self.tr("Provider"),
+            self.tr("Set your preferred provider for LLM"),
+            texts=["openai", "Tongyi"],
+            parent=self.function_info_group,
+        )
+        self.datebase_save_path = PushSettingCard(
             self.tr("Choose folder"),
             FIF.CLOUD,
             self.tr("Database directory"),
-            cfg.get(cfg.databaseFolder),
-            self.DatabaseInThisPCGroup,
+            cfg.get(cfg.database_folder),
+            self.function_info_group,
         )
 
         # personalization
-        self.personalGroup = SettingCardGroup(
-            self.tr("Personalization"), self.scrollWidget
+        self.personal_group = SettingCardGroup(
+            self.tr("Personalization"), self.scroll_widget
         )
-        self.micaCard = SwitchSettingCard(
+        self.mica_card = SwitchSettingCard(
             FIF.TRANSPARENT,
             self.tr("Mica effect"),
             self.tr("Apply semi transparent to windows and surfaces"),
-            cfg.micaEnabled,
-            self.personalGroup,
+            cfg.mica_enabled,
+            self.personal_group,
         )
         self.themeCard = OptionsSettingCard(
             cfg.themeMode,
@@ -66,14 +72,14 @@ class SettingInterface(ScrollArea):
             self.tr("Application theme"),
             self.tr("Change the appearance of your application"),
             texts=[self.tr("Light"), self.tr("Dark"), self.tr("Use system setting")],
-            parent=self.personalGroup,
+            parent=self.personal_group,
         )
         self.themeColorCard = CustomColorSettingCard(
             cfg.themeColor,
             FIF.PALETTE,
             self.tr("Theme color"),
             self.tr("Change the theme color of you application"),
-            self.personalGroup,
+            self.personal_group,
         )
         self.zoomCard = OptionsSettingCard(
             cfg.dpiScale,
@@ -88,7 +94,7 @@ class SettingInterface(ScrollArea):
                 "200%",
                 self.tr("Use system setting"),
             ],
-            parent=self.personalGroup,
+            parent=self.personal_group,
         )
         self.languageCard = ComboBoxSettingCard(
             cfg.language,
@@ -96,12 +102,12 @@ class SettingInterface(ScrollArea):
             self.tr("Language"),
             self.tr("Set your preferred language for UI"),
             texts=["简体中文", "繁體中文", "English", self.tr("Use system setting")],
-            parent=self.personalGroup,
+            parent=self.personal_group,
         )
 
         # update software
         self.updateSoftwareGroup = SettingCardGroup(
-            self.tr("Software update"), self.scrollWidget
+            self.tr("Software update"), self.scroll_widget
         )
         self.updateOnStartUpCard = SwitchSettingCard(
             FIF.UPDATE,
@@ -112,7 +118,7 @@ class SettingInterface(ScrollArea):
         )
 
         # application
-        self.aboutGroup = SettingCardGroup(self.tr("About"), self.scrollWidget)
+        self.aboutGroup = SettingCardGroup(self.tr("About"), self.scroll_widget)
         self.helpCard = HyperlinkCard(
             HELP_URL,
             self.tr("Open help page"),
@@ -149,32 +155,34 @@ class SettingInterface(ScrollArea):
         self.resize(1000, 800)
         self.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         self.setViewportMargins(0, 80, 0, 20)
-        self.setWidget(self.scrollWidget)
+        self.setWidget(self.scroll_widget)
         self.setWidgetResizable(True)
         self.setObjectName("settingInterface")
 
         # initialize style sheet
-        self.scrollWidget.setObjectName("scrollWidget")
-        self.settingLabel.setObjectName("settingLabel")
+        self.scroll_widget.setObjectName("scrollWidget")
+        self.setting_label.setObjectName("settingLabel")
         StyleSheet.SETTING_INTERFACE.apply(self)
 
-        self.micaCard.setEnabled(isWin11())
+        self.mica_card.setEnabled(isWin11())
 
         # initialize layout
         self.__initLayout()
         self.__connectSignalToSlot()
 
     def __initLayout(self):
-        self.settingLabel.move(36, 30)
+        self.setting_label.move(36, 30)
 
         # add cards to group
-        self.DatabaseInThisPCGroup.addSettingCard(self.downloadFolderCard)
 
-        self.personalGroup.addSettingCard(self.micaCard)
-        self.personalGroup.addSettingCard(self.themeCard)
-        self.personalGroup.addSettingCard(self.themeColorCard)
-        self.personalGroup.addSettingCard(self.zoomCard)
-        self.personalGroup.addSettingCard(self.languageCard)
+        self.function_info_group.addSettingCard(self.provider_info)
+        self.function_info_group.addSettingCard(self.datebase_save_path)
+
+        self.personal_group.addSettingCard(self.mica_card)
+        self.personal_group.addSettingCard(self.themeCard)
+        self.personal_group.addSettingCard(self.themeColorCard)
+        self.personal_group.addSettingCard(self.zoomCard)
+        self.personal_group.addSettingCard(self.languageCard)
 
         self.updateSoftwareGroup.addSettingCard(self.updateOnStartUpCard)
 
@@ -183,12 +191,12 @@ class SettingInterface(ScrollArea):
         self.aboutGroup.addSettingCard(self.aboutCard)
 
         # add setting card group to layout
-        self.expandLayout.setSpacing(28)
-        self.expandLayout.setContentsMargins(36, 10, 36, 0)
-        self.expandLayout.addWidget(self.DatabaseInThisPCGroup)
-        self.expandLayout.addWidget(self.personalGroup)
-        self.expandLayout.addWidget(self.updateSoftwareGroup)
-        self.expandLayout.addWidget(self.aboutGroup)
+        self.expand_layout.setSpacing(28)
+        self.expand_layout.setContentsMargins(36, 10, 36, 0)
+        self.expand_layout.addWidget(self.function_info_group)
+        self.expand_layout.addWidget(self.personal_group)
+        self.expand_layout.addWidget(self.updateSoftwareGroup)
+        self.expand_layout.addWidget(self.aboutGroup)
 
     def __showRestartTooltip(self):
         """show restart tooltip"""
@@ -199,26 +207,27 @@ class SettingInterface(ScrollArea):
             parent=self,
         )
 
-    def __onDownloadFolderCardClicked(self):
+    def __onDatabaseSetFolderCardClicked(self):
         """download folder card clicked slot"""
         folder = QFileDialog.getExistingDirectory(self, self.tr("Choose folder"), "./")
-        if not folder or cfg.get(cfg.databaseFolder) == folder:
+        if not folder or cfg.get(cfg.database_folder) == folder:
             return
 
-        cfg.set(cfg.databaseFolder, folder)
-        self.downloadFolderCard.setContent(folder)
+        cfg.set(cfg.database_folder, folder)
+        self.datebase_save_path.setContent(folder)
+        # TODO: 拷贝数据库
 
     def __connectSignalToSlot(self):
         """connect signal to slot"""
         cfg.appRestartSig.connect(self.__showRestartTooltip)
 
         # music in the pc
-        self.downloadFolderCard.clicked.connect(self.__onDownloadFolderCardClicked)
+        self.datebase_save_path.clicked.connect(self.__onDatabaseSetFolderCardClicked)
 
         # personalization
         self.themeCard.optionChanged.connect(lambda ci: setTheme(cfg.get(ci)))
         self.themeColorCard.colorChanged.connect(lambda c: setThemeColor(c))
-        # self.micaCard.checkedChanged.connect(signalBus.micaEnableChanged)
+        self.mica_card.checkedChanged.connect(signalBus.mica_enable_change_signal)
 
         # about
         self.feedbackCard.clicked.connect(
