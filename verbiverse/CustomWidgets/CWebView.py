@@ -8,20 +8,12 @@ from Functions.LoadPdfText import PdfReader
 from Functions.SignalBus import signalBus
 from Functions.WebChannelBridge import BridgeClass
 from ModuleLogger import logger
-from pebble import concurrent
 from PySide6.QtCore import QMutex, QPoint, Qt, QThread, QUrl, Signal, Slot
 from PySide6.QtWebChannel import QWebChannel
 from PySide6.QtWebEngineCore import QWebEnginePage
 from PySide6.QtWidgets import QApplication, QMessageBox
 from qfluentwidgets import isDarkTheme, qconfig
 from qframelesswindow.webengine import FramelessWebEngineView
-
-
-@concurrent.process()
-def loadPdfFile(path: str) -> PdfReader:
-    logger.debug(f"start load pdf by new process: {path}")
-    ret = PdfReader(path)
-    return ret
 
 
 class LoadPdfText(QThread):
@@ -35,13 +27,15 @@ class LoadPdfText(QThread):
         self.stop = False
 
     def stopLoad(self):
-        self.future.cancel()
+        logger.info(f"stop load pdf: [{self.pdf_loc_path}]")
+        self.loader.cancel()
 
     def run(self):
         logger.info(f"ready to load pdf by new process: [{self.pdf_loc_path}]")
-        self.future = loadPdfFile(self.pdf_loc_path)
         try:
-            self.load_pdf_finish.emit(self.future.result())
+            self.loader = PdfReader(self.pdf_loc_path)
+            self.loader.load()
+            self.load_pdf_finish.emit(self.loader)
         except CancelledError:
             logger.info(f"already cancel current load: [{self.pdf_loc_path}]")
         except Exception as error:
