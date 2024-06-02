@@ -1,26 +1,84 @@
+from typing import Union
+
 from CustomWidgets import StyleSheet
 from Functions.Config import AUTHOR, FEEDBACK_URL, HELP_URL, VERSION, YEAR, cfg, isWin11
 from Functions.SignalBus import signalBus
-from PySide6.QtCore import Qt, QUrl
-from PySide6.QtGui import QDesktopServices
+from PySide6.QtCore import Qt, QUrl, Signal
+from PySide6.QtGui import QDesktopServices, QIcon
 from PySide6.QtWidgets import QFileDialog, QWidget
 from qfluentwidgets import (
     ComboBoxSettingCard,
     CustomColorSettingCard,
     ExpandLayout,
+    FluentIconBase,
     HyperlinkCard,
     InfoBar,
     LargeTitleLabel,
+    LineEdit,
+    OptionsConfigItem,
     OptionsSettingCard,
+    PasswordLineEdit,
     PrimaryPushSettingCard,
     PushSettingCard,
     ScrollArea,
+    SettingCard,
     SettingCardGroup,
     SwitchSettingCard,
+    qconfig,
     setTheme,
     setThemeColor,
 )
 from qfluentwidgets import FluentIcon as FIF
+
+
+class PasswordInputSettingCard(SettingCard):
+    editing_finished = Signal()
+
+    def __init__(
+        self,
+        config_iterm: OptionsConfigItem,
+        icon: Union[str, QIcon, FluentIconBase],
+        title,
+        content=None,
+        parent=None,
+    ):
+        super().__init__(icon, title, content, parent)
+        self.config_iterm = config_iterm
+        self.line_edit = PasswordLineEdit(self)
+        self.line_edit.setFixedWidth(200)
+        self.line_edit.setText(qconfig.get(self.config_iterm))
+        self.hBoxLayout.addWidget(self.line_edit, 0, Qt.AlignRight)
+        self.hBoxLayout.addSpacing(16)
+        self.line_edit.editingFinished.connect(self.edited)
+
+    def edited(self):
+        qconfig.set(self.config_iterm, self.line_edit.text())
+        self.editing_finished.emit()
+
+
+class InputSettingCard(SettingCard):
+    editing_finished = Signal()
+
+    def __init__(
+        self,
+        config_iterm: OptionsConfigItem,
+        icon: Union[str, QIcon, FluentIconBase],
+        title,
+        content=None,
+        parent=None,
+    ):
+        super().__init__(icon, title, content, parent)
+        self.config_iterm = config_iterm
+        self.line_edit = LineEdit(self)
+        self.line_edit.setFixedWidth(200)
+        self.line_edit.setText(qconfig.get(self.config_iterm))
+        self.hBoxLayout.addWidget(self.line_edit, 0, Qt.AlignRight)
+        self.hBoxLayout.addSpacing(16)
+        self.line_edit.editingFinished.connect(self.edited)
+
+    def edited(self):
+        qconfig.set(self.config_iterm, self.line_edit.text())
+        self.editing_finished.emit()
 
 
 class SettingInterface(ScrollArea):
@@ -43,8 +101,31 @@ class SettingInterface(ScrollArea):
             cfg.provider,
             FIF.ROBOT,
             self.tr("Provider"),
-            self.tr("Set your preferred provider for LLM"),
-            texts=["openai", "Tongyi"],
+            self.tr("Set your preferred LLM provider"),
+            texts=["OpenAI", self.tr("Tongyi Qwen")],
+            parent=self.function_info_group,
+        )
+
+        self.model_name = InputSettingCard(
+            cfg.model_name,
+            FIF.HEART,
+            self.tr("Model Name"),
+            self.tr("Set your preferred model name"),
+            parent=self.function_info_group,
+        )
+        self.user_key = PasswordInputSettingCard(
+            cfg.user_key,
+            FIF.FINGERPRINT,
+            self.tr("User Key"),
+            self.tr("Set your private key"),
+            parent=self.function_info_group,
+        )
+
+        self.provide_url = InputSettingCard(
+            cfg.provider_url,
+            FIF.CERTIFICATE,
+            self.tr("Provider Url"),
+            self.tr("Set provider url for LLM, input empty will reset to default"),
             parent=self.function_info_group,
         )
         self.datebase_save_path = PushSettingCard(
@@ -174,8 +255,10 @@ class SettingInterface(ScrollArea):
         self.setting_label.move(36, 30)
 
         # add cards to group
-
         self.function_info_group.addSettingCard(self.provider_info)
+        self.function_info_group.addSettingCard(self.model_name)
+        self.function_info_group.addSettingCard(self.user_key)
+        self.function_info_group.addSettingCard(self.provide_url)
         self.function_info_group.addSettingCard(self.datebase_save_path)
 
         self.personal_group.addSettingCard(self.mica_card)
@@ -221,7 +304,18 @@ class SettingInterface(ScrollArea):
         """connect signal to slot"""
         cfg.appRestartSig.connect(self.__showRestartTooltip)
 
-        # music in the pc
+        self.provider_info.comboBox.currentIndexChanged.connect(
+            lambda _: signalBus.llm_config_change_signal.emit()
+        )
+        self.model_name.editing_finished.connect(
+            lambda: signalBus.llm_config_change_signal.emit()
+        )
+        self.user_key.editing_finished.connect(
+            lambda: signalBus.llm_config_change_signal.emit()
+        )
+        self.provide_url.editing_finished.connect(
+            lambda: signalBus.llm_config_change_signal.emit()
+        )
         self.datebase_save_path.clicked.connect(self.__onDatabaseSetFolderCardClicked)
 
         # personalization

@@ -1,3 +1,4 @@
+import re
 import sys
 from enum import Enum
 
@@ -7,7 +8,7 @@ from qfluentwidgets import (
     BoolValidator,
     ConfigItem,
     ConfigSerializer,
-    FolderListValidator,
+    ConfigValidator,
     FolderValidator,
     OptionsConfigItem,
     OptionsValidator,
@@ -38,6 +39,24 @@ class LanguageSerializer(ConfigSerializer):
         return Language(QLocale(value)) if value != "Auto" else Language.AUTO
 
 
+class ProviderUrlValidator(ConfigValidator):
+    """Config validator"""
+
+    url_pattern = r"^((http|https)://)([a-zA-Z0-9\-\.]+)(:[0-9]+)?(/[\w \.-]*)?$"
+
+    def validate(self, url: str):
+        """Verify whether the value is legal"""
+        if re.match(self.url_pattern, url):
+            return True
+        return False
+
+    def correct(self, url: str):
+        """correct illegal value"""
+        if url == "Default" or url == "":
+            return "Default"
+        return url
+
+
 def isWin11():
     return sys.platform == "win32" and sys.getwindowsversion().build >= 22000
 
@@ -45,12 +64,14 @@ def isWin11():
 class Config(QConfig):
     """Config of application"""
 
-    # folders
-    database_folder = ConfigItem("LLM", "Database", "app/database", FolderValidator())
-
+    # main function
     provider = OptionsConfigItem(
         "LLM", "Provider", "openai", OptionsValidator(["openai", "tongyi"])
     )
+    model_name = ConfigItem("LLM", "ModelName", "", ConfigValidator())
+    user_key = ConfigItem("LLM", "UserKey", "", ConfigValidator())
+    provider_url = ConfigItem("LLM", "URL", "Default", ProviderUrlValidator())
+    database_folder = ConfigItem("LLM", "Database", "app/database", FolderValidator())
 
     # main window
     mica_enabled = ConfigItem("MainWindow", "MicaEnabled", isWin11(), BoolValidator())
