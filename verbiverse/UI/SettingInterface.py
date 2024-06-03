@@ -109,7 +109,7 @@ class SettingInterface(ScrollArea):
         self.model_name = InputSettingCard(
             cfg.model_name,
             FIF.HEART,
-            self.tr("Model Name"),
+            self.tr("Model name"),
             self.tr("Set your preferred model name"),
             parent=self.function_info_group,
         )
@@ -124,7 +124,7 @@ class SettingInterface(ScrollArea):
         self.provide_url = InputSettingCard(
             cfg.provider_url,
             FIF.CERTIFICATE,
-            self.tr("Provider Url"),
+            self.tr("Provider url"),
             self.tr("Set provider url for LLM, input empty will reset to default"),
             parent=self.function_info_group,
         )
