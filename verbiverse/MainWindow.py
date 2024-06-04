@@ -163,4 +163,5 @@ def main():
     window = MainWindow()
     window.show()
 
+    logger.info("start finish...")
     app.exec()
