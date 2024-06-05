@@ -1,25 +1,29 @@
 from Functions.Config import cfg
 from langchain.memory import ChatMessageHistory
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
-from langchain_core.runnables import RunnablePassthrough  # 新增
+from langchain_core.runnables import RunnablePassthrough
 from langchain_core.runnables.history import RunnableWithMessageHistory
 from LLMServerInfo import getChatPrompt
 from ModuleLogger import logger
 from OpenAI import getOpenAIChatModel
 from qfluentwidgets import qconfig
+from TongYiQWen import getTongYiChatModel
 
 
 class ChatChain:
-    def __init__(self, callback=None):
+    def __init__(self):
         self.chat_prompt = getChatPrompt()
         self.createChatChain()
 
     def createChatChain(self):
-        logger.info("ChatGPT model: %s", qconfig.get(cfg.provider))
-        if qconfig.get(cfg.provider) == "openai":
+        provider = qconfig.get(cfg.provider)
+        logger.info("ChatGPT model: %s", provider)
+        if provider == "openai":
             self.chat = getOpenAIChatModel()
+        elif provider == "tongyi":
+            self.chat = getTongYiChatModel()
         else:
-            raise Exception("Only OpenAI is supported for now")
+            raise Exception(f"Not supported {provider} for now")
         self.prompt = ChatPromptTemplate.from_messages(
             [
                 (

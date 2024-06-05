@@ -9,9 +9,8 @@ def getOpenAIChatModel() -> ChatOpenAI:
     api_url = qconfig.get(cfg.provider_url)
     model = qconfig.get(cfg.model_name)
 
-    logger.info("ChatGPT model: %s", model)
-    logger.info("ChatGPT API key: %s", api_key)
-    logger.info("ChatGPT API url: %s", api_url)
+    logger.info("OpenAI Chat model: %s", model)
+    logger.info("OpenAI Chat API url: %s", api_url)
 
     return ChatOpenAI(
         model_name=model,
@@ -25,6 +24,9 @@ def getOpenAILLMModel() -> OpenAI:
     api_key = qconfig.get(cfg.user_key)
     api_url = qconfig.get(cfg.provider_url)
     model = qconfig.get(cfg.model_name)
+
+    logger.info("OpenAI LLM model: %s", model)
+    logger.info("OpenAI LLM API url: %s", api_url)
 
     return OpenAI(
         model_name=model,

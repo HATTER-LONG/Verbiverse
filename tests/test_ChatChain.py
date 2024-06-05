@@ -1,5 +1,5 @@
+import verbiverse.resources.resources_rc  # noqa: F401
 from verbiverse.LLM.ChatChain import ChatChain
-import verbiverse.resources.resources_rc
 
 chat = ChatChain()
 while True:

@@ -56,7 +56,7 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>568</width>
+          <width>553</width>
           <height>332</height>
          </rect>
         </property>
@@ -76,7 +76,7 @@
          <enum>Qt::LeftToRight</enum>
         </property>
         <property name="autoFillBackground">
-         <bool>false</bool>
+         <bool>true</bool>
         </property>
         <layout class="QVBoxLayout" name="messages_list">
          <property name="spacing">
