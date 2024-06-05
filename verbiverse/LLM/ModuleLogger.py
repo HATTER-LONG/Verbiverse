@@ -1,3 +1,3 @@
-from Log import get_logger
+from Functions.Log import get_logger
 
 logger = get_logger("LLM")

@@ -11,7 +11,12 @@ def getOpenAIChatModel() -> ChatOpenAI:
 
     logger.info("OpenAI Chat model: %s", model)
     logger.info("OpenAI Chat API url: %s", api_url)
+    if api_key == "":
+        raise Exception(
+            "No OpenAI API key found, please set your key in the config file."
+        )
 
+    logger.info("OpenAI API key: %s", api_key)
     return ChatOpenAI(
         model_name=model,
         openai_api_key=api_key,

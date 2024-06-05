@@ -15,15 +15,21 @@ class ChatChain:
         self.chat_prompt = getChatPrompt()
         self.createChatChain()
 
-    def createChatChain(self):
+    def createChatChain(self) -> None:
+        self.chain_with_trimming = None
         provider = qconfig.get(cfg.provider)
         logger.info("ChatGPT model: %s", provider)
-        if provider == "openai":
-            self.chat = getOpenAIChatModel()
-        elif provider == "tongyi":
-            self.chat = getTongYiChatModel()
-        else:
-            raise Exception(f"Not supported {provider} for now")
+        try:
+            if provider == "openai":
+                self.chat = getOpenAIChatModel()
+            elif provider == "tongyi":
+                self.chat = getTongYiChatModel()
+            else:
+                raise Exception(f"Not supported {provider} for now")
+        except Exception as e:
+            logger.error("get chat model error: %s", e)
+            return
+
         self.prompt = ChatPromptTemplate.from_messages(
             [
                 (
@@ -63,6 +69,9 @@ class ChatChain:
         return True
 
     def invoke(self, message):
+        if self.chain_with_trimming is None:
+            logger.warn("chat chain is not ready")
+            return
         msg = {"input": message}
         return self.chain_with_trimming.invoke(
             msg,
@@ -70,22 +79,11 @@ class ChatChain:
         ).content
 
     def stream(self, message):
+        if self.chain_with_trimming is None:
+            logger.warn("chat chain is not ready")
+            return
         msg = {"input": message}
         return self.chain_with_trimming.stream(
-            msg,
-            {"configurable": {"session_id": "unused"}},
-        )
-
-    def astream(self, message):
-        msg = {"input": message}
-        return self.chain_with_trimming.astream(
-            msg,
-            {"configurable": {"session_id": "unused"}},
-        )
-
-    async def ainvoke(self, message):
-        msg = {"input": message}
-        return await self.chain_with_trimming.ainvoke(
             msg,
             {"configurable": {"session_id": "unused"}},
         )
