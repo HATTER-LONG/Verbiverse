@@ -124,7 +124,6 @@ def convert_all_ts_to_one(ts_file_path):
     #             print(f"Error converting {py_file}: {e.output}")
 
 
-# 优化 prompt
 def optimize_prompt(promptPath, task):
     import datetime
 
@@ -135,7 +134,7 @@ def optimize_prompt(promptPath, task):
     res = ""
     with open(promptPath, "r+", encoding="utf-8") as f:
         content = f.read()
-        res = promptMaker(content, task)
+        res = promptMaker(content, task).strip()
         logger.info(f"res: \n\n{res}\n\n")
         if input("overwrite the prompt? y/n:").lower() == "y":
             time = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
@@ -143,8 +142,10 @@ def optimize_prompt(promptPath, task):
                 bak.write(content)
                 logger.info(f"already backup to {promptPath}_{time}.bak")
             f.truncate(0)
+            f.seek(0)
             f.write(res)
-            logger.info("prompt optimization done")
+        f.flush()
+    logger.info("prompt optimization done")
 
 
 def main():

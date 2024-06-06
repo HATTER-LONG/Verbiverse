@@ -1,40 +1,3 @@
-from prompt_ctrl import (
-    get_prompt_template,
-)
-from qfluentwidgets import qconfig
-
-from verbiverse.Functions.Config import cfg
-from verbiverse.LLM.OpenAI import getOpenAILLMModel
-from verbiverse.LLM.TongYiQWen import getTongYiLLMModel
-
-
-def promptMaker(prompt: str, task: str) -> str:
-    # return "  #### test aaaa"
-    provider = qconfig.get(cfg.provider)
-    chat = None
-    try:
-        if provider == "openai":
-            chat = getOpenAILLMModel()
-        elif provider == "tongyi":
-            chat = getTongYiLLMModel()
-        else:
-            raise Exception(f"Not supported {provider} for now")
-    except Exception as e:
-        print("get chat model error: %s", e)
-    prompt_template = get_prompt_template("hardkothari/prompt-maker")
-    chain = prompt_template | chat
-
-    print(prompt_template.input_variables)
-
-    msg = {
-        "lazy_prompt": prompt,
-        "task": task,
-    }
-    return chain.invoke(msg)
-
-
-if __name__ == "__main__":
-    prompt = """
 ***************** PROMPT **********************
 
 Act like a English Language Professional who has the following qualities and is ready everytime to teach me the right things :
@@ -64,6 +27,3 @@ Qualities of an English Language Professional:
 Overall, an effective English Language Professional should possess strong grammar knowledge, vocabulary expertise, teaching skills, cultural understanding, and the ability to create a supportive learning environment that fosters language development.
 
 ***************** PROMPT **********************
-"""
-
-    promptMaker(prompt, "help me to improve english language skill by chat")
