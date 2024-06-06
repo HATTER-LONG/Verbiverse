@@ -135,8 +135,7 @@ def optimize_prompt(promptPath, task):
     res = ""
     with open(promptPath, "r+", encoding="utf-8") as f:
         content = f.read()
-        # res = promptMaker(content, task)
-        res = "test"
+        res = promptMaker(content, task)
         logger.info(f"res: \n\n{res}\n\n")
         if input("overwrite the prompt? y/n:").lower() == "y":
             time = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
