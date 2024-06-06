@@ -2,7 +2,7 @@
 	<qresource>
 	</qresource>
 	<qresource>
-		<file>prompt/prompt.txt</file>
+		<file>prompt/chat_prompt.txt</file>
 		<file>prompt/check_CN.txt</file>
 		<file>prompt/translate_CN.txt</file>
 		<file>prompt/translate_EN.txt</file>

@@ -3,6 +3,10 @@ import importlib
 import os
 import subprocess
 
+from verbiverse.Functions.Log import get_logger
+
+logger = get_logger("project")
+
 
 def convert_ui_files(ui_file_path, py_file_path):
     """Converts a UI file (.ui) to a Python file (.py) using pyside6-uic."""
@@ -120,6 +124,30 @@ def convert_all_ts_to_one(ts_file_path):
     #             print(f"Error converting {py_file}: {e.output}")
 
 
+# 优化 prompt
+def optimize_prompt(promptPath, task):
+    import datetime
+
+    from tools.prompt_maker import promptMaker
+
+    logger.info(f"prompt path: {promptPath}, task: {task}")
+
+    res = ""
+    with open(promptPath, "r+", encoding="utf-8") as f:
+        content = f.read()
+        # res = promptMaker(content, task)
+        res = "test"
+        logger.info(f"res: \n\n{res}\n\n")
+        if input("overwrite the prompt? y/n:").lower() == "y":
+            time = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
+            with open(f"{promptPath}_{time}.bak", "w", encoding="utf-8") as bak:
+                bak.write(content)
+                logger.info(f"already backup to {promptPath}_{time}.bak")
+            f.truncate(0)
+            f.write(res)
+            logger.info("prompt optimization done")
+
+
 def main():
     """Parses command-line arguments and executes corresponding actions."""
     parser = argparse.ArgumentParser(
@@ -127,7 +155,7 @@ def main():
     )
     parser.add_argument(
         "command",
-        choices=["run", "build", "br", "test", "demo", "pyts"],
+        choices=["run", "build", "br", "test", "demo", "pyts", "prompt"],
         help="Command to execute",
     )
     parser.add_argument("name", nargs="?", default=None, help="Name for demo")
@@ -146,10 +174,10 @@ def main():
     elif args.command == "demo":
         tests_directory = "./tests/UI/"
         if check_directory_existence(tests_directory, args.name):
-            print(f"Demo with name: {args.name}")
+            logger.info(f"Demo with name: {args.name}")
             demo(args.name)
         else:
-            print("Demo command requires a name of tests/UI/[name]")
+            logger.error("Demo command requires a name of tests/UI/[name]")
     elif args.command == "pyts":
         # cn_ts_file_path = "./resources/i18n/verbiverse.zh_CN.ts"
         # hk_ts_file_path = "./resources/i18n/verbiverse.zh_HK.ts"
@@ -157,7 +185,24 @@ def main():
         resource_path = "./resources/i18n/"
         update_py_to_ts(py_file_path, "zh_CN", resource_path)
         update_py_to_ts(py_file_path, "zh_HK", resource_path)
+    elif args.command == "prompt":
+        if not args.name:
+            logger.error("Please specify the name of the prompt.")
+        else:
+            logger.info(f"optimize prompt: {args.name}")
 
+            promptPrefix = "./verbiverse/resources/prompt/"
+            promptList = [
+                {
+                    "name": "chat_prompt",
+                    "task": "help me to improve english language skill by chat",
+                }
+            ]
+            for prompt in promptList:
+                if prompt["name"] == args.name:
+                    optimize_prompt(
+                        promptPrefix + prompt["name"] + ".txt", prompt["task"]
+                    )
     else:
         print("Invalid command. Use 'run', 'build', 'test', 'br', or 'demo'.")
 

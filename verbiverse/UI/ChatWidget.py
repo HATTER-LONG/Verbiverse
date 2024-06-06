@@ -2,6 +2,7 @@ from ChatWidget_ui import Ui_ChatWidget
 from LLM.ChatChain import ChatChain
 from LLM.ChatWorkerThread import ChatWorkThread
 from MessageBox import CMessageBox
+from ModuleLogger import logger
 from PySide6.QtCore import Qt, Slot
 from PySide6.QtWidgets import QWidget
 

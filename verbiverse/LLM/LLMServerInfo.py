@@ -32,7 +32,7 @@ def getChatPrompt() -> str:
 
     :return: The chat prompt as a string.
     """
-    return __getPromptResource(":/prompt/prompt.txt")
+    return __getPromptResource(":/prompt/chat_prompt.txt")
 
 
 # Retrieves the check prompt text from a resource

@@ -2,3 +2,4 @@
 
 alias run="python main.py"
 alias build="python build.py build"
+alias prompt="python build.py prompt"
