@@ -1,4 +1,5 @@
 from Functions.Config import cfg
+from Functions.SignalBus import signalBus
 from langchain.memory import ChatMessageHistory
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_core.runnables import RunnablePassthrough
@@ -15,10 +16,13 @@ class ChatChain:
         self.chat_prompt = getChatPrompt()
         self.createChatChain()
 
+        signalBus.llm_config_change_signal.connect(self.createChatChain)
+
     def createChatChain(self) -> None:
         self.chain_with_trimming = None
         provider = qconfig.get(cfg.provider)
-        logger.info("ChatGPT model: %s", provider)
+        logger.info("provider is: %s", provider)
+        logger.info("chat model is: %s", qconfig.get(cfg.model_name))
         try:
             if provider == "openai":
                 self.chat = getOpenAIChatModel()

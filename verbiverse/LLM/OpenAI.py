@@ -16,7 +16,6 @@ def getOpenAIChatModel() -> ChatOpenAI:
             "No OpenAI API key found, please set your key in the config file."
         )
 
-    logger.info("OpenAI API key: %s", api_key)
     return ChatOpenAI(
         model_name=model,
         openai_api_key=api_key,
