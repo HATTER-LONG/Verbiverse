@@ -216,7 +216,7 @@ class CWebView(FramelessWebEngineView):
         self.worker = ExplainWorkerThread(
             selected_text=selected_text,
             all_text=self.pdf_reader.getTextByPageNum(self.pdf_current_page - 1),
-            type=type,
+            language_type=type,
         )
         self.worker.messageCallBackSignal.connect(self.onExplainResultUpdate)
         self.worker.start()
