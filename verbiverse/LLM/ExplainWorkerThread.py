@@ -16,15 +16,15 @@ class ExplainWorkerThread(QThread):
         self.chain = None
         self.stream = stream
         self.msg = {"word": selected_text, "data": all_text}
-        print("msg is: ", self.msg)
+        logger.info(f"msg is:\n\n {self.msg}\n\n")
         self.createExplainChain()
         self.quit = False
 
     def createExplainChain(self) -> None:
         self.chain_with_trimming = None
         provider = qconfig.get(cfg.provider)
-        logger.info("explain provider is: %s", provider)
-        logger.info("explain model is: %s", qconfig.get(cfg.model_name))
+        logger.debug("explain provider is: %s", provider)
+        logger.debug("explain model is: %s", qconfig.get(cfg.model_name))
         try:
             self.chat = getChatModelByCfg()
         except Exception as e:

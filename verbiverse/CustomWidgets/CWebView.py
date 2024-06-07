@@ -13,6 +13,7 @@ from PySide6.QtWebEngineCore import QWebEnginePage
 from PySide6.QtWidgets import QApplication, QMessageBox
 from qfluentwidgets import Flyout, isDarkTheme, qconfig
 from qframelesswindow.webengine import FramelessWebEngineView
+from LLM.ExplainWorkerThread import ExplainWorkerThread
 
 
 class LoadPdfText(QThread):
@@ -203,11 +204,32 @@ class CWebView(FramelessWebEngineView):
         menu.explain_signal.connect(self.explainSelectText)
         menu.exec(self.mapToGlobal(event))
 
-    @Slot(Flyout)
-    def explainSelectText(self, explain_flyout: Flyout):
+    @Slot(Flyout, str)
+    def explainSelectText(self, explain_flyout: Flyout, selected_text: str):
         self.explain_flyout = explain_flyout
         self.explain_flyout.closed.connect(self.explainClose)
 
+        # TODO: 优化all text 为单词关联语句
+        self.worker = ExplainWorkerThread(
+            selected_text=selected_text,
+            all_text=self.pdf_reader.getTextByPageNum(self.pdf_current_page - 1),
+        )
+        self.worker.messageCallBackSignal.connect(self.onExplainResultUpdate)
+        self.worker.start()
+
+    @Slot(str)
+    def onExplainResultUpdate(self, explain: str):
+        if self.explain_flyout is None:
+            return
+        self.explain_flyout.view.setContent(
+            self.explain_flyout.view.getContent() + explain
+        )
+
     def explainClose(self):
-        logger.info("close webview explain")
+        logger.debug("close webview explain thread .... ")
         self.explain_flyout = None
+        if self.worker.isRunning():
+            self.worker.stop()
+        self.worker.wait()
+        self.worker = None
+        logger.debug("close webview explain thread done !!! ")

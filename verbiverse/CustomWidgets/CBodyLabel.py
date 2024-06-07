@@ -37,17 +37,9 @@ class CBodyLabel(BodyLabel):
             self.explain_flyout.view.getContent() + explain
         )
 
-    @Slot()
-    def workerStart(self):
-        logger.info("bodylabel explain start")
-
-    @Slot()
-    def workerStop(self):
-        logger.info("bodylabel explain stop")
-
     def explainClose(self):
-        logger.info("close bodylabel explain")
+        logger.debug("close bodylabel explain thread ... ")
         self.explain_flyout = None
         self.worker.stop()
         self.worker.wait()
-        logger.info("close bodylabel explain done")
+        logger.debug("close bodylabel explain thread done !!! ")

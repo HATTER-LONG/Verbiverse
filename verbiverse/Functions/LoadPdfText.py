@@ -23,5 +23,5 @@ class PdfReader:
 
     def getTextByPageNum(self, page_num: int) -> str:
         if page_num >= 0 and page_num < len(self.pages):
-            return self.pages[page_num]
+            return self.pages[page_num].page_content
         return ""
