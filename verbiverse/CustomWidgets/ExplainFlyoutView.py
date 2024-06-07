@@ -109,7 +109,8 @@ class ExplainFlyoutView(FlyoutViewBase):
         self.widgetLayout.addWidget(widget, stretch, align)
 
     def _adjustText(self):
-        w = min(900, QApplication.screenAt(QCursor.pos()).geometry().width() - 200)
+        # TODO: adjust by multi screen
+        w = min(700, QApplication.screenAt(QCursor.pos()).geometry().width() - 200)
 
         # adjust title
         chars = max(min(w / 10, 120), 30)

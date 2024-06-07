@@ -14,12 +14,11 @@ from qfluentwidgets import (
 class CContexMenu(RoundMenu):
     """Label context menu"""
 
-    explain_signal = Signal(Flyout)
+    explain_signal = Signal(Flyout, str)
 
     def __init__(self, parent):
         super().__init__("", parent)
-        print("select context")
-        self.selectedText = parent.selectedText()
+        self.selected_text = parent.selectedText()
         self.explain = QAction(
             FIF.CHAT.icon(),
             self.tr("Explain"),
@@ -39,23 +38,19 @@ class CContexMenu(RoundMenu):
         )
 
     def _onCopy(self):
-        QApplication.clipboard().setText(self.selectedText)
+        QApplication.clipboard().setText(self.selected_text)
 
     def _onSelectAll(self):
         self.label().setSelection(0, len(self.label().text()))
 
     def _onExplain(self):
         self.flyout = Flyout.make(
-            ExplainFlyoutView("test"),
+            ExplainFlyoutView(self.selected_text),
             self.pos(),
             self,
             aniType=FlyoutAnimationType.NONE,
         )
-        self.flyout.closed.connect(self._explainFlyoutClosed)
-        self.explain_signal.emit(self.flyout)
-
-    def _explainFlyoutClosed(self):
-        print("already closed")
+        self.explain_signal.emit(self.flyout, self.selected_text)
 
     def label(self) -> QLabel:
         return self.parent()
