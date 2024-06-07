@@ -1,5 +1,5 @@
-from CustomWidgets.CContexMenu import ExplainLanguage
 from Functions.Config import cfg
+from Functions.LanguageType import ExplainLanguage
 from langchain_core.prompts import (
     PromptTemplate,
 )
@@ -24,7 +24,7 @@ class ExplainWorkerThread(QThread):
         self.stream = stream
         self.type = language_type
         self.msg = {"word": selected_text, "data": all_text}
-        logger.info(f"msg is:\n\n {self.msg}\n\n")
+        logger.info(f"explain request msg is:\n {self.msg}\n")
         self.createExplainChain()
         self.quit = False
 

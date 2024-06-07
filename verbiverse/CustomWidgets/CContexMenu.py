@@ -1,7 +1,5 @@
-from enum import Enum
-
 from ExplainFlyoutView import ExplainFlyoutView
-from ModuleLogger import logger
+from Functions.LanguageType import ExplainLanguage
 from PySide6.QtCore import Signal, Slot
 from PySide6.QtGui import QAction
 from PySide6.QtWidgets import QApplication, QLabel
@@ -12,19 +10,6 @@ from qfluentwidgets import (
     MenuAnimationType,
     RoundMenu,
 )
-
-
-class ExplainLanguage(Enum):
-    TARGET_LANGUAGE = 1
-    MOTHER_TONGUE = 2
-
-    def __eq__(self, other):
-        if type(self).__qualname__ != type(other).__qualname__:
-            return NotImplemented
-        return self.name == other.name and self.value == other.value
-
-    def __hash__(self):
-        return hash((type(self).__qualname__, self.name))
 
 
 class CContexMenu(RoundMenu):
@@ -77,11 +62,16 @@ class CContexMenu(RoundMenu):
         self._onExplain(ExplainLanguage.TARGET_LANGUAGE)
 
     def _onExplain(self, type: ExplainLanguage):
+        # screen = QApplication.primaryScreen()
+        # screen_geometry = screen.geometry()
+        # window = self.mapToGlobal(self.pos())
+        pos = self.pos()
+        pos.setX(pos.x() - 200)
         self.flyout = Flyout.make(
             ExplainFlyoutView(self.selected_text),
-            self.pos(),
+            pos,
             self,
-            aniType=FlyoutAnimationType.NONE,
+            aniType=FlyoutAnimationType.DROP_DOWN,
         )
         self.explain_signal.emit(self.flyout, self.selected_text, type)
 

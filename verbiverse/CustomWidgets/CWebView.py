@@ -2,7 +2,8 @@ import os
 import urllib.parse
 from concurrent.futures import CancelledError
 
-from CContexMenu import CContexMenu, ExplainLanguage
+from CContexMenu import CContexMenu
+from Functions.LanguageType import ExplainLanguage
 from Functions.LoadPdfText import PdfReader
 from Functions.SignalBus import signalBus
 from Functions.WebChannelBridge import BridgeClass

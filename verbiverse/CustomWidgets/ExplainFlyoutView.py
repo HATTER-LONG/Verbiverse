@@ -32,7 +32,7 @@ class IconWidget(QWidget):
 class ExplainFlyoutView(FlyoutViewBase):
     def __init__(self, title: str, parent=None):
         super().__init__(parent)
-
+        self.setFixedWidth(450)
         self.icon = FIF.CHAT.icon()
 
         self.title = title
@@ -44,6 +44,7 @@ class ExplainFlyoutView(FlyoutViewBase):
 
         self.titleLabel = QLabel(title, self)
         self.contentLabel = QLabel(self.content, self)
+        # self.contentLabel.setWordWrap(True)
         self.iconWidget = IconWidget(self.icon, self)
         self.pin_button = TransparentToolButton(FluentIcon.PIN, self)
         self.pin = False
@@ -91,9 +92,9 @@ class ExplainFlyoutView(FlyoutViewBase):
         self.viewLayout.addWidget(self.pin_button, 0, Qt.AlignRight | Qt.AlignTop)
 
         # adjust content margins
-        margins = QMargins(6, 5, 6, 5)
+        margins = QMargins(6, 5, 0, 5)
         margins.setLeft(20 if not self.icon else 5)
-        margins.setRight(20)
+        # margins.setRight(20)
         self.viewLayout.setContentsMargins(margins)
 
     def pinWindow(self):
@@ -109,8 +110,7 @@ class ExplainFlyoutView(FlyoutViewBase):
         self.widgetLayout.addWidget(widget, stretch, align)
 
     def _adjustText(self):
-        # TODO: adjust by multi screen
-        w = min(700, QApplication.screenAt(QCursor.pos()).geometry().width() - 200)
+        w = self.width()
 
         # adjust title
         chars = max(min(w / 10, 120), 30)

@@ -1,4 +1,5 @@
-from CContexMenu import CContexMenu, ExplainLanguage
+from CContexMenu import CContexMenu
+from Functions.LanguageType import ExplainLanguage
 from LLM.ExplainWorkerThread import ExplainWorkerThread
 from ModuleLogger import logger
 from PySide6.QtCore import QPoint, Qt, Slot
