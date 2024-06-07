@@ -1,4 +1,9 @@
+from Functions.Config import cfg
+from ModuleLogger import logger
+from OpenAI import getOpenAIChatModel
 from PySide6.QtCore import QFile, QIODevice
+from qfluentwidgets import qconfig
+from TongYiQWen import getTongYiChatModel
 
 
 # Helper function to load a resource from the specified path with error handling
@@ -63,3 +68,19 @@ def getTranslateByCNPrompt() -> str:
     :return: The translation prompt for Chinese as a string.
     """
     return __getPromptResource(":/prompt/translate_CN.txt")
+
+
+def getExplainByENPrompt() -> str:
+    return __getPromptResource(":/prompt/explain_EN.txt")
+
+
+def getChatModelByCfg():
+    chat = None
+    provider = qconfig.get(cfg.provider)
+    if provider == "openai":
+        chat = getOpenAIChatModel()
+    elif provider == "tongyi":
+        chat = getTongYiChatModel()
+    else:
+        raise Exception(f"Not supported {provider} for now")
+    return chat

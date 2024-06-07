@@ -1,20 +1,31 @@
-from PySide6.QtGui import (
-    QAction,
-)
-from PySide6.QtWidgets import (
-    QApplication,
-    QLabel,
-)
+from ExplainFlyoutView import ExplainFlyoutView
+from PySide6.QtCore import Signal
+from PySide6.QtGui import QAction
+from PySide6.QtWidgets import QApplication, QLabel
 from qfluentwidgets import FluentIcon as FIF
-from qfluentwidgets import MenuAnimationType, RoundMenu
+from qfluentwidgets import (
+    Flyout,
+    FlyoutAnimationType,
+    MenuAnimationType,
+    RoundMenu,
+)
 
 
 class CContexMenu(RoundMenu):
     """Label context menu"""
 
-    def __init__(self, parent: QLabel):
+    explain_signal = Signal(Flyout)
+
+    def __init__(self, parent):
         super().__init__("", parent)
+        print("select context")
         self.selectedText = parent.selectedText()
+        self.explain = QAction(
+            FIF.CHAT.icon(),
+            self.tr("Explain"),
+            self,
+            triggered=self._onExplain,
+        )
 
         self.copyAct = QAction(
             FIF.COPY.icon(),
@@ -33,12 +44,25 @@ class CContexMenu(RoundMenu):
     def _onSelectAll(self):
         self.label().setSelection(0, len(self.label().text()))
 
+    def _onExplain(self):
+        self.flyout = Flyout.make(
+            ExplainFlyoutView("test"),
+            self.pos(),
+            self,
+            aniType=FlyoutAnimationType.NONE,
+        )
+        self.flyout.closed.connect(self._explainFlyoutClosed)
+        self.explain_signal.emit(self.flyout)
+
+    def _explainFlyoutClosed(self):
+        print("already closed")
+
     def label(self) -> QLabel:
         return self.parent()
 
     def exec(self, pos, ani=True, aniType=MenuAnimationType.DROP_DOWN):
         if self.label().hasSelectedText():
-            self.addActions([self.copyAct, self.selectAllAct])
+            self.addActions([self.explain, self.copyAct, self.selectAllAct])
         else:
             self.addAction(self.selectAllAct)
 

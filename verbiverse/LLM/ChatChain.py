@@ -1,14 +1,10 @@
-from Functions.Config import cfg
 from Functions.SignalBus import signalBus
 from langchain.memory import ChatMessageHistory
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_core.runnables import RunnablePassthrough
 from langchain_core.runnables.history import RunnableWithMessageHistory
-from LLMServerInfo import getChatPrompt
+from LLMServerInfo import getChatModelByCfg, getChatPrompt
 from ModuleLogger import logger
-from OpenAI import getOpenAIChatModel
-from qfluentwidgets import qconfig
-from TongYiQWen import getTongYiChatModel
 
 
 class ChatChain:
@@ -20,16 +16,8 @@ class ChatChain:
 
     def createChatChain(self) -> None:
         self.chain_with_trimming = None
-        provider = qconfig.get(cfg.provider)
-        logger.info("provider is: %s", provider)
-        logger.info("chat model is: %s", qconfig.get(cfg.model_name))
         try:
-            if provider == "openai":
-                self.chat = getOpenAIChatModel()
-            elif provider == "tongyi":
-                self.chat = getTongYiChatModel()
-            else:
-                raise Exception(f"Not supported {provider} for now")
+            self.chat = getChatModelByCfg()
         except Exception as e:
             logger.error("get chat model error: %s", e)
             return

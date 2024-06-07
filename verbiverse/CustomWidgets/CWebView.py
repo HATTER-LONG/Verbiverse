@@ -1,5 +1,4 @@
 import os
-import sys
 import urllib.parse
 from concurrent.futures import CancelledError
 
@@ -12,7 +11,7 @@ from PySide6.QtCore import QMutex, QPoint, Qt, QThread, QUrl, Signal, Slot
 from PySide6.QtWebChannel import QWebChannel
 from PySide6.QtWebEngineCore import QWebEnginePage
 from PySide6.QtWidgets import QApplication, QMessageBox
-from qfluentwidgets import isDarkTheme, qconfig
+from qfluentwidgets import Flyout, isDarkTheme, qconfig
 from qframelesswindow.webengine import FramelessWebEngineView
 
 
@@ -59,14 +58,14 @@ class CWebView(FramelessWebEngineView):
         initWebPdfView(self) -> None: Initializes the web view for displaying PDF documents.
         openLocalPdfDoc(self, doc_location: QUrl): Opens a local PDF document.
         updatePdfPageNum(self, page_num: int) -> None: Updates the current page number of the PDF document.
-        ContextMenu(self, event: QPoint): Handles the custom context menu event.
+        contextMenu(self, event: QPoint): Handles the custom context menu event.
     """
 
     def __init__(self, parent=None):
         super().__init__(parent)
         self.initWebPdfView()
         self.setContextMenuPolicy(Qt.CustomContextMenu)
-        self.customContextMenuRequested.connect(self.ContextMenu)
+        self.customContextMenuRequested.connect(self.contextMenu)
 
         qconfig.themeChanged.connect(self.themeChanged)
 
@@ -193,7 +192,7 @@ class CWebView(FramelessWebEngineView):
         return self.pdf_reader.getTextByPageNum(self.pdf_current_page - 1).page_content
 
     @Slot(QPoint)
-    def ContextMenu(self, event: QPoint):
+    def contextMenu(self, event: QPoint):
         """
         Handles the custom context menu event.
 
@@ -201,4 +200,14 @@ class CWebView(FramelessWebEngineView):
             event: The context menu event.
         """
         menu = CContexMenu(parent=self)
+        menu.explain_signal.connect(self.explainSelectText)
         menu.exec(self.mapToGlobal(event))
+
+    @Slot(Flyout)
+    def explainSelectText(self, explain_flyout: Flyout):
+        self.explain_flyout = explain_flyout
+        self.explain_flyout.closed.connect(self.explainClose)
+
+    def explainClose(self):
+        logger.info("close webview explain")
+        self.explain_flyout = None

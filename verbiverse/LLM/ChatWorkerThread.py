@@ -1,5 +1,5 @@
-from PySide6.QtCore import QThread, Signal, Slot
 from ModuleLogger import logger
+from PySide6.QtCore import QThread, Signal, Slot
 
 
 class ChatWorkThread(QThread):
