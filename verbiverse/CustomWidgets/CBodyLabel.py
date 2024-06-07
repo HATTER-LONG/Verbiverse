@@ -1,4 +1,4 @@
-from CContexMenu import CContexMenu
+from CContexMenu import CContexMenu, ExplainLanguage
 from LLM.ExplainWorkerThread import ExplainWorkerThread
 from ModuleLogger import logger
 from PySide6.QtCore import QPoint, Qt, Slot
@@ -16,17 +16,20 @@ class CBodyLabel(BodyLabel):
         menu.explain_signal.connect(self.explainSelectText)
         menu.exec(self.mapToGlobal(event))
 
-    @Slot(Flyout, str)
-    def explainSelectText(self, explain_flyout: Flyout, selected_text: str):
+    @Slot(Flyout, str, ExplainLanguage)
+    def explainSelectText(
+        self, explain_flyout: Flyout, selected_text: str, language_type: ExplainLanguage
+    ):
         self.explain_flyout = explain_flyout
         self.explain_flyout.closed.connect(self.explainClose)
 
+        logger.debug(language_type == ExplainLanguage.TARGET_LANGUAGE)
         self.worker = ExplainWorkerThread(
-            selected_text=selected_text, all_text=self.text()
+            selected_text=selected_text,
+            all_text=self.text(),
+            language_type=language_type,
         )
         self.worker.messageCallBackSignal.connect(self.onExplainResultUpdate)
-        self.worker.started.connect(self.workerStart)
-        self.worker.finished.connect(self.workerStop)
         self.worker.start()
 
     @Slot(str)

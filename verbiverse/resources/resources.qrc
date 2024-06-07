@@ -7,6 +7,7 @@
 		<file>prompt/translate_CN.txt</file>
 		<file>prompt/translate_EN.txt</file>
 		<file>prompt/explain_EN.txt</file>
+		<file>prompt/explain_CN.txt</file>
 
 		<file>qss/dark/gallery_interface.qss</file>
 		<file>qss/dark/home_interface.qss</file>

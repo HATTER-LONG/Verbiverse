@@ -2,10 +2,11 @@ import os
 import urllib.parse
 from concurrent.futures import CancelledError
 
-from CContexMenu import CContexMenu
+from CContexMenu import CContexMenu, ExplainLanguage
 from Functions.LoadPdfText import PdfReader
 from Functions.SignalBus import signalBus
 from Functions.WebChannelBridge import BridgeClass
+from LLM.ExplainWorkerThread import ExplainWorkerThread
 from ModuleLogger import logger
 from PySide6.QtCore import QMutex, QPoint, Qt, QThread, QUrl, Signal, Slot
 from PySide6.QtWebChannel import QWebChannel
@@ -13,7 +14,6 @@ from PySide6.QtWebEngineCore import QWebEnginePage
 from PySide6.QtWidgets import QApplication, QMessageBox
 from qfluentwidgets import Flyout, isDarkTheme, qconfig
 from qframelesswindow.webengine import FramelessWebEngineView
-from LLM.ExplainWorkerThread import ExplainWorkerThread
 
 
 class LoadPdfText(QThread):
@@ -204,8 +204,10 @@ class CWebView(FramelessWebEngineView):
         menu.explain_signal.connect(self.explainSelectText)
         menu.exec(self.mapToGlobal(event))
 
-    @Slot(Flyout, str)
-    def explainSelectText(self, explain_flyout: Flyout, selected_text: str):
+    @Slot(Flyout, str, ExplainLanguage)
+    def explainSelectText(
+        self, explain_flyout: Flyout, selected_text: str, type: ExplainLanguage
+    ):
         self.explain_flyout = explain_flyout
         self.explain_flyout.closed.connect(self.explainClose)
 
@@ -213,6 +215,7 @@ class CWebView(FramelessWebEngineView):
         self.worker = ExplainWorkerThread(
             selected_text=selected_text,
             all_text=self.pdf_reader.getTextByPageNum(self.pdf_current_page - 1),
+            type=type,
         )
         self.worker.messageCallBackSignal.connect(self.onExplainResultUpdate)
         self.worker.start()

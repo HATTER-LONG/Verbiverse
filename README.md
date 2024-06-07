@@ -2,6 +2,14 @@
 
 **Verbiverse** 定位是使用 LLM 来辅助英语 PDF 阅读工具，并稍稍附带了一些英语学习的功能。
 
-## Contributors
+## 代办
 
-- 单元测试依赖：pip install pytest-qt
+- 基本功能：
+  - [x] 完成母语 explain 支持
+  - [ ] 完成输入语句 check 功能
+  - [ ] 修复 explain 在桌面边缘显示不全的问题
+  - [ ] 优化 prompt
+  - [ ] 指定语言支持，**学习目标语言** 与 **母语**
+  - [ ] 显示字符串国际化支持
+  - [ ] 优化错误处理
+  - [ ] 优化 all text 提取关联语句

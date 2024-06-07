@@ -1,8 +1,9 @@
+from CustomWidgets.CContexMenu import ExplainLanguage
 from Functions.Config import cfg
 from langchain_core.prompts import (
     PromptTemplate,
 )
-from LLMServerInfo import getChatModelByCfg, getExplainByENPrompt
+from LLMServerInfo import getChatModelByCfg, getExplainByCNPrompt, getExplainByENPrompt
 from ModuleLogger import logger
 from PySide6.QtCore import QThread, Signal
 from qfluentwidgets import qconfig
@@ -11,10 +12,17 @@ from qfluentwidgets import qconfig
 class ExplainWorkerThread(QThread):
     messageCallBackSignal = Signal(str)
 
-    def __init__(self, selected_text: str, all_text: str, stream=True):
+    def __init__(
+        self,
+        selected_text: str,
+        all_text: str,
+        language_type: ExplainLanguage,
+        stream=True,
+    ):
         super().__init__()
         self.chain = None
         self.stream = stream
+        self.type = language_type
         self.msg = {"word": selected_text, "data": all_text}
         logger.info(f"msg is:\n\n {self.msg}\n\n")
         self.createExplainChain()
@@ -30,8 +38,10 @@ class ExplainWorkerThread(QThread):
         except Exception as e:
             logger.error("get chat model error: %s", e)
             return
-
-        self.prompt = PromptTemplate.from_template(getExplainByENPrompt())
+        if self.type == ExplainLanguage.TARGET_LANGUAGE:
+            self.prompt = PromptTemplate.from_template(getExplainByENPrompt())
+        else:
+            self.prompt = PromptTemplate.from_template(getExplainByCNPrompt())
 
         self.chain = self.prompt | self.chat
 

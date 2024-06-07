@@ -74,6 +74,10 @@ def getExplainByENPrompt() -> str:
     return __getPromptResource(":/prompt/explain_EN.txt")
 
 
+def getExplainByCNPrompt() -> str:
+    return __getPromptResource(":/prompt/explain_CN.txt")
+
+
 def getChatModelByCfg():
     chat = None
     provider = qconfig.get(cfg.provider)
