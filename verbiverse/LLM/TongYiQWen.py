@@ -10,9 +10,7 @@ def getTongYiChatModel() -> ChatTongyi:
     model = qconfig.get(cfg.model_name)
     # TODO: Check api key valid
     logger.info("TongYi Chat model: %s", model)
-    return ChatTongyi(
-        model_name=model, dashscope_api_key=api_key, top_p=0.8, max_retries=1024
-    )
+    return ChatTongyi(model_name=model, dashscope_api_key=api_key)
 
 
 def getTongYiLLMModel() -> Tongyi:

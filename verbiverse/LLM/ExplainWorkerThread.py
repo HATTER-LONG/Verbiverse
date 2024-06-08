@@ -49,7 +49,7 @@ class ExplainWorkerThread(QThread):
         else:
             self.answer_language = getMotherTongue()
 
-        self.prompt = PromptTemplate.from_template(getExplainPrompt())
+        self.prompt = PromptTemplate.from_template(getExplainPrompt(self.type))
         self.chain = self.prompt | self.chat
 
     def stop(self):

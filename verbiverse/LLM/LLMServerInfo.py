@@ -1,4 +1,5 @@
 from Functions.Config import cfg
+from Functions.LanguageType import ExplainLanguage
 from ModuleLogger import logger
 from OpenAI import getOpenAIChatModel
 from PySide6.QtCore import QFile, QIODevice
@@ -70,8 +71,31 @@ def getTranslateByCNPrompt() -> str:
     return __getPromptResource(":/prompt/translate_CN.txt")
 
 
-def getExplainPrompt() -> str:
-    return __getPromptResource(":/prompt/explain_prompt.txt")
+def __getExplainPromptByLanguage(language: str) -> str:
+    try:
+        return __getPromptResource(f":/prompt/explain_{language}.txt")
+    except Exception:
+        logger.warning(
+            f"Not found explain prompt for {language} -> :/prompt/explain_{language}.txt. Used default prompt"
+        )
+        return __getPromptResource(":/prompt/explain_prompt.txt")
+
+
+def getExplainPrompt(answer_language: ExplainLanguage = None) -> str:
+    if answer_language == ExplainLanguage.TARGET_LANGUAGE:
+        language = qconfig.get(cfg.target_language)
+        logger.info(
+            f"explain prompt for target {language} -> :/prompt/explain_{language}.txt"
+        )
+        return __getExplainPromptByLanguage(language)
+    elif answer_language == ExplainLanguage.MOTHER_TONGUE:
+        language = qconfig.get(cfg.mother_tongue)
+        logger.info(
+            f"explain prompt for mother tongue {language} -> :/prompt/explain_{language}.txt"
+        )
+        return __getExplainPromptByLanguage(language)
+    else:
+        return __getPromptResource(":/prompt/explain_prompt.txt")
 
 
 def getExplainByENPrompt() -> str:
