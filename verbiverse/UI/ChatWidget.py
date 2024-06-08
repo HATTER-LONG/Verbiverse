@@ -7,10 +7,6 @@ from MessageBox import CMessageBox
 from ModuleLogger import logger
 from PySide6.QtCore import Qt, Slot
 from PySide6.QtWidgets import QWidget
-from qfluentwidgets import (
-    Flyout,
-    FlyoutAnimationType,
-)
 
 
 class ChatWidget(QWidget, Ui_ChatWidget):
@@ -25,18 +21,11 @@ class ChatWidget(QWidget, Ui_ChatWidget):
         self.scroll_area_widget.setStyleSheet("QWidget{background: transparent}")
 
         self.chat_chain = ChatChain()
+        self.check_chain = ChatLLMWithCustomHistory()
         self.chat_worker = ChatWorkThread()
         self.chat_worker.finished.connect(self.workerThreadFinish)
         self.chat_worker.started.connect(self.workerThreadStart)
-        self.chat_worker.setChain(self.chat_chain)
         self.chat_worker.messageCallBackSignal.connect(self.updateLabel)
-
-        self.check_chain = ChatLLMWithCustomHistory()
-        self.check_worker = ChatWorkThread()
-        self.check_worker.finished.connect(self.checkFinish)
-        self.check_worker.started.connect(self.checkStart)
-        self.check_worker.setChain(self.check_chain)
-        # self.check_worker.messageCallBackSignal.connect(self.updateFlyout)
 
         self.need_update_label = None
         self.connectSignal()
@@ -64,16 +53,40 @@ class ChatWidget(QWidget, Ui_ChatWidget):
             )
             self.messages_list.addWidget(self.need_update_label)
 
+            self.chat_worker.setChain(self.chat_chain)
+            self.chat_worker.setMessage(message_text)
+            self.chat_worker.start()
+
+    @Slot()
+    def checkInput(self):
+        if self.need_update_label is not None:
+            return
+        self.user_check_button.setEnabled(False)
+        message_text = self.user_text_edit.toPlainText()
+        if message_text:
+            self.need_update_label = CMessageBox(
+                ":/images/github_rebot.png", "Robot Checker", self
+            )
+            self.messages_list.addWidget(self.need_update_label)
+            self.check_chain.setChatHistoryForChain(
+                self.chat_chain.demo_ephemeral_chat_history_for_chain
+            )
+            logger.info(self.chat_chain.demo_ephemeral_chat_history_for_chain)
+            self.chat_worker.setChain(self.check_chain)
+
             self.chat_worker.setMessage(message_text)
             self.chat_worker.start()
 
     @Slot()
     def workerThreadStart(self):
+        self.user_send_button.setEnabled(False)
+        self.user_check_button.setEnabled(False)
         self.messages_list.update()
 
     @Slot()
     def workerThreadFinish(self):
         self.user_send_button.setEnabled(True)
+        self.user_check_button.setEnabled(True)
         self.messages_list.update()
         self.need_update_label = None
 
@@ -83,29 +96,3 @@ class ChatWidget(QWidget, Ui_ChatWidget):
             self.need_update_label.setMessageText(
                 self.need_update_label.getMessageText() + message
             )
-
-    @Slot()
-    def checkInput(self):
-        message_text = self.user_text_edit.toPlainText()
-        if message_text:
-            self.check_chain.setChatHistoryForChain(
-                self.chat_chain.demo_ephemeral_chat_history_for_chain
-            )
-            logger.info(self.chat_chain.demo_ephemeral_chat_history_for_chain)
-
-            pos = self.user_check_button.mapToGlobal(self.user_check_button.pos())
-            pos.setX(pos.x() - 200)
-            self.flyout = Flyout.make(
-                ExplainFlyoutView("Check"),
-                self.user_check_button,
-                self,
-                aniType=FlyoutAnimationType.DROP_DOWN,
-            )
-
-    @Slot()
-    def checkStart(self) -> None:
-        pass
-
-    @Slot()
-    def checkFinish(self) -> None:
-        self.need_update_label = None

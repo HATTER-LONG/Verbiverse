@@ -92,7 +92,7 @@ class ExplainFlyoutView(FlyoutViewBase):
         self.viewLayout.addWidget(self.pin_button, 0, Qt.AlignRight | Qt.AlignTop)
 
         # adjust content margins
-        margins = QMargins(6, 5, 0, 5)
+        margins = QMargins(6, 5, 6, 5)
         margins.setLeft(20 if not self.icon else 5)
         # margins.setRight(20)
         self.viewLayout.setContentsMargins(margins)
@@ -111,6 +111,7 @@ class ExplainFlyoutView(FlyoutViewBase):
 
     def _adjustText(self):
         w = self.width()
+        w = 500
 
         # adjust title
         chars = max(min(w / 10, 120), 30)
