@@ -1,12 +1,15 @@
-from Functions.Config import cfg
 from Functions.LanguageType import ExplainLanguage
 from langchain_core.prompts import (
     PromptTemplate,
 )
-from LLMServerInfo import getChatModelByCfg, getExplainByCNPrompt, getExplainByENPrompt
+from LLMServerInfo import (
+    getChatModelByCfg,
+    getExplainPrompt,
+    getMotherTongue,
+    getTargetLanguage,
+)
 from ModuleLogger import logger
 from PySide6.QtCore import QThread, Signal
-from qfluentwidgets import qconfig
 
 
 class ExplainWorkerThread(QThread):
@@ -23,26 +26,30 @@ class ExplainWorkerThread(QThread):
         self.chain = None
         self.stream = stream
         self.type = language_type
-        self.msg = {"word": selected_text, "data": all_text}
-        logger.info(f"explain request msg is:\n {self.msg}\n")
         self.createExplainChain()
+        self.msg = {
+            "word": selected_text,
+            "data": all_text,
+            "language": self.target_language,
+            "answer_language": self.answer_language,
+        }
+        logger.info(f"explain request msg is:\n {self.msg}\n")
         self.quit = False
 
     def createExplainChain(self) -> None:
         self.chain_with_trimming = None
-        provider = qconfig.get(cfg.provider)
-        logger.debug("explain provider is: %s", provider)
-        logger.debug("explain model is: %s", qconfig.get(cfg.model_name))
         try:
             self.chat = getChatModelByCfg()
         except Exception as e:
             logger.error("get chat model error: %s", e)
             return
+        self.target_language = getTargetLanguage()
         if self.type == ExplainLanguage.TARGET_LANGUAGE:
-            self.prompt = PromptTemplate.from_template(getExplainByENPrompt())
+            self.answer_language = self.target_language
         else:
-            self.prompt = PromptTemplate.from_template(getExplainByCNPrompt())
+            self.answer_language = getMotherTongue()
 
+        self.prompt = PromptTemplate.from_template(getExplainPrompt())
         self.chain = self.prompt | self.chat
 
     def stop(self):

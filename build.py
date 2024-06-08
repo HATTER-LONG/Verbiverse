@@ -195,8 +195,12 @@ def main():
             promptList = [
                 {
                     "name": "chat_prompt",
-                    "task": "help me to improve english language skill by chat",
-                }
+                    "task": "help me to improve a new language skill by chat",
+                },
+                {
+                    "name": "explain_prompt",
+                    "task": "explain the new language input data mean and output structed data",
+                },
             ]
             for prompt in promptList:
                 if prompt["name"] == args.name:

@@ -70,6 +70,10 @@ def getTranslateByCNPrompt() -> str:
     return __getPromptResource(":/prompt/translate_CN.txt")
 
 
+def getExplainPrompt() -> str:
+    return __getPromptResource(":/prompt/explain_prompt.txt")
+
+
 def getExplainByENPrompt() -> str:
     return __getPromptResource(":/prompt/explain_EN.txt")
 
@@ -88,3 +92,11 @@ def getChatModelByCfg():
     else:
         raise Exception(f"Not supported {provider} for now")
     return chat
+
+
+def getTargetLanguage():
+    return qconfig.get(cfg.target_language)
+
+
+def getMotherTongue():
+    return qconfig.get(cfg.mother_tongue)

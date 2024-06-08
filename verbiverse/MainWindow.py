@@ -25,7 +25,7 @@ from qfluentwidgets import (
 from qfluentwidgets import FluentIcon as FIF
 from resources import resources_rc  # noqa: F401
 from UI import (
-    CMessageBox,
+    # CMessageBox,
     HomeInterface,
     ReadAndChatWidget,
     SettingInterface,
@@ -57,12 +57,12 @@ class MainWindow(FluentWindow):
         self.home_page = HomeInterface(self)
         self.read_page = ReadAndChatWidget(self)
 
-        for i in range(0, 12):
-            message_label1 = CMessageBox(":/images/github_rebot.png", "Rebot", self)
-            message_label1.setMessageText(
-                "This is a test message, it's helpful to dev new function avoid input ever time"
-            )
-            self.read_page.chat_widget.messages_list.addWidget(message_label1)
+        # for i in range(0, 12):
+        #     message_label1 = CMessageBox(":/images/github_rebot.png", "Rebot", self)
+        #     message_label1.setMessageText(
+        #         "This is a test message, it's helpful to dev new function avoid input ever time"
+        #     )
+        #     self.read_page.chat_widget.messages_list.addWidget(message_label1)
 
         self.setting_page = SettingInterface(self)
 

@@ -3,10 +3,8 @@
 	</qresource>
 	<qresource>
 		<file>prompt/chat_prompt.txt</file>
+		<file>prompt/explain_prompt.txt</file>
 		<file>prompt/check_CN.txt</file>
-		<file>prompt/translate_CN.txt</file>
-		<file>prompt/translate_EN.txt</file>
-		<file>prompt/explain_EN.txt</file>
 		<file>prompt/explain_CN.txt</file>
 
 		<file>qss/dark/gallery_interface.qss</file>

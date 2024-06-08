@@ -3,7 +3,7 @@ from langchain.memory import ChatMessageHistory
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_core.runnables import RunnablePassthrough
 from langchain_core.runnables.history import RunnableWithMessageHistory
-from LLMServerInfo import getChatModelByCfg, getChatPrompt
+from LLMServerInfo import getChatModelByCfg, getChatPrompt, getTargetLanguage
 from ModuleLogger import logger
 
 
@@ -20,6 +20,7 @@ class ChatChain:
             logger.error("get chat model error: %s", e)
             return
 
+        self.language = getTargetLanguage()
         self.chat_prompt = getChatPrompt()
         self.prompt = ChatPromptTemplate.from_messages(
             [
@@ -73,7 +74,8 @@ class ChatChain:
         if self.chain_with_trimming is None:
             logger.warn("chat chain is not ready")
             return
-        msg = {"input": message}
+
+        msg = {"input": message, "language": self.language}
         return self.chain_with_trimming.stream(
             msg,
             {"configurable": {"session_id": "unused"}},

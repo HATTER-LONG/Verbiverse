@@ -1,6 +1,6 @@
 from PySide6.QtCore import QMargins, QRectF, QSize, Qt
-from PySide6.QtGui import QCursor, QPainter
-from PySide6.QtWidgets import QApplication, QHBoxLayout, QLabel, QVBoxLayout, QWidget
+from PySide6.QtGui import QPainter
+from PySide6.QtWidgets import QHBoxLayout, QLabel, QVBoxLayout, QWidget
 from qfluentwidgets import (
     FluentIcon,
     FluentStyleSheet,
@@ -111,7 +111,6 @@ class ExplainFlyoutView(FlyoutViewBase):
 
     def _adjustText(self):
         w = self.width()
-        w = 500
 
         # adjust title
         chars = max(min(w / 10, 120), 30)
