@@ -24,7 +24,7 @@ class Language(Enum):
     """Language enumeration"""
 
     CHINESE_SIMPLIFIED = QLocale(QLocale.Chinese, QLocale.China)
-    CHINESE_TRADITIONAL = QLocale(QLocale.Chinese, QLocale.HongKong)
+    # CHINESE_TRADITIONAL = QLocale(QLocale.Chinese, QLocale.HongKong)
     ENGLISH = QLocale(QLocale.English)
     AUTO = QLocale()
 
@@ -72,6 +72,18 @@ class Config(QConfig):
     user_key = ConfigItem("LLM", "UserKey", "", ConfigValidator())
     provider_url = ConfigItem("LLM", "URL", "Default", ProviderUrlValidator())
     database_folder = ConfigItem("LLM", "Database", "app/database", FolderValidator())
+    target_language = OptionsConfigItem(
+        "LLM",
+        "TargetLanguage",
+        "english",
+        OptionsValidator(["chinese", "english", "japanese"]),
+    )
+    mother_tongue = OptionsConfigItem(
+        "LLM",
+        "MotherTongue",
+        "chinese",
+        OptionsValidator(["chinese", "english", "japanese"]),
+    )
 
     # main window
     mica_enabled = ConfigItem("MainWindow", "MicaEnabled", isWin11(), BoolValidator())

@@ -128,6 +128,23 @@ class SettingInterface(ScrollArea):
             self.tr("Set provider url for LLM, input empty will reset to default"),
             parent=self.function_info_group,
         )
+
+        self.target_language_card = ComboBoxSettingCard(
+            cfg.target_language,
+            FIF.QUESTION,
+            self.tr("Target Language"),
+            self.tr("Set target language which you want to learn from LLM"),
+            texts=["Chinese", "English", "Japanese"],
+            parent=self.function_info_group,
+        )
+        self.mother_tongue_card = ComboBoxSettingCard(
+            cfg.mother_tongue,
+            FIF.EDUCATION,
+            self.tr("Mother Tongue"),
+            self.tr("Set mother tongue language which you used with LLM"),
+            texts=["Chinese", "English", "Japanese"],
+            parent=self.function_info_group,
+        )
         self.datebase_save_path = PushSettingCard(
             self.tr("Choose folder"),
             FIF.CLOUD,
@@ -182,7 +199,7 @@ class SettingInterface(ScrollArea):
             FIF.LANGUAGE,
             self.tr("Language"),
             self.tr("Set your preferred language for UI"),
-            texts=["简体中文", "繁體中文", "English", self.tr("Use system setting")],
+            texts=["简体中文", "English", self.tr("Use system setting")],
             parent=self.personal_group,
         )
 
@@ -259,6 +276,8 @@ class SettingInterface(ScrollArea):
         self.function_info_group.addSettingCard(self.model_name)
         self.function_info_group.addSettingCard(self.user_key)
         self.function_info_group.addSettingCard(self.provide_url)
+        self.function_info_group.addSettingCard(self.target_language_card)
+        self.function_info_group.addSettingCard(self.mother_tongue_card)
         self.function_info_group.addSettingCard(self.datebase_save_path)
 
         self.personal_group.addSettingCard(self.mica_card)
@@ -315,6 +334,12 @@ class SettingInterface(ScrollArea):
         )
         self.provide_url.editing_finished.connect(
             lambda: signalBus.llm_config_change_signal.emit()
+        )
+        self.target_language_card.comboBox.currentIndexChanged.connect(
+            lambda _: signalBus.llm_config_change_signal.emit()
+        )
+        self.mother_tongue_card.comboBox.currentIndexChanged.connect(
+            lambda _: signalBus.llm_config_change_signal.emit()
         )
         self.datebase_save_path.clicked.connect(self.__onDatabaseSetFolderCardClicked)
 

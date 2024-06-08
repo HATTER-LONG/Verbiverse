@@ -1,5 +1,7 @@
+from Functions.SignalBus import signalBus
 from langchain_core.prompts import PromptTemplate
 from LLMServerInfo import getChatModelByCfg, getCheckPrompt
+from ModuleLogger import logger
 
 
 class ChatLLMWithCustomHistory:
@@ -16,13 +18,21 @@ class ChatLLMWithCustomHistory:
     """
 
     def __init__(self):
-        chat = getChatModelByCfg()
+        self.createChain()
+        signalBus.llm_config_change_signal.connect(self.createChain)
 
-        content = getCheckPrompt()
+    def createChain(self):
+        try:
+            self.chat = getChatModelByCfg()
+        except Exception as e:
+            logger.error("get chat model error: %s", e)
+            return
 
-        prompt = PromptTemplate.from_template(content)
+        self.content = getCheckPrompt()
 
-        self.chain = prompt | chat
+        self.prompt = PromptTemplate.from_template(self.content)
+
+        self.chain = self.prompt | self.chat
         self.chat_history_for_chain = None
 
     def setChatHistoryForChain(self, chat_message_history: str):

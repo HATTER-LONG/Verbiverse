@@ -9,9 +9,7 @@ from ModuleLogger import logger
 
 class ChatChain:
     def __init__(self):
-        self.chat_prompt = getChatPrompt()
         self.createChatChain()
-
         signalBus.llm_config_change_signal.connect(self.createChatChain)
 
     def createChatChain(self) -> None:
@@ -22,6 +20,7 @@ class ChatChain:
             logger.error("get chat model error: %s", e)
             return
 
+        self.chat_prompt = getChatPrompt()
         self.prompt = ChatPromptTemplate.from_messages(
             [
                 (
