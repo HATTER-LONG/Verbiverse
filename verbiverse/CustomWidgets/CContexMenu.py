@@ -29,7 +29,7 @@ class CContexMenu(RoundMenu):
 
         self.explain_ml = QAction(
             FIF.CHAT.icon(),
-            self.tr("Explain_ML"),
+            self.tr("Explain(NL)"),
             self,
             triggered=self._onExplainML,
         )

@@ -55,7 +55,7 @@ class BannerWidget(QWidget):
         self.link_card_view.addCard(
             FluentIcon.GITHUB,
             self.tr("GitHub repo"),
-            self.tr("Check."),
+            self.tr("Project homepage."),
             REPO_URL,
         )
 

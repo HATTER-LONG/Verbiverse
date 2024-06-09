@@ -13,8 +13,12 @@ PROJECT_ROOT_PATH = "./verbiverse"
 
 # Translate file cfg
 NEED_TRANSLATE_FILE_PATH_LIST = [
+    "./verbiverse/MainWindow.py",
     "./verbiverse/UI/SettingInterface.py",
-    "./verbiverse/main.py",
+    "./verbiverse/UI/HomeInterface.py",
+    "./verbiverse/UI/ChatWidget.ui",
+    "./verbiverse/UI/ReadAndChatWidget.ui",
+    "./verbiverse/CustomWidgets/CContexMenu.py",
 ]
 TRANSLATE_RESOURCE_PATH = "./verbiverse/resources/i18n/"
 TRANSLATE_RESULT_FILE = "./verbiverse/resources/i18n/verbiverse.zh_CN"
@@ -59,15 +63,18 @@ def convert_qm_files(ts_file_path, qm_file_path):
 
 def update_py_to_ts(py_file_path: list[str], prefix: str, resource_path: str):
     for py_file in py_file_path:
+        command = ""
         if py_file.endswith(".py"):
             ts_file_path = py_file.replace(".py", f".TMP.{prefix}.ts")
+        elif py_file.endswith(".ui"):
+            ts_file_path = py_file.replace(".ui", f".TMP.{prefix}.ts")
+        try:
             ts_file_path = resource_path + os.path.basename(ts_file_path)
             command = ["pyside6-lupdate", py_file, "-ts", ts_file_path]
-            try:
-                subprocess.run(command, check=True)
-                print(f"Successfully converted {py_file} to {ts_file_path}")
-            except subprocess.CalledProcessError as e:
-                print(f"Error converting {py_file}: {e.output}")
+            subprocess.run(command, check=True)
+            print(f"Successfully converted {py_file} to {ts_file_path}")
+        except subprocess.CalledProcessError as e:
+            print(f"Error converting {py_file}: {e.output}")
 
 
 def py_translate_ts():
@@ -89,18 +96,6 @@ def build():
     for qrc_file_path in qrc_file_path:
         py_file_path = qrc_file_path.replace(".qrc", "_rc.py")
         convert_qrc_files(qrc_file_path, py_file_path)
-
-
-def demo(module_name):
-    """Runs the demo application."""
-    try:
-        import resources  # noqa: F401
-
-        module = importlib.import_module(f"tests.UI.{module_name}.demo")
-        function = getattr(module, "main")
-        function()
-    except Exception as e:
-        print(f"Error running demo: {e}")
 
 
 def get_directory_names(directory):
@@ -223,12 +218,24 @@ def optimizationPrompt(prompt_path, task):
         logger.info("Prompt optimization canceled.")
 
 
+def demo(module_name):
+    """Runs the demo application."""
+    try:
+        import resources  # noqa: F401
+
+        module = importlib.import_module(f"tests.UI.{module_name}.demo")
+        function = getattr(module, "main")
+        function()
+    except Exception as e:
+        print(f"Error running demo: {e}")
+
+
 def main():
     """Parses command-line arguments and executes corresponding actions."""
     parser = argparse.ArgumentParser(description="Project Management Script")
     parser.add_argument(
         "command",
-        choices=["build", "demo", "pyts", "prompt"],
+        choices=["build", "pyts", "prompt", "demo"],
         help="Command to execute",
     )
     parser.add_argument("name", nargs="?", default=None, help="Name for demo")
@@ -237,6 +244,10 @@ def main():
 
     if args.command == "build":
         build()
+    elif args.command == "pyts":
+        py_translate_ts()
+    elif args.command == "prompt":
+        optimize_prompts()
     elif args.command == "demo":
         tests_directory = "./tests/UI/"
         if check_directory_existence(tests_directory, args.name):
@@ -244,10 +255,6 @@ def main():
             demo(args.name)
         else:
             logger.error("Demo command requires a name of tests/UI/[name]")
-    elif args.command == "pyts":
-        py_translate_ts()
-    elif args.command == "prompt":
-        optimize_prompts()
     else:
         logger.error("Invalid command.")
 

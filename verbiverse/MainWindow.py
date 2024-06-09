@@ -75,8 +75,8 @@ class MainWindow(FluentWindow):
         self.connectSignalToSlot()
 
     def initNavigation(self):
-        self.addSubInterface(self.home_page, FIF.HOME, "Home")
-        self.addSubInterface(self.read_page, FIF.CHAT, "Read with LLM")
+        self.addSubInterface(self.home_page, FIF.HOME, self.tr("Home"))
+        self.addSubInterface(self.read_page, FIF.CHAT, self.tr("Read with LLM"))
 
         self.addSubInterface(
             self.setting_page,

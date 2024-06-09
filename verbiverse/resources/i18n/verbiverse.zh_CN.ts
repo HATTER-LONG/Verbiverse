@@ -2,6 +2,25 @@
 <!DOCTYPE TS>
 <TS version="2.1" language="zh_CN">
 <context>
+    <name>ChatWidget</name>
+    <message>
+        <location filename="../../UI/ChatWidget.ui" line="14"/>
+        <source>Form</source>
+        <translation>表格</translation>
+    </message>
+    <message>
+        <location filename="../../UI/ChatWidget.ui" line="151"/>
+        <source>Send</source>
+        <translation>发送</translation>
+    </message>
+    <message>
+        <location filename="../../UI/ChatWidget.ui" line="170"/>
+        <source>Check</source>
+        <translation>检查</translation>
+    </message>
+</context>
+
+<context>
     <name>SettingInterface</name>
     <message>
         <location filename="../../UI/SettingInterface.py" line="94"/>
@@ -232,6 +251,87 @@
         <location filename="../../UI/SettingInterface.py" line="163"/>
         <source>Apply semi transparent to windows and surfaces</source>
         <translation>窗口和表面显示半透明</translation>
+    </message>
+</context>
+
+<context>
+    <name>CContexMenu</name>
+    <message>
+        <location filename="../../CustomWidgets/CContexMenu.py" line="25"/>
+        <source>Explain</source>
+        <translation>解释</translation>
+    </message>
+    <message>
+        <location filename="../../CustomWidgets/CContexMenu.py" line="32"/>
+        <source>Explain(NL)</source>
+        <translation>解释(母语)</translation>
+    </message>
+    <message>
+        <location filename="../../CustomWidgets/CContexMenu.py" line="39"/>
+        <source>Copy</source>
+        <translation>复制</translation>
+    </message>
+    <message>
+        <location filename="../../CustomWidgets/CContexMenu.py" line="45"/>
+        <source>Select all</source>
+        <translation>全选</translation>
+    </message>
+</context>
+
+<context>
+    <name>BannerWidget</name>
+    <message>
+        <location filename="../../UI/HomeInterface.py" line="50"/>
+        <source>Getting started</source>
+        <translation>开始</translation>
+    </message>
+    <message>
+        <location filename="../../UI/HomeInterface.py" line="51"/>
+        <source>Open a local pdf file.</source>
+        <translation>打开本地 PDF 文件</translation>
+    </message>
+    <message>
+        <location filename="../../UI/HomeInterface.py" line="57"/>
+        <source>GitHub repo</source>
+        <translation>GitHub 仓库</translation>
+    </message>
+    <message>
+        <location filename="../../UI/HomeInterface.py" line="58"/>
+        <source>Project homepage.</source>
+        <translation>项目主页</translation>
+    </message>
+</context>
+
+<context>
+    <name>ReadAndChatWidget</name>
+    <message>
+        <location filename="../../UI/ReadAndChatWidget.ui" line="14"/>
+        <source>Form</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../UI/ReadAndChatWidget.ui" line="46"/>
+        <source>about:blank</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+
+<context>
+    <name>MainWindow</name>
+    <message>
+        <location filename="../../MainWindow.py" line="78"/>
+        <source>Home</source>
+        <translation>主页</translation>
+    </message>
+    <message>
+        <location filename="../../MainWindow.py" line="79"/>
+        <source>Read with LLM</source>
+        <translation>LLM 辅助阅读</translation>
+    </message>
+    <message>
+        <location filename="../../MainWindow.py" line="84"/>
+        <source>Settings</source>
+        <translation>设置</translation>
     </message>
 </context>
 </TS>
