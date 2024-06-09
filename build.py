@@ -181,10 +181,10 @@ def main():
     elif args.command == "pyts":
         # cn_ts_file_path = "./resources/i18n/verbiverse.zh_CN.ts"
         # hk_ts_file_path = "./resources/i18n/verbiverse.zh_HK.ts"
-        py_file_path = ["./UI/SettingInterface.py", "./main.py"]
-        resource_path = "./resources/i18n/"
+        py_file_path = ["./verbiverse/UI/SettingInterface.py", "./verbiverse/main.py"]
+        resource_path = "./verbiverse/resources/i18n/"
         update_py_to_ts(py_file_path, "zh_CN", resource_path)
-        update_py_to_ts(py_file_path, "zh_HK", resource_path)
+        # update_py_to_ts(py_file_path, "zh_HK", resource_path)
     elif args.command == "prompt":
         if not args.name:
             logger.error("Please specify the name of the prompt.")

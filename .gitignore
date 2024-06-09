@@ -3,5 +3,4 @@
 .vscode
 .DS_*
 app
-*.TMP.*
 back
