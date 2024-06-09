@@ -1,6 +1,7 @@
 import argparse
 import importlib
 import os
+import re
 import subprocess
 
 from verbiverse.Functions.Log import get_logger
@@ -46,12 +47,13 @@ def build():
                 ui_file_path = os.path.join(root, filename)
                 py_file_path = ui_file_path.replace(".ui", "_ui.py")
                 convert_ui_files(ui_file_path, py_file_path)
-            if filename.endswith(".ts") and ".TMP." not in filename:
-                ts_file_path = os.path.join(root, filename)
-                qm_file_path = ts_file_path.replace(".ts", ".qm")
-                convert_qm_files(ts_file_path, qm_file_path)
+            # if filename.endswith(".ts") and ".TMP." not in filename:
+            #     ts_file_path = os.path.join(root, filename)
+            #     qm_file_path = ts_file_path.replace(".ts", ".qm")
+            #     convert_qm_files(ts_file_path, qm_file_path)
             if filename.endswith(".qrc"):
                 qrc_file_path.append(os.path.join(root, filename))
+    convert_all_ts_to_one()
     for qrc_file_path in qrc_file_path:
         py_file_path = qrc_file_path.replace(".qrc", "_rc.py")
         convert_qrc_files(qrc_file_path, py_file_path)
@@ -112,16 +114,49 @@ def update_py_to_ts(py_file_path: list[str], prefix: str, resource_path: str):
                 print(f"Error converting {py_file}: {e.output}")
 
 
-def convert_all_ts_to_one(ts_file_path):
-    pass
-    # for py_file in py_file_path:
-    #     if py_file.endswith(".py"):
-    #         command = ["pyside6-lupdate", py_file, "-ts", ts_file_path]
-    #         try:
-    #             subprocess.run(command, check=True)
-    #             print(f"Successfully converted {py_file} to {ts_file_path}")
-    #         except subprocess.CalledProcessError as e:
-    #             print(f"Error converting {py_file}: {e.output}")
+def get_tmp_files(path):
+    tmp_files = []
+    for root, _, files in os.walk(path):
+        for file in files:
+            if ".TMP." in file:
+                tmp_files.append(os.path.join(root, file))
+    return tmp_files
+
+
+def extract_context_tags(input_file):
+    with open(input_file, "r", encoding="utf-8") as f:
+        content = f.read()
+    pattern = r"<TS(.*?)>(.*?)</TS>"
+    matches = re.findall(pattern, content, flags=re.DOTALL)[0][1]
+    return matches
+
+
+def convert_all_ts_to_one():
+    files = get_tmp_files("./verbiverse/resources")
+    firstfile = ""
+    content = ""
+    firstcontext = ""
+
+    with open(files[0], "r", encoding="utf-8") as f:
+        firstfile = f.read()
+        firstcontext = extract_context_tags(files[0])
+
+    for file in files:
+        content = content + extract_context_tags(file)
+
+    result = firstfile.replace(firstcontext, content)
+
+    with open(
+        "./verbiverse/resources/i18n/verbiverse.zh_CN.ts", "w", encoding="utf-8"
+    ) as f:
+        f.seek(0)
+        f.truncate()
+        f.write(result)
+
+    convert_qm_files(
+        "./verbiverse/resources/i18n/verbiverse.zh_CN.ts",
+        "./verbiverse/resources/i18n/verbiverse.zh_CN.qm",
+    )
 
 
 def optimize_prompt(promptPath, task):
@@ -208,7 +243,7 @@ def main():
                         promptPrefix + prompt["name"] + ".txt", prompt["task"]
                     )
     else:
-        print("Invalid command. Use 'run', 'build', 'test', 'br', or 'demo'.")
+        logger.error("Invalid command. Use 'run', 'build', 'test', 'br', or 'demo'.")
 
 
 if __name__ == "__main__":

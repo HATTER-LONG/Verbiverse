@@ -221,7 +221,7 @@
     <message>
         <location filename="../../UI/SettingInterface.py" line="151"/>
         <source>Database directory</source>
-        <translation type="unfinished"></translation>
+        <translation>数据库目录</translation>
     </message>
     <message>
         <location filename="../../UI/SettingInterface.py" line="162"/>
