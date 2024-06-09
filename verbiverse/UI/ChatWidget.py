@@ -8,6 +8,8 @@ from ModuleLogger import logger
 from PySide6.QtCore import Qt, Slot
 from PySide6.QtWidgets import QWidget
 
+from qfluentwidgets import FluentIcon as FIF
+
 
 class ChatWidget(QWidget, Ui_ChatWidget):
     def __init__(self, parent: QWidget = None):
@@ -28,6 +30,8 @@ class ChatWidget(QWidget, Ui_ChatWidget):
         self.chat_worker.messageCallBackSignal.connect(self.updateLabel)
 
         self.need_update_label = None
+        self.user_send_button.setIcon(FIF.SEND)
+        self.user_check_button.setIcon(FIF.EDIT)
         self.connectSignal()
 
     def connectSignal(self):

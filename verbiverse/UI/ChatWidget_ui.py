@@ -18,7 +18,7 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
 from PySide6.QtWidgets import (QAbstractScrollArea, QApplication, QGridLayout, QHBoxLayout,
     QLayout, QSizePolicy, QVBoxLayout, QWidget)
 
-from qfluentwidgets import (PushButton, ScrollArea, TextEdit)
+from qfluentwidgets import (PrimaryPushButton, ScrollArea, TextEdit)
 
 class Ui_ChatWidget(object):
     def setupUi(self, ChatWidget):
@@ -75,7 +75,7 @@ class Ui_ChatWidget(object):
 
         self.verticalLayout_2 = QVBoxLayout()
         self.verticalLayout_2.setObjectName(u"verticalLayout_2")
-        self.user_send_button = PushButton(ChatWidget)
+        self.user_send_button = PrimaryPushButton(ChatWidget)
         self.user_send_button.setObjectName(u"user_send_button")
         sizePolicy2 = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Fixed)
         sizePolicy2.setHorizontalStretch(0)
@@ -87,7 +87,7 @@ class Ui_ChatWidget(object):
 
         self.verticalLayout_2.addWidget(self.user_send_button)
 
-        self.user_check_button = PushButton(ChatWidget)
+        self.user_check_button = PrimaryPushButton(ChatWidget)
         self.user_check_button.setObjectName(u"user_check_button")
         sizePolicy2.setHeightForWidth(self.user_check_button.sizePolicy().hasHeightForWidth())
         self.user_check_button.setSizePolicy(sizePolicy2)
@@ -113,6 +113,6 @@ class Ui_ChatWidget(object):
     def retranslateUi(self, ChatWidget):
         ChatWidget.setWindowTitle(QCoreApplication.translate("ChatWidget", u"Form", None))
         self.user_send_button.setText(QCoreApplication.translate("ChatWidget", u"Send", None))
-        self.user_check_button.setText(QCoreApplication.translate("ChatWidget", u"check", None))
+        self.user_check_button.setText(QCoreApplication.translate("ChatWidget", u"Check", None))
     # retranslateUi
 
