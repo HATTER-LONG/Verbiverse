@@ -1,0 +1,11 @@
+ExplainWindow {
+    border: 1px solid rgb(46, 46, 46);
+    border-radius: 10px;
+    background-color: rgba(39, 39, 39, 0.95);
+}
+
+QLabel {
+    color: white;
+    border: none;
+    background-color: transparent;
+}

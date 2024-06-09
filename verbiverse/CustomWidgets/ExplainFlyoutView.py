@@ -1,4 +1,4 @@
-from PySide6.QtCore import QMargins, QRectF, QSize, Qt
+from PySide6.QtCore import QMargins, QRectF, QSize, Qt, Signal
 from PySide6.QtGui import QPainter
 from PySide6.QtWidgets import QHBoxLayout, QLabel, QVBoxLayout, QWidget
 from qfluentwidgets import (
@@ -30,6 +30,8 @@ class IconWidget(QWidget):
 
 
 class ExplainFlyoutView(FlyoutViewBase):
+    pin_explain_signal = Signal(str, str)
+
     def __init__(self, title: str, parent=None):
         super().__init__(parent)
         self.setFixedWidth(450)
@@ -47,12 +49,8 @@ class ExplainFlyoutView(FlyoutViewBase):
         # self.contentLabel.setWordWrap(True)
         self.iconWidget = IconWidget(self.icon, self)
         self.pin_button = TransparentToolButton(FluentIcon.PIN, self)
-        self.pin = False
 
         self.__initWidgets()
-
-    def closeEvent(self, e):
-        print("need to close")
 
     def __initWidgets(self):
         self.pin_button.setFixedSize(32, 32)
@@ -98,11 +96,8 @@ class ExplainFlyoutView(FlyoutViewBase):
         self.viewLayout.setContentsMargins(margins)
 
     def pinWindow(self):
-        print("need to pin, ", self.pin)
-        if not self.pin:
-            self.pin = True
-        else:
-            self.pin = False
+        self.pin_explain_signal.emit(self.title, self.content)
+        self.close()
 
     def addWidget(self, widget: QWidget, stretch=0, align=Qt.AlignLeft):
         """add widget to view"""

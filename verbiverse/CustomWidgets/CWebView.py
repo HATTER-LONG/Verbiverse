@@ -3,6 +3,7 @@ import urllib.parse
 from concurrent.futures import CancelledError
 
 from CContexMenu import CContexMenu
+from ExplainWindow import ExplainWindow
 from Functions.LanguageType import ExplainLanguage
 from Functions.LoadPdfText import PdfReader
 from Functions.SignalBus import signalBus
@@ -209,8 +210,12 @@ class CWebView(FramelessWebEngineView):
     def explainSelectText(
         self, explain_flyout: Flyout, selected_text: str, type: ExplainLanguage
     ):
+        if hasattr(self, "worker") and self.worker is not None:
+            logger.warning("flyout explain thread is not done")
+            return
         self.explain_flyout = explain_flyout
         self.explain_flyout.closed.connect(self.explainClose)
+        self.explain_flyout.view.pin_explain_signal.connect(self.pinFlyout)
 
         # TODO: 优化all text 为单词关联语句
         self.worker = ExplainWorkerThread(
@@ -219,21 +224,47 @@ class CWebView(FramelessWebEngineView):
             language_type=type,
         )
         self.worker.messageCallBackSignal.connect(self.onExplainResultUpdate)
+        self.worker.finished.connect(self.finishedExplain)
         self.worker.start()
+
+    @Slot()
+    def finishedExplain(self):
+        self.explain_flyout = None
+        self.explain_window = None
+        self.worker = None
 
     @Slot(str)
     def onExplainResultUpdate(self, explain: str):
-        if self.explain_flyout is None:
-            return
-        self.explain_flyout.view.setContent(
-            self.explain_flyout.view.getContent() + explain
-        )
+        if self.explain_flyout is not None:
+            self.explain_flyout.view.setContent(
+                self.explain_flyout.view.getContent() + explain
+            )
+        elif self.explain_window is not None:
+            self.explain_window.setContent(self.explain_window.getContent() + explain)
 
     def explainClose(self):
-        logger.debug("close webview explain thread .... ")
+        logger.debug("flyout close")
         self.explain_flyout = None
-        if self.worker.isRunning():
+        if self.explain_window is None:
+            self.stopWorker()
+
+    @Slot(str, str)
+    def pinFlyout(self, title: str, content: str):
+        logger.debug(f"pin flyout {title}")
+        self.explain_window = ExplainWindow(title, content)
+        self.explain_window.show()
+        self.explain_window.close_signal.connect(self.pinWindowClose)
+
+    @Slot()
+    def pinWindowClose(self):
+        logger.debug("webview window close")
+        self.explain_window = None
+        if self.explain_flyout is None:
+            self.stopWorker()
+
+    def stopWorker(self):
+        if self.worker is not None:
+            logger.debug("close webview explain thread ... ")
             self.worker.stop()
-        self.worker.wait()
-        self.worker = None
-        logger.debug("close webview explain thread done !!! ")
+            self.worker.wait()
+            logger.debug("close webview explain thread done !!! ")

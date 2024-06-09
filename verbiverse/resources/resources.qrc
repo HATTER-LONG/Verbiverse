@@ -15,6 +15,7 @@
 		<file>qss/dark/setting_interface.qss</file>
 		<file>qss/dark/view_interface.qss</file>
 		<file>qss/dark/navigation_view_interface.qss</file>
+		<file>qss/dark/explain_window.qss</file>
 
 		<file>qss/light/gallery_interface.qss</file>
 		<file>qss/light/home_interface.qss</file>
@@ -24,6 +25,7 @@
 		<file>qss/light/setting_interface.qss</file>
 		<file>qss/light/view_interface.qss</file>
 		<file>qss/light/navigation_view_interface.qss</file>
+		<file>qss/light/explain_window.qss</file>
 
 		<file>i18n/verbiverse.zh_CN.qm</file>
 
