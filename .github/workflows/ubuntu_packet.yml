@@ -26,6 +26,8 @@ jobs:
     - name: Packet
       run: | 
         poetry run pyinstaller main.spec
-        tar -cvzf ubuntu_packet.tar.gz dist
-        ls -l
-        pwd
+        tar -cvzf ubuntu-22.04_packet.tar.gz dist/main
+    - uses: actions/upload-artifact@v3
+      with:
+        name: package
+        path: ./ubuntu-22.04_packet.tar.gz
