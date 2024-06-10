@@ -1,0 +1,31 @@
+name: Ubuntu Packet
+run-name: ${{ github.actor }} packted by GitHub Actions 🚀
+on: [push]
+jobs:
+  ubuntu_packet:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Install Python
+      uses: actions/setup-python@v5
+      with: 
+        python-version: '3.11'
+    - name: Install Poetry
+      uses: abatilo/actions-poetry@v3.0.0
+    - name: Setup a local virtual environment (if no poetry.toml file)
+      run: |
+        poetry config virtualenvs.create true --local
+        poetry config virtualenvs.in-project true --local
+    - uses: actions/cache@v3
+      name: Define a cache for the virtual environment based on the dependencies lock file
+      with:
+        path: ./.venv
+        key: venv-${{ hashFiles('poetry.lock') }}
+    - name: Install the project dependencies
+      run: poetry install
+    - name: Packet
+      run: | 
+        poetry run pyinstaller main.spec
+        tar -cvzf ubuntu_packet.tar.gz dist
+        ls -l
+        pwd
