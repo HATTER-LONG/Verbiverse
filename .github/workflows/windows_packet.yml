@@ -1,9 +1,9 @@
-name: Ubuntu Packet
-run-name: Ubuntu Packted by GitHub Actions 🚀
+name: Windows Packet
+run-name: Windows Packted by GitHub Actions 🚀
 on: [push]
 jobs:
   ubuntu_packet:
-    runs-on: ubuntu-22.04
+    runs-on: windows-latest
     steps:
     - uses: actions/checkout@v4
     - name: Install Python
@@ -29,5 +29,5 @@ jobs:
         # tar -cvzf ubuntu-22.04_packet.tar.gz dist/main
     - uses: actions/upload-artifact@v4
       with:
-        name: ubuntu-22.04_packet
+        name: windows_x86-64_packet
         path: ./dist/main
