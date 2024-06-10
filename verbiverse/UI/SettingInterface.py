@@ -204,16 +204,16 @@ class SettingInterface(ScrollArea):
         )
 
         # update software
-        self.updateSoftwareGroup = SettingCardGroup(
-            self.tr("Software update"), self.scroll_widget
-        )
-        self.updateOnStartUpCard = SwitchSettingCard(
-            FIF.UPDATE,
-            self.tr("Check for updates when the application starts"),
-            self.tr("The new version will be more stable and have more features"),
-            configItem=cfg.checkUpdateAtStartUp,
-            parent=self.updateSoftwareGroup,
-        )
+        # self.updateSoftwareGroup = SettingCardGroup(
+        #     self.tr("Software update"), self.scroll_widget
+        # )
+        # self.updateOnStartUpCard = SwitchSettingCard(
+        #     FIF.UPDATE,
+        #     self.tr("Check for updates when the application starts"),
+        #     self.tr("The new version will be more stable and have more features"),
+        #     configItem=cfg.checkUpdateAtStartUp,
+        #     parent=self.updateSoftwareGroup,
+        # )
 
         # application
         self.aboutGroup = SettingCardGroup(self.tr("About"), self.scroll_widget)
@@ -222,30 +222,28 @@ class SettingInterface(ScrollArea):
             self.tr("Open help page"),
             FIF.HELP,
             self.tr("Help"),
-            self.tr(
-                "Discover new features and learn useful tips about PyQt-Fluent-Widgets"
-            ),
+            self.tr("Discover new features about Verbiverse."),
             self.aboutGroup,
         )
         self.feedbackCard = PrimaryPushSettingCard(
             self.tr("Provide feedback"),
             FIF.FEEDBACK,
             self.tr("Provide feedback"),
-            self.tr("Help us improve PyQt-Fluent-Widgets by providing feedback"),
+            self.tr("Help us improve Verbiverse by providing feedback"),
             self.aboutGroup,
         )
-        self.aboutCard = PrimaryPushSettingCard(
-            self.tr("Check update"),
-            FIF.INFO,
-            self.tr("About"),
-            "© "
-            + self.tr("Copyright")
-            + f" {YEAR}, {AUTHOR}. "
-            + self.tr("Version")
-            + " "
-            + VERSION,
-            self.aboutGroup,
-        )
+        # self.aboutCard = PrimaryPushSettingCard(
+        #     self.tr("Check update"),
+        #     FIF.INFO,
+        #     self.tr("About"),
+        #     "© "
+        #     + self.tr("Copyright")
+        #     + f" {YEAR}, {AUTHOR}. "
+        #     + self.tr("Version")
+        #     + " "
+        #     + VERSION,
+        #     self.aboutGroup,
+        # )
 
         self.__initWidget()
 
@@ -286,18 +284,18 @@ class SettingInterface(ScrollArea):
         self.personal_group.addSettingCard(self.zoomCard)
         self.personal_group.addSettingCard(self.languageCard)
 
-        self.updateSoftwareGroup.addSettingCard(self.updateOnStartUpCard)
+        # self.updateSoftwareGroup.addSettingCard(self.updateOnStartUpCard)
 
         self.aboutGroup.addSettingCard(self.helpCard)
         self.aboutGroup.addSettingCard(self.feedbackCard)
-        self.aboutGroup.addSettingCard(self.aboutCard)
+        # self.aboutGroup.addSettingCard(self.aboutCard)
 
         # add setting card group to layout
         self.expand_layout.setSpacing(28)
         self.expand_layout.setContentsMargins(36, 10, 36, 0)
         self.expand_layout.addWidget(self.function_info_group)
         self.expand_layout.addWidget(self.personal_group)
-        self.expand_layout.addWidget(self.updateSoftwareGroup)
+        # self.expand_layout.addWidget(self.updateSoftwareGroup)
         self.expand_layout.addWidget(self.aboutGroup)
 
     def __showRestartTooltip(self):

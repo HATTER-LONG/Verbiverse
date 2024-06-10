@@ -117,13 +117,10 @@ class Config(QConfig):
 YEAR = 2024
 AUTHOR = "Layton"
 VERSION = "0.1"
-HELP_URL = "https://qfluentwidgets.com"
-REPO_URL = "https://github.com/zhiyiYo/PyQt-Fluent-Widgets"
-EXAMPLE_URL = "https://github.com/zhiyiYo/PyQt-Fluent-Widgets/tree/PySide6/examples"
-FEEDBACK_URL = "https://github.com/zhiyiYo/PyQt-Fluent-Widgets/issues"
-RELEASE_URL = "https://github.com/zhiyiYo/PyQt-Fluent-Widgets/releases/latest"
-ZH_SUPPORT_URL = "https://qfluentwidgets.com/zh/price/"
-EN_SUPPORT_URL = "https://qfluentwidgets.com/price/"
+HELP_URL = "https://github.com/HATTER-LONG/Verbiverse"
+REPO_URL = "https://github.com/HATTER-LONG/Verbiverse"
+FEEDBACK_URL = "https://github.com/HATTER-LONG/Verbiverse/issues"
+RELEASE_URL = "https://github.com/HATTER-LONG/Verbiverse/releases/latest"
 
 
 cfg = Config()

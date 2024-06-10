@@ -250,7 +250,7 @@ class CWebView(FramelessWebEngineView):
 
     @Slot(str, str)
     def pinFlyout(self, title: str, content: str):
-        logger.debug(f"pin flyout {title}")
+        logger.debug(f"pin flyout {title} \n content{content}")
         self.explain_window = ExplainWindow(title, content)
         self.explain_window.show()
         self.explain_window.close_signal.connect(self.pinWindowClose)

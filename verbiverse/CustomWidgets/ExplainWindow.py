@@ -16,7 +16,7 @@ class ExplainWindow(QWidget, Ui_ExplainWindow):
         self.title = title
         self.content = content
         self.title_label.setText(title)
-        self.content_label.setText(title)
+        self.content_label.setText(content)
 
         self.close_button.setIcon(FIF.CLOSE)
         self.close_button.setFixedSize(32, 32)

@@ -99,7 +99,7 @@
     </message>
     <message>
         <location filename="../../UI/SettingInterface.py" line="149"/>
-        <location filename="../../UI/SettingInterface.py" line="314"/>
+        <location filename="../../UI/SettingInterface.py" line="312"/>
         <source>Choose folder</source>
         <translation>选择文件夹</translation>
     </message>
@@ -182,7 +182,7 @@
     </message>
     <message>
         <location filename="../../UI/SettingInterface.py" line="219"/>
-        <location filename="../../UI/SettingInterface.py" line="240"/>
+        <location filename="../../UI/SettingInterface.py" line="238"/>
         <source>About</source>
         <translation>关于</translation>
     </message>
@@ -197,43 +197,43 @@
         <translation>帮助</translation>
     </message>
     <message>
-        <location filename="../../UI/SettingInterface.py" line="227"/>
-        <source>Discover new features and learn useful tips about PyQt-Fluent-Widgets</source>
-        <translation>发现新功能并了解有关 PyQt-Fluent-Widgets 的使用技巧</translation>
+        <location filename="../../UI/SettingInterface.py" line="225"/>
+        <source>Discover new features about Verbiverse.</source>
+        <translation>发现有关 Verbiverse 的新功能</translation>
     </message>
     <message>
+        <location filename="../../UI/SettingInterface.py" line="232"/>
+        <source>Help us improve Verbiverse by providing feedback</source>
+        <translation>通过提供反馈帮助我们改进 Verbiverse</translation>
+    </message>
+    <message>
+        <location filename="../../UI/SettingInterface.py" line="229"/>
         <location filename="../../UI/SettingInterface.py" line="231"/>
-        <location filename="../../UI/SettingInterface.py" line="233"/>
         <source>Provide feedback</source>
         <translation>提供反馈</translation>
     </message>
     <message>
-        <location filename="../../UI/SettingInterface.py" line="234"/>
-        <source>Help us improve PyQt-Fluent-Widgets by providing feedback</source>
-        <translation>通过提供反馈帮助我们改进 PyQt-Fluent-Widgets</translation>
-    </message>
-    <message>
-        <location filename="../../UI/SettingInterface.py" line="238"/>
+        <location filename="../../UI/SettingInterface.py" line="236"/>
         <source>Check update</source>
         <translation>检查更新</translation>
     </message>
     <message>
-        <location filename="../../UI/SettingInterface.py" line="243"/>
+        <location filename="../../UI/SettingInterface.py" line="241"/>
         <source>Copyright</source>
         <translation>版权所有</translation>
     </message>
     <message>
-        <location filename="../../UI/SettingInterface.py" line="245"/>
+        <location filename="../../UI/SettingInterface.py" line="243"/>
         <source>Version</source>
         <translation>当前版本</translation>
     </message>
     <message>
-        <location filename="../../UI/SettingInterface.py" line="307"/>
+        <location filename="../../UI/SettingInterface.py" line="305"/>
         <source>Configuration takes effect after restart</source>
         <translation>配置在重启软件后生效</translation>
     </message>
     <message>
-        <location filename="../../UI/SettingInterface.py" line="306"/>
+        <location filename="../../UI/SettingInterface.py" line="304"/>
         <source>Updated successfully</source>
         <translation>更新成功</translation>
     </message>
