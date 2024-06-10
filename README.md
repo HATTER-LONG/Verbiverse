@@ -2,6 +2,11 @@
 
 **Verbiverse** 定位是使用 LLM 来辅助英语 PDF 阅读工具，并稍稍附带了一些英语学习的功能。
 
+## Usage
+
+1. 使用 poetry 安装依赖：`poetry install`
+2. 运行程序：`poetry run python main.py`
+
 ## Roadmap
 
 - 基本功能：
