@@ -1,9 +1,9 @@
 name: Ubuntu Packet
-run-name: ${{ github.actor }} packted by GitHub Actions 🚀
+run-name: Ubuntu Packted by GitHub Actions 🚀
 on: [push]
 jobs:
   ubuntu_packet:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
     - uses: actions/checkout@v4
     - name: Install Python
