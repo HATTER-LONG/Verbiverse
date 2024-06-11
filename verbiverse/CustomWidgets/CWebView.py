@@ -1,4 +1,5 @@
 import os
+import sys
 import urllib.parse
 from concurrent.futures import CancelledError
 
@@ -77,7 +78,11 @@ class CWebView(FramelessWebEngineView):
         Initializes the web view for displaying PDF documents.
         """
         self.m_fileDialog = None
-        script_directory = os.getcwd()
+        script_directory = ""
+        if getattr(sys, "frozen", False) and hasattr(sys, "_MEIPASS"):
+            script_directory = sys._MEIPASS
+        else:
+            script_directory = os.getcwd()
         self.pdf_js_path = os.path.join(
             script_directory, "PDF_js", "web", "viewer.html"
         ).replace("\\", "/")
