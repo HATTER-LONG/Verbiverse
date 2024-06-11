@@ -4,5 +4,5 @@
 .DS_*
 app
 back
-build
+# build
 dist
