@@ -77,7 +77,7 @@ class CWebView(FramelessWebEngineView):
         Initializes the web view for displaying PDF documents.
         """
         self.m_fileDialog = None
-        script_directory = os.path.dirname(os.path.abspath(__file__))
+        script_directory = os.getcwd()
         self.pdf_js_path = os.path.join(
             script_directory, "PDF_js", "web", "viewer.html"
         ).replace("\\", "/")

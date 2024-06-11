@@ -165,7 +165,3 @@ def main():
 
     logger.info("start finish...")
     app.exec()
-
-
-if __name__ == "__main__":
-    main()

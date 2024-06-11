@@ -3,9 +3,14 @@
 
 a = Analysis(
     ['main.py'],
-    pathex=['./verbiverse', './verbiverse/CustomWidgets', './verbiverse/UI', './verbiverse/Functions', './verbiverse/LLM', './verbiverse/resources'],
+    pathex=['./verbiverse',
+            './verbiverse/CustomWidgets',
+            './verbiverse/UI',
+            './verbiverse/Functions',
+            './verbiverse/LLM',
+            './verbiverse/resources'],
     binaries=[],
-    datas=[],
+    datas=[('./PDF_js', './PDF_js')],
     hiddenimports=[],
     hookspath=[],
     hooksconfig={},
@@ -21,7 +26,7 @@ exe = EXE(
     a.scripts,
     [],
     exclude_binaries=True,
-    name='main',
+    name='Verbiverse',
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,
@@ -32,6 +37,7 @@ exe = EXE(
     target_arch=None,
     codesign_identity=None,
     entitlements_file=None,
+    contents_directory='.',
 )
 coll = COLLECT(
     exe,
@@ -40,11 +46,11 @@ coll = COLLECT(
     strip=False,
     upx=True,
     upx_exclude=[],
-    name='main',
+    name='Verbiverse',
 )
 app = BUNDLE(
     coll,
-    name='main.app',
+    name='Verbiverse.app',
     icon=None,
     bundle_identifier=None,
 )

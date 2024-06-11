@@ -2,32 +2,32 @@ name: Windows Packet
 run-name: Windows Packted by GitHub Actions 🚀
 on: [push]
 jobs:
-  ubuntu_packet:
+  windows_packet:
     runs-on: windows-latest
     steps:
-    - uses: actions/checkout@v4
-    - name: Install Python
-      uses: actions/setup-python@v5
-      with: 
-        python-version: '3.11'
-    - name: Install Poetry
-      uses: abatilo/actions-poetry@v3.0.0
-    - name: Setup a local virtual environment (if no poetry.toml file)
-      run: |
-        poetry config virtualenvs.create true --local
-        poetry config virtualenvs.in-project true --local
-    - uses: actions/cache@v3
-      name: Define a cache for the virtual environment based on the dependencies lock file
-      with:
-        path: ./.venv
-        key: venv-${{ hashFiles('poetry.lock') }}
-    - name: Install the project dependencies
-      run: poetry install
-    - name: Packet
-      run: | 
-        poetry run pyinstaller main.spec
-        # tar -cvzf ubuntu-22.04_packet.tar.gz dist/main
-    - uses: actions/upload-artifact@v4
-      with:
-        name: windows_x86-64_packet
-        path: ./dist/main
+      - uses: actions/checkout@v4
+      - name: Install Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install Poetry
+        uses: abatilo/actions-poetry@v3.0.0
+      - name: Setup a local virtual environment (if no poetry.toml file)
+        run: |
+          poetry config virtualenvs.create true --local
+          poetry config virtualenvs.in-project true --local
+      - uses: actions/cache@v3
+        name: Define a cache for the virtual environment based on the dependencies lock file
+        with:
+          path: ./.venv
+          key: venv-${{ hashFiles('poetry.lock') }}
+      - name: Install the project dependencies
+        run: poetry install
+      - name: Packet
+        run: |
+          poetry run pyinstaller main.spec
+          # tar -cvzf ubuntu-22.04_packet.tar.gz dist/main
+      - uses: actions/upload-artifact@v4
+        with:
+          name: windows_x86-64_packet
+          path: ./dist/Verbiverse
