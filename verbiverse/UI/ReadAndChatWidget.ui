@@ -32,7 +32,7 @@
       <enum>Qt::Horizontal</enum>
      </property>
      <property name="handleWidth">
-      <number>15</number>
+      <number>5</number>
      </property>
      <widget class="CWebView" name="web_view">
       <property name="minimumSize">

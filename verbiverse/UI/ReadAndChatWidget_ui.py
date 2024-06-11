@@ -33,7 +33,7 @@ class Ui_ReadAndChatWidget(object):
         self.splitter = QSplitter(ReadAndChatWidget)
         self.splitter.setObjectName(u"splitter")
         self.splitter.setOrientation(Qt.Horizontal)
-        self.splitter.setHandleWidth(15)
+        self.splitter.setHandleWidth(5)
         self.web_view = CWebView(self.splitter)
         self.web_view.setObjectName(u"web_view")
         self.web_view.setMinimumSize(QSize(500, 0))

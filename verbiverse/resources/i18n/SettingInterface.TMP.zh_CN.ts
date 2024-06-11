@@ -147,23 +147,19 @@
         <translation>选择界面所使用的语言</translation>
     </message>
     <message>
-        <location filename="../../UI/SettingInterface.py" line="208"/>
         <source>Software update</source>
-        <translation>软件更新</translation>
+        <translation type="vanished">软件更新</translation>
     </message>
     <message>
-        <location filename="../../UI/SettingInterface.py" line="212"/>
         <source>Check for updates when the application starts</source>
-        <translation>在应用程序启动时检查更新</translation>
+        <translation type="vanished">在应用程序启动时检查更新</translation>
     </message>
     <message>
-        <location filename="../../UI/SettingInterface.py" line="213"/>
         <source>The new version will be more stable and have more features</source>
-        <translation>新版本将更加稳定并拥有更多功能（建议启用此选项）</translation>
+        <translation type="vanished">新版本将更加稳定并拥有更多功能（建议启用此选项）</translation>
     </message>
     <message>
         <location filename="../../UI/SettingInterface.py" line="219"/>
-        <location filename="../../UI/SettingInterface.py" line="238"/>
         <source>About</source>
         <translation>关于</translation>
     </message>
@@ -194,19 +190,16 @@
         <translation>提供反馈</translation>
     </message>
     <message>
-        <location filename="../../UI/SettingInterface.py" line="236"/>
         <source>Check update</source>
-        <translation>检查更新</translation>
+        <translation type="vanished">检查更新</translation>
     </message>
     <message>
-        <location filename="../../UI/SettingInterface.py" line="241"/>
         <source>Copyright</source>
-        <translation>版权所有</translation>
+        <translation type="vanished">版权所有</translation>
     </message>
     <message>
-        <location filename="../../UI/SettingInterface.py" line="243"/>
         <source>Version</source>
-        <translation>当前版本</translation>
+        <translation type="vanished">当前版本</translation>
     </message>
     <message>
         <location filename="../../UI/SettingInterface.py" line="305"/>
