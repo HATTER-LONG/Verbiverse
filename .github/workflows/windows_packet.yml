@@ -1,6 +1,10 @@
 name: Windows Packet
 run-name: Windows Packted by GitHub Actions 🚀
-on: [push]
+on:
+  push:
+    branches:
+      - main
+      - "release/**"
 jobs:
   windows_packet:
     runs-on: windows-latest

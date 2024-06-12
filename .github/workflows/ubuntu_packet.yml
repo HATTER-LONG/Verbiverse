@@ -1,6 +1,10 @@
 name: Ubuntu Packet
 run-name: Ubuntu Packted by GitHub Actions 🚀
-on: [push]
+on:
+  push:
+    branches:
+      - main
+      - "release/**"
 jobs:
   ubuntu_packet:
     runs-on: ubuntu-22.04
