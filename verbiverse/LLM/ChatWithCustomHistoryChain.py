@@ -1,6 +1,11 @@
 from Functions.SignalBus import signalBus
 from langchain_core.prompts import PromptTemplate
-from LLMServerInfo import getChatModelByCfg, getCheckPrompt
+from LLMServerInfo import (
+    getChatModelByCfg,
+    getCheckPrompt,
+    getMotherTongue,
+    getTargetLanguage,
+)
 from ModuleLogger import logger
 
 
@@ -28,6 +33,9 @@ class ChatLLMWithCustomHistory:
             logger.error("get chat model error: %s", e)
             return
 
+        self.target_language = getTargetLanguage()
+        self.answer_language = getMotherTongue()
+
         self.content = getCheckPrompt()
 
         self.prompt = PromptTemplate.from_template(self.content)
@@ -50,5 +58,10 @@ class ChatLLMWithCustomHistory:
         :param message: A string representing the message to send to the chat model.
         :return: A generator yielding the responses from the chat model.
         """
-        msg = {"data": message, "history": self.chat_history_for_chain}
+        msg = {
+            "data": message,
+            "history": self.chat_history_for_chain,
+            "language": self.target_language,
+            "answer_language": self.answer_language,
+        }
         return self.chain.stream(msg)
