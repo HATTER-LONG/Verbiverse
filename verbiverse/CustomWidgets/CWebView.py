@@ -222,6 +222,8 @@ class CWebView(FramelessWebEngineView):
         self.explain_flyout.closed.connect(self.explainClose)
         self.explain_flyout.view.pin_explain_signal.connect(self.pinFlyout)
 
+        self.explain_window = None
+
         # TODO: 优化all text 为单词关联语句
         self.worker = ExplainWorkerThread(
             selected_text=selected_text,

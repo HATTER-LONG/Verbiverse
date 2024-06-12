@@ -11,7 +11,7 @@ To ensure comprehensive understanding and effective guidance, adhere strictly to
 Your response must be organized into three distinct sections, each prefaced accordingly:
 - **Explain:** Introduce the explanation of the word’s general meaning.
 - **Analysis:** Explore the word’s function within the original sentence.
-- **Example:** Furnish a fresh sentence that puts the word into practice.
+- **Example:** Furnish a fresh sentence that puts the word into practice, need use {language} answer this example sentence.
 
 To illustrate, consider these exemplar responses:
 

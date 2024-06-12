@@ -48,7 +48,16 @@ def getCheckPrompt() -> str:
 
     :return: The check prompt as a string.
     """
-    return __getPromptResource(":/prompt/check_CN.txt")
+    language = qconfig.get(cfg.mother_tongue)
+
+    logger.info(f"check prompt for {language} -> :/prompt/check_{language}.txt")
+    try:
+        return __getPromptResource(f":/prompt/check_{language}.txt")
+    except Exception:
+        logger.warning(
+            f"Not found explain prompt for {language} -> :/prompt/explain_{language}.txt. Used default prompt"
+        )
+        return __getPromptResource(":/prompt/check_prompt.txt")
 
 
 # Retrieves the translate by English prompt text from a resource
