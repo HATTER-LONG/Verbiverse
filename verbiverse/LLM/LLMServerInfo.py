@@ -80,29 +80,39 @@ def getTranslateByCNPrompt() -> str:
     return __getPromptResource(":/prompt/translate_CN.txt")
 
 
-def __getExplainPromptByLanguage(language: str) -> str:
+def __getExplainPromptByLanguage(prompt: str, default_prompt: str) -> str:
     try:
-        return __getPromptResource(f":/prompt/explain_{language}.txt")
+        return __getPromptResource(prompt)
     except Exception:
         logger.warning(
-            f"Not found explain prompt for {language} -> :/prompt/explain_{language}.txt. Used default prompt"
+            f"Not found explain prompt for {prompt}. Used default {default_prompt}"
         )
-        return __getPromptResource(":/prompt/explain_prompt.txt")
+        return __getPromptResource(default_prompt)
 
 
-def getExplainPrompt(answer_language: ExplainLanguage = None) -> str:
+def getExplainPrompt(
+    answer_language: ExplainLanguage = None, is_sentence: bool = False
+) -> str:
+    explain_prefix = "explain"
+    explain_default_prompt = ":/prompt/explain_prompt.txt"
+    if is_sentence:
+        explain_prefix = "explain_sentence"
+        explain_default_prompt = ":/prompt/explain_sentence_prompt.txt"
+
     if answer_language == ExplainLanguage.TARGET_LANGUAGE:
         language = qconfig.get(cfg.target_language)
-        logger.info(
-            f"explain prompt for target {language} -> :/prompt/explain_{language}.txt"
+        prompt_name = f":/prompt/{explain_prefix}_{language}.txt"
+        logger.info(f"explain prompt for target {language} -> {prompt_name}")
+        return __getExplainPromptByLanguage(
+            prompt_name, default_prompt=explain_default_prompt
         )
-        return __getExplainPromptByLanguage(language)
     elif answer_language == ExplainLanguage.MOTHER_TONGUE:
         language = qconfig.get(cfg.mother_tongue)
-        logger.info(
-            f"explain prompt for mother tongue {language} -> :/prompt/explain_{language}.txt"
+        prompt_name = f":/prompt/{explain_prefix}_{language}.txt"
+        logger.info(f"explain prompt for target {language} -> {prompt_name}")
+        return __getExplainPromptByLanguage(
+            prompt_name, default_prompt=explain_default_prompt
         )
-        return __getExplainPromptByLanguage(language)
     else:
         return __getPromptResource(":/prompt/explain_prompt.txt")
 

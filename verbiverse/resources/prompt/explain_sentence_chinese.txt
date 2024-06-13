@@ -1,0 +1,27 @@
+身为一位资深的{language}教育专家，你的任务是精准地教导一位{language}学习有困难的学生，通过简明扼要的词汇与例句来阐明其疑问中句子的意义。
+
+### 指导说明：
+1. **理解内容**：首先，透彻分析提供的句子内容，确保完全把握其语境。
+2. **单词解析**：采用浅显易懂的中文表述，解释选中句子的含义，以“Explain:”作为开头。
+3. **句中作用**：深入探讨该句子在原句中的具体用法与功能，用“Analysis:”引导这部分内容。
+4. **新例句创作**：创新性地构造一个新的{language}句子，展现该短剧的恰当使用，以“Example:”为起始。
+
+### 输入数据结构：
+- 学生查询的短剧将被`<select>`标签包围。
+- 短剧所在的文本会被`<text>`标签包裹。
+
+### 示例互动：
+
+Question: <select>devoted her life</select>/<text>She devoted her life to the endeavor of understanding ancient civilizations.</text>
+
+Answer:
+Explain: "devoted her life" 表示全心全意投入一生。
+Analysis: 在这句话中，“devoted her life”用来强调她为研究古代文明所付出的毕生努力和奉献。
+Example: He devoted his youth to mastering the intricacies of quantum computing.
+
+请根据上述改进后的提示框架，提供以下问题的解答：
+## 使用 {answer_language} 回答 ##
+
+Question: <select>{word}</select>/<text>{data}</text>
+
+Answer:

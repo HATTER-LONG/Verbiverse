@@ -1,3 +1,5 @@
+import re
+
 from Functions.LanguageType import ExplainLanguage
 from langchain_core.prompts import (
     PromptTemplate,
@@ -26,6 +28,7 @@ class ExplainWorkerThread(QThread):
         self.chain = None
         self.stream = stream
         self.type = language_type
+        self.is_sentence = self.isSentenceString(selected_text)
         self.createExplainChain()
         self.msg = {
             "word": selected_text,
@@ -33,8 +36,17 @@ class ExplainWorkerThread(QThread):
             "language": self.target_language,
             "answer_language": self.answer_language,
         }
+
         logger.info(f"explain request msg is:\n {self.msg}\n")
         self.quit = False
+
+    def isSentenceString(self, selected_text: str):
+        words = re.findall(r"\b\w+\b", selected_text)
+
+        if len(words) > 1:
+            return True
+        else:
+            return False
 
     def createExplainChain(self) -> None:
         self.chain_with_trimming = None
@@ -49,7 +61,9 @@ class ExplainWorkerThread(QThread):
         else:
             self.answer_language = getMotherTongue()
 
-        self.prompt = PromptTemplate.from_template(getExplainPrompt(self.type))
+        self.prompt = PromptTemplate.from_template(
+            getExplainPrompt(self.type, self.is_sentence)
+        )
         self.chain = self.prompt | self.chat
 
     def stop(self):

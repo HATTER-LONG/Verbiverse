@@ -29,6 +29,8 @@ PROMPT_TASK_LIST = {
     "chat_prompt.txt": "help me to improve a new language skill by chat",
     "explain_prompt.txt": "explain the new language input data mean and output structed data",
     "explain_chinese.txt": "explain the new language input data mean and output structed data",
+    "explain_sentence_prompt.txt": "explain the new language input data mean and output structed data",
+    "explain_sentence_chinese.txt": "explain the new language input data mean and output structed data",
     "check_prompt.txt": "Check the input sentence for errors and output the result in the format",
     "check_chinese.txt": "Check the input sentence for errors and output the result in the format",
 }
