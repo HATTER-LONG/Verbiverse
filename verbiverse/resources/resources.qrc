@@ -5,6 +5,8 @@
 		<file>prompt/check_chinese.txt</file>
 		<file>prompt/explain_prompt.txt</file>
 		<file>prompt/explain_chinese.txt</file>
+		<file>prompt/explain_sentence_prompt.txt</file>
+		<file>prompt/explain_sentence_chinese.txt</file>
 
 		<file>qss/dark/gallery_interface.qss</file>
 		<file>qss/dark/home_interface.qss</file>
