@@ -1,10 +1,13 @@
+from typing import Union
+
+from PySide6.QtGui import QImage, QPixmap
 from PySide6.QtWidgets import QFrame
 from qfluentwidgets import FluentStyleSheet
 from UI import Ui_MessageBox
 
 
 class CMessageBox(QFrame, Ui_MessageBox):
-    def __init__(self, image: str, name: str, parent=None):
+    def __init__(self, image: Union[str, QPixmap, QImage], name: str, parent=None):
         super().__init__(parent)
         self.setupUi(self)
         self.user_image.setImage(image)

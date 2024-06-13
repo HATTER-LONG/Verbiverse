@@ -4,7 +4,7 @@ from Functions.Config import cfg
 from Functions.Log import get_logger
 from Functions.SignalBus import signalBus
 from PySide6.QtCore import Qt, QTranslator, Slot
-from PySide6.QtGui import QFontDatabase
+from PySide6.QtGui import QFontDatabase, QIcon
 from PySide6.QtWidgets import (
     QApplication,
     QFrame,
@@ -87,6 +87,9 @@ class MainWindow(FluentWindow):
 
     def initWindow(self):
         self.resize(1000, 800)
+
+        self.setWindowIcon(QIcon(":/images/logo.png"))
+        self.setWindowTitle("Verbiverse")
         self.setCustomBackgroundColor(*FluentBackgroundTheme.DEFAULT_BLUE)
 
         self.setMicaEffectEnabled(cfg.get(cfg.mica_enabled))

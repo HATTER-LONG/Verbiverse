@@ -1,7 +1,5 @@
 <RCC version="1.0">
 	<qresource>
-	</qresource>
-	<qresource>
 		<file>prompt/chat_prompt.txt</file>
 		<file>prompt/check_prompt.txt</file>
 		<file>prompt/check_chinese.txt</file>
@@ -32,10 +30,12 @@
 
 		<file>images/github_rebot.png</file>
 		<file>images/banner_1920.png</file>
+		<file>images/logo.png</file>
+		<file>images/robot_nobg.png</file>
+		<file>images/human_nobg.png</file>
 
 		<file>fonts/Segoe UI.ttf</file>
 		<file>fonts/Segoe UI Semibold.ttf</file>
 		<file>fonts/MSYH.ttf</file>
-
 	</qresource>
 </RCC>

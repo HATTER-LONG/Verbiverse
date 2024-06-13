@@ -1,6 +1,7 @@
 from CustomWidgets import LinkCardView, StyleSheet
 from Functions.Config import REPO_URL
 from Functions.SignalBus import signalBus
+from ModuleLogger import logger
 from PySide6.QtCore import (
     QRectF,
     QStandardPaths,
@@ -65,7 +66,7 @@ class BannerWidget(QWidget):
 
     # TODO: add process dialogs
     def processCall(self, process: int):
-        print("get process: ", process)
+        logger.debug(f"Open local pdf file process: {process}")
         if process == 100:
             signalBus.switch_page_signal.emit("ReadAndChatWidget")
 

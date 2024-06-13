@@ -43,6 +43,7 @@ coll = COLLECT(
     exe,
     a.binaries,
     a.datas,
+    icon='./icons/logo.png',
     strip=False,
     upx=True,
     upx_exclude=[],
@@ -51,6 +52,6 @@ coll = COLLECT(
 app = BUNDLE(
     coll,
     name='Verbiverse.app',
-    icon=None,
+    icon='./icons/logo.png',
     bundle_identifier=None,
 )
