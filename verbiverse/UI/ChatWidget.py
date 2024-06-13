@@ -48,12 +48,12 @@ class ChatWidget(QWidget, Ui_ChatWidget):
         self.user_text_edit.setText("")
 
         if message_text:
-            message_label1 = CMessageBox(":/images/github_rebot.png", "User", self)
+            message_label1 = CMessageBox(":/images/human_nobg.png", "User", self)
             message_label1.setMessageText(message_text)
             self.messages_list.addWidget(message_label1)
 
             self.need_update_label = CMessageBox(
-                ":/images/github_rebot.png", "Robot", self
+                ":/images/robot_nobg.png", "Robot", self
             )
             self.messages_list.addWidget(self.need_update_label)
 

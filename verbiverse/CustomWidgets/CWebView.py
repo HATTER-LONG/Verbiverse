@@ -101,6 +101,8 @@ class CWebView(FramelessWebEngineView):
         self.pdf_reader: PdfReader = None
         self.error_message = None
 
+        self.already_connect_loadprocess_signal = False
+
     def themeChanged(self):
         # TODO: https://github.com/shivaprsd/doq use this to support pdf dark mode
         if isDarkTheme():
@@ -159,8 +161,14 @@ class CWebView(FramelessWebEngineView):
                 f"open url: [file:///{self.pdf_js_path}?file={self.pdf_path}#page={self.pdf_current_page}]"
             )
 
-            self.loadStarted.connect(lambda: signalBus.load_localfile_signal.emit(0))
-            self.loadFinished.connect(lambda: signalBus.load_localfile_signal.emit(100))
+            if not self.already_connect_loadprocess_signal:
+                self.loadStarted.connect(
+                    lambda: signalBus.load_localfile_signal.emit(0)
+                )
+                self.loadFinished.connect(
+                    lambda: signalBus.load_localfile_signal.emit(100)
+                )
+                self.already_connect_loadprocess_signal = True
 
             url = QUrl.fromUserInput(
                 f"file:///{self.pdf_js_path}?file={self.pdf_path}#page={self.pdf_current_page}"
