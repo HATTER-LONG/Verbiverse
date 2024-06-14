@@ -22,8 +22,8 @@ class ChatWidget(QWidget, Ui_ChatWidget):
         # 必须给内部的视图也加上透明背景样式
         self.scroll_area_widget.setStyleSheet("QWidget{background: transparent}")
 
-        self.chat_chain = ChatChain()
-        self.check_chain = ChatLLMWithCustomHistory()
+        self.chat_chain = None
+        self.check_chain = None
         self.chat_worker = ChatWorkThread()
         self.chat_worker.finished.connect(self.workerThreadFinish)
         self.chat_worker.started.connect(self.workerThreadStart)
@@ -38,6 +38,14 @@ class ChatWidget(QWidget, Ui_ChatWidget):
         self.user_send_button.clicked.connect(self.sendMessage)
         self.user_check_button.clicked.connect(self.checkInput)
 
+    def initChatChain(self):
+        if self.chat_chain is None:
+            self.chat_chain = ChatChain()
+
+    def initCheckChain(self):
+        if self.check_chain is None:
+            self.check_chain = ChatLLMWithCustomHistory()
+
     @Slot()
     def sendMessage(self):
         if self.need_update_label is not None:
@@ -48,6 +56,7 @@ class ChatWidget(QWidget, Ui_ChatWidget):
         self.user_text_edit.setText("")
 
         if message_text:
+            self.initChatChain()
             message_label1 = CMessageBox(":/images/human_nobg.png", "User", self)
             message_label1.setMessageText(message_text)
             self.messages_list.addWidget(message_label1)
@@ -68,6 +77,7 @@ class ChatWidget(QWidget, Ui_ChatWidget):
         self.user_check_button.setEnabled(False)
         message_text = self.user_text_edit.toPlainText()
         if message_text:
+            self.initChatChain()
             self.need_update_label = CMessageBox(
                 ":/images/github_rebot.png", "Robot Checker", self
             )

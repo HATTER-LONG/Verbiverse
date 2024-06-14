@@ -24,12 +24,6 @@ from qfluentwidgets import (
 )
 from qfluentwidgets import FluentIcon as FIF
 from resources import resources_rc  # noqa: F401
-from UI import (
-    # CMessageBox,
-    HomeInterface,
-    ReadAndChatWidget,
-    SettingInterface,
-)
 
 
 class Widget(QFrame):
@@ -50,8 +44,15 @@ class Widget(QFrame):
 class MainWindow(FluentWindow):
     def __init__(self):
         super().__init__()
-        QFontDatabase.addApplicationFont(":/fonts/Segoe UI.ttf")
-        QFontDatabase.addApplicationFont(":/fonts/Segoe UI Semibold.ttf")
+
+        from UI import (
+            HomeInterface,
+            ReadAndChatWidget,
+            SettingInterface,
+        )
+
+        # QFontDatabase.addApplicationFont(":/fonts/Segoe UI.ttf")
+        # QFontDatabase.addApplicationFont(":/fonts/Segoe UI Semibold.ttf")
         # QFontDatabase.addApplicationFont(":/fonts/MSYH.ttf")
         self.interfaceList = []
         self.home_page = HomeInterface(self)

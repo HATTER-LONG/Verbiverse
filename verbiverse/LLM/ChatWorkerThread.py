@@ -1,3 +1,5 @@
+from Functions.ErrorString import error_string
+from Functions.SignalBus import signalBus
 from ModuleLogger import logger
 from PySide6.QtCore import QThread, Signal, Slot
 
@@ -56,12 +58,20 @@ class ChatWorkThread(QThread):
         if self.chat_chain is None or self.message is None:
             logger.error("Chat chain or message is not set")
             return
-        if self.stream:
-            content = self.chat_chain.stream(self.message)
-            for chunk in content:
-                self.messageCallBackSignal.emit(chunk.content)
-        else:
-            content = self.chat_chain.invoke(self.message)
-            self.messageCallBackSignal.emit(
-                content
-            )  # Changed 'chunk.content' to 'content' since it's not a chunk anymore
+        try:
+            if self.stream:
+                content = self.chat_chain.stream(self.message)
+                # LLM chain not ready
+                if content is None:
+                    return
+                for chunk in content:
+                    self.messageCallBackSignal.emit(chunk.content)
+            else:
+                content = self.chat_chain.invoke(self.message)
+                # LLM chain not ready
+                if content is None:
+                    return
+                self.messageCallBackSignal.emit(content)
+        except Exception as e:
+            logger.error("Error while running chat thread: %s", e)
+            signalBus.error_signal.emit(error_string.NO_VALID_LLM + ": " + str(e))
