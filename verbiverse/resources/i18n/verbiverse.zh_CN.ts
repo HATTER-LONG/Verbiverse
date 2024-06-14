@@ -2,6 +2,15 @@
 <!DOCTYPE TS>
 <TS version="2.1" language="zh_CN">
 <context>
+    <name>CWebView</name>
+    <message>
+        <location filename="../../CustomWidgets/CWebView.py" line="134"/>
+        <source>Need wait last loader stop, maybe cost some time!!!</source>
+        <translation>需要等待上一次文档加载停止，可能需要些时间！</translation>
+    </message>
+</context>
+
+<context>
     <name>ChatWidget</name>
     <message>
         <location filename="../../UI/ChatWidget.ui" line="14"/>
@@ -268,6 +277,30 @@
         <location filename="../../CustomWidgets/CContexMenu.py" line="45"/>
         <source>Select all</source>
         <translation>全选</translation>
+    </message>
+</context>
+
+<context>
+    <name>ErrorString</name>
+    <message>
+        <location filename="../../Functions/ErrorString.py" line="9"/>
+        <source>LLM config invalid. Please set it in the configuration interface:</source>
+        <translation>LLM 配置无效，请检查相关配置：</translation>
+    </message>
+    <message>
+        <location filename="../../Functions/ErrorString.py" line="12"/>
+        <source>No valid LLM name was found. Please set it in the configuration interface.</source>
+        <translation>LLM 模型名称无效，请在配置页面设置正确的名称。</translation>
+    </message>
+    <message>
+        <location filename="../../Functions/ErrorString.py" line="15"/>
+        <source>No valid LLM API was found. Please set it in the configuration interface.</source>
+        <translation>LLM 密钥无效，请在配置页面设置正确的密钥。</translation>
+    </message>
+    <message>
+        <location filename="../../Functions/ErrorString.py" line="20"/>
+        <source>No valid LLM URL was found. Please set it in the configuration interface.</source>
+        <translation>LLM 代理 URL 无效，请在配置页面设置正确的代理。</translation>
     </message>
 </context>
 

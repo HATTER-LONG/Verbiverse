@@ -1,5 +1,6 @@
 from Functions.Config import cfg
 from Functions.LanguageType import ExplainLanguage
+from Functions.SignalBus import signalBus
 from ModuleLogger import logger
 from OpenAI import getOpenAIChatModel
 from PySide6.QtCore import QFile, QIODevice
@@ -128,12 +129,16 @@ def getExplainByCNPrompt() -> str:
 def getChatModelByCfg():
     chat = None
     provider = qconfig.get(cfg.provider)
-    if provider == "openai":
-        chat = getOpenAIChatModel()
-    elif provider == "tongyi":
-        chat = getTongYiChatModel()
-    else:
-        raise Exception(f"Not supported {provider} for now")
+    try:
+        if provider == "openai":
+            chat = getOpenAIChatModel()
+        elif provider == "tongyi":
+            chat = getTongYiChatModel()
+        else:
+            raise Exception(f"Not supported {provider} for now")
+    except Exception as e:
+        signalBus.error_signal.emit(str(e))
+        raise e
     return chat
 
 

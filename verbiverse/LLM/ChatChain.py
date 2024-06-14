@@ -63,7 +63,7 @@ class ChatChain:
     def invoke(self, message):
         if self.chain_with_trimming is None:
             logger.warn("chat chain is not ready")
-            return
+            return None
         msg = {"input": message}
         return self.chain_with_trimming.invoke(
             msg,
@@ -73,7 +73,7 @@ class ChatChain:
     def stream(self, message):
         if self.chain_with_trimming is None:
             logger.warn("chat chain is not ready")
-            return
+            return None
 
         msg = {"input": message, "language": self.language}
         return self.chain_with_trimming.stream(

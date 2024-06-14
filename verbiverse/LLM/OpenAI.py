@@ -1,20 +1,29 @@
 from Functions.Config import cfg
+from Functions.ErrorString import error_string
 from langchain_openai import ChatOpenAI, OpenAI
 from ModuleLogger import logger
 from qfluentwidgets import qconfig
 
 
-def getOpenAIChatModel() -> ChatOpenAI:
+def getConfig() -> (str, str, str):
     api_key = qconfig.get(cfg.user_key)
     api_url = qconfig.get(cfg.provider_url)
     model = qconfig.get(cfg.model_name)
 
-    logger.info("OpenAI Chat model: %s", model)
-    logger.info("OpenAI Chat API url: %s", api_url)
+    logger.info("OpenAI model: %s", model)
+    logger.info("OpenAI API url: %s", api_url)
+    if model == "":
+        raise Exception(error_string.NO_VALID_LLM_NAME)
     if api_key == "":
-        raise Exception(
-            "No OpenAI API key found, please set your key in the config file."
-        )
+        raise Exception(error_string.NO_VALID_LLM_API)
+    if api_url == "":
+        raise Exception(error_string.NO_VALID_LLM_URL)
+
+    return api_key, api_url, model
+
+
+def getOpenAIChatModel() -> ChatOpenAI:
+    api_key, api_url, model = getConfig()
 
     return ChatOpenAI(
         model_name=model,
@@ -25,12 +34,7 @@ def getOpenAIChatModel() -> ChatOpenAI:
 
 
 def getOpenAILLMModel() -> OpenAI:
-    api_key = qconfig.get(cfg.user_key)
-    api_url = qconfig.get(cfg.provider_url)
-    model = qconfig.get(cfg.model_name)
-
-    logger.info("OpenAI LLM model: %s", model)
-    logger.info("OpenAI LLM API url: %s", api_url)
+    api_key, api_url, model = getConfig()
 
     return OpenAI(
         model_name=model,
