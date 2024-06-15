@@ -8,11 +8,17 @@ from ModuleLogger import logger
 
 
 class ChatChain:
+    """Chat LLM with message history"""
     def __init__(self):
         self.createChatChain()
         signalBus.llm_config_change_signal.connect(self.createChatChain)
 
     def createChatChain(self) -> None:
+        """
+        A function that creates a chat chain by initializing various attributes and objects.
+        This function sets up the chat model, target language, chat prompt, and message history for the chain.
+        It then creates a chain with message history and applies trimming functionality to it.
+        """
         self.chain_with_trimming = None
         try:
             self.chat = getChatModelByCfg()
@@ -50,6 +56,15 @@ class ChatChain:
         )
 
     def trim_messages(self, jchain_input):
+        """
+        Trims the messages in the `demo_ephemeral_chat_history_for_chain` attribute to the last 10 messages.
+        
+        Args:
+            jchain_input (Any): The input for the function. Currently not used.
+        
+        Returns:
+            bool: True if the messages were successfully trimmed, False otherwise.
+        """
         stored_messages = self.demo_ephemeral_chat_history_for_chain.messages
         if len(stored_messages) <= 10:
             return False
@@ -61,6 +76,15 @@ class ChatChain:
         return True
 
     def invoke(self, message):
+        """
+        Invokes the chat chain with the given message.
+
+        Args:
+            message (str): The message to be sent to the chat chain.
+
+        Returns:
+            str or None: The content of the response from the chat chain, or None if the chat chain is not ready.
+        """
         if self.chain_with_trimming is None:
             logger.warn("chat chain is not ready")
             return None
@@ -71,6 +95,15 @@ class ChatChain:
         ).content
 
     def stream(self, message):
+        """
+        Stream the given message through the chat chain.
+
+        Args:
+            message (str): The message to be streamed.
+
+        Returns:
+            Any: The streamed content from the chat chain, or None if the chat chain is not ready.
+        """
         if self.chain_with_trimming is None:
             logger.warn("chat chain is not ready")
             return None

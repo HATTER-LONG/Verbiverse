@@ -11,16 +11,22 @@ from TongYiQWen import getTongYiChatModel
 # Helper function to load a resource from the specified path with error handling
 def __getPromptResource(prompt_name: str) -> str:
     """
-    Loads a text file from the resources directory, given its name.
+    Retrieves the content of a resource file specified by `prompt_name`.
 
     Args:
-        prompt_name (str): The name of the text file without the file extension.
+        prompt_name (str): The path to the resource file.
 
     Returns:
-        str: Content of the file as a string.
+        str: The content of the resource file.
 
     Raises:
-        FileNotFoundError: If the file cannot be opened.
+        FileNotFoundError: If the resource file cannot be opened.
+
+    This function opens a resource file specified by `prompt_name` and reads its content. It uses the `QFile` class from the PySide6 library to open the file in read-only mode with text encoding. If the file is successfully opened, the content is read and returned. If the file cannot be opened, a `FileNotFoundError` is raised with an error message indicating the reason for the failure.
+
+    Example:
+        >>> __getPromptResource("path/to/resource.txt")
+        "This is the content of the resource file."
     """
     content = ""
     file = QFile(prompt_name)
@@ -34,21 +40,11 @@ def __getPromptResource(prompt_name: str) -> str:
 
 # Retrieves the chat prompt text from a resource
 def getChatPrompt() -> str:
-    """
-    Loads the chat prompt text from the resources directory.
-
-    :return: The chat prompt as a string.
-    """
     return __getPromptResource(":/prompt/chat_prompt.txt")
 
 
 # Retrieves the check prompt text from a resource
 def getCheckPrompt() -> str:
-    """
-    Loads the check prompt text from the resources directory.
-
-    :return: The check prompt as a string.
-    """
     language = qconfig.get(cfg.mother_tongue)
 
     logger.info(f"check prompt for {language} -> :/prompt/check_{language}.txt")
@@ -62,26 +58,18 @@ def getCheckPrompt() -> str:
 
 
 # Retrieves the translate by English prompt text from a resource
-def getTranslateByENPrompt() -> str:
-    """
-    Loads the translation prompt for English from the resources directory.
-
-    :return: The translation prompt for English as a string.
-    """
-    return __getPromptResource(":/prompt/translate_EN.txt")
-
-
-# Retrieves the translate by Chinese prompt text from a resource
-def getTranslateByCNPrompt() -> str:
-    """
-    Loads the translation prompt for Chinese from the resources directory.
-
-    :return: The translation prompt for Chinese as a string.
-    """
-    return __getPromptResource(":/prompt/translate_CN.txt")
-
 
 def __getExplainPromptByLanguage(prompt: str, default_prompt: str) -> str:
+    """
+    Retrieves the explain prompt for a specific language based on the provided prompt name.
+    
+    Args:
+        prompt (str): The prompt name to retrieve.
+        default_prompt (str): The default prompt to use if the specified prompt is not found.
+    
+    Returns:
+        str: The explain prompt text based on the provided prompt or the default prompt if not found.
+    """
     try:
         return __getPromptResource(prompt)
     except Exception:
@@ -94,6 +82,23 @@ def __getExplainPromptByLanguage(prompt: str, default_prompt: str) -> str:
 def getExplainPrompt(
     answer_language: ExplainLanguage = None, is_sentence: bool = False
 ) -> str:
+    """
+    Retrieves the explain prompt based on the specified answer language and sentence type.
+
+    Args:
+        answer_language (ExplainLanguage, optional): The language to use for the explain prompt. Defaults to None.
+        is_sentence (bool, optional): Flag indicating whether the prompt is for a sentence. Defaults to False.
+
+    Returns:
+        str: The explain prompt.
+
+    Raises:
+        None
+
+    Examples:
+        >>> getExplainPrompt(answer_language=ExplainLanguage.TARGET_LANGUAGE)
+        "/prompt/explain_en.txt"
+    """
     explain_prefix = "explain"
     explain_default_prompt = ":/prompt/explain_prompt.txt"
     if is_sentence:
@@ -117,16 +122,18 @@ def getExplainPrompt(
     else:
         return __getPromptResource(":/prompt/explain_prompt.txt")
 
-
-def getExplainByENPrompt() -> str:
-    return __getPromptResource(":/prompt/explain_EN.txt")
-
-
-def getExplainByCNPrompt() -> str:
-    return __getPromptResource(":/prompt/explain_CN.txt")
-
-
 def getChatModelByCfg():
+    """
+    Retrieves a chat model based on the configuration.
+
+    This function retrieves a chat model based on the provider specified in the configuration. The provider can be either "openai" or "tongyi". If the provider is "openai", it calls the `getOpenAIChatModel` function to get the chat model. If the provider is "tongyi", it calls the `getTongYiChatModel` function to get the chat model. If the provider is neither "openai" nor "tongyi", it raises an exception.
+
+    Returns:
+        The chat model corresponding to the provider specified in the configuration.
+
+    Raises:
+        Exception: If the provider specified in the configuration is not supported.
+    """
     chat = None
     provider = qconfig.get(cfg.provider)
     try:
@@ -143,8 +150,20 @@ def getChatModelByCfg():
 
 
 def getTargetLanguage():
+    """
+    Retrieves the target language from the configuration.
+
+    Returns:
+        str: The target language in the configuration.
+    """
     return qconfig.get(cfg.target_language)
 
 
 def getMotherTongue():
+    """
+    Retrieves the mother tongue from the configuration.
+
+    Returns:
+        str: The mother tongue specified in the configuration.
+    """
     return qconfig.get(cfg.mother_tongue)

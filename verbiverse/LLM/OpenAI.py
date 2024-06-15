@@ -5,7 +5,14 @@ from ModuleLogger import logger
 from qfluentwidgets import qconfig
 
 
-def getConfig() -> (str, str, str):
+def __getConfig() -> (str, str, str):
+    """
+    Retrieves the API key, API URL, and model name required for OpenAI interaction.
+    Raises exceptions if any of the essential configurations are missing.
+    
+    Returns:
+        Tuple containing the API key, API URL, and model name.
+    """
     api_key = qconfig.get(cfg.user_key)
     api_url = qconfig.get(cfg.provider_url)
     model = qconfig.get(cfg.model_name)
@@ -23,7 +30,15 @@ def getConfig() -> (str, str, str):
 
 
 def getOpenAIChatModel() -> ChatOpenAI:
-    api_key, api_url, model = getConfig()
+    """
+    Retrieves an instance of the ChatOpenAI class with the OpenAI API key, URL, and model name
+    obtained from the getConfig() function.
+
+    Returns:
+        ChatOpenAI: An instance of the ChatOpenAI class with the specified API key, URL, model name,
+        and temperature set to 0.7.
+    """
+    api_key, api_url, model = __getConfig()
 
     return ChatOpenAI(
         model_name=model,
@@ -34,7 +49,15 @@ def getOpenAIChatModel() -> ChatOpenAI:
 
 
 def getOpenAILLMModel() -> OpenAI:
-    api_key, api_url, model = getConfig()
+    """
+    Retrieves an instance of the OpenAI class with the OpenAI API key, URL, and model name
+    obtained from the getConfig() function.
+
+    Returns:
+        OpenAI: An instance of the OpenAI class with the specified model name,
+        API key, API URL, and temperature set to 0.7.
+    """
+    api_key, api_url, model = __getConfig()
 
     return OpenAI(
         model_name=model,

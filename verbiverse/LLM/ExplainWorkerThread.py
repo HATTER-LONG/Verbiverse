@@ -17,6 +17,7 @@ from PySide6.QtCore import QThread, Signal
 
 
 class ExplainWorkerThread(QThread):
+    """Worker thread for ExplainChain"""
     messageCallBackSignal = Signal(str)
 
     def __init__(
@@ -35,6 +36,15 @@ class ExplainWorkerThread(QThread):
         self.quit = False
 
     def isSentenceString(self, selected_text: str):
+        """
+        Check if the given `selected_text` is a sentence by counting the number of words in it.
+
+        Parameters:
+            selected_text (str): The text to be checked.
+
+        Returns:
+            bool: True if the `selected_text` has more than one word, False otherwise.
+        """
         words = re.findall(r"\b\w+\b", selected_text)
 
         if len(words) > 1:
@@ -43,6 +53,22 @@ class ExplainWorkerThread(QThread):
             return False
 
     def createExplainChain(self, selected_text: str, all_text: str) -> None:
+        """
+        Creates an explain chain for the given selected text and all text.
+
+        Args:
+            selected_text (str): The selected text to be explained.
+            all_text (str): The entire text context.
+
+        Returns:
+            None: This function does not return anything.
+
+        Raises:
+            Exception: If there is an error getting the chat model.
+
+        Description:
+            This function initializes the explain chain for the given selected text and all text. It first tries to get the chat model using the `getChatModelByCfg` function. If there is an error, it logs the error and returns. It then sets the target language and answer language based on the type of the explain. It creates a prompt template using the `getExplainPrompt` function and combines it with the chat model to create the explain chain. It creates a message dictionary with the selected text, all text, target language, and answer language. Finally, it logs the explain request message.
+        """
         self.chain_with_trimming = None
         try:
             self.chat = getChatModelByCfg()
@@ -70,9 +96,27 @@ class ExplainWorkerThread(QThread):
         logger.info(f"explain request msg is:\n {self.msg}\n")
 
     def stop(self):
+        """
+        A function that stops the worker thread by setting the quit flag to True.
+        """
         self.quit = True
 
     def run(self):
+        """
+        Runs the explain worker thread.
+
+        This function checks if the explain chain is set. If not, it logs an error message and returns.
+        If the explain chain is set, it tries to stream the message or invoke it depending on the value of the `stream` attribute.
+        If streaming is enabled, it iterates over the content chunks and emits each chunk's content using the `messageCallBackSignal` signal.
+        If streaming is disabled, it invokes the chain with the message and emits the content using the `messageCallBackSignal` signal.
+        If an exception occurs during the process, it logs an error message with the exception details and emits an error signal with a formatted error message.
+
+        Parameters:
+            None
+
+        Returns:
+            None
+        """
         if self.chain is None:
             logger.error("explain chain is not set")
             return
