@@ -6,7 +6,16 @@ from ModuleLogger import logger
 from qfluentwidgets import qconfig
 
 
-def getConfig() -> (str, str):
+def __getConfig() -> (str, str):
+    """
+    Retrieves the API key and model name required for TongYi interaction.
+    
+    Returns:
+        Tuple containing the API key and model name.
+    
+    Raises:
+        Exception: If the model name or API key is not valid.
+    """
     api_key = qconfig.get(cfg.user_key)
     model = qconfig.get(cfg.model_name)
     logger.info("TongYi model: %s", model)
@@ -19,12 +28,30 @@ def getConfig() -> (str, str):
 
 
 def getTongYiChatModel() -> ChatTongyi:
-    api_key, model = getConfig()
+    """
+    Retrieves the TongYi chat model by calling the `getConfig` function to get the API key and model name.
+    
+    Returns:
+        An instance of the `ChatTongyi` class with the specified model name and API key.
+        
+    Raises:
+        Exception: If the model name or API key is not valid.
+    """
+    api_key, model = __getConfig()
     return ChatTongyi(model_name=model, dashscope_api_key=api_key)
 
 
 def getTongYiLLMModel() -> Tongyi:
-    api_key, model = getConfig()
+    """
+    Retrieves the TongYi LLM model by calling the `getConfig` function to get the API key and model name.
+    
+    Returns:
+        An instance of the `Tongyi` class with the specified model name, API key, and other parameters.
+        
+    Raises:
+        Exception: If the model name or API key is not valid.
+    """
+    api_key, model = __getConfig()
     return Tongyi(
         model_name=model, dashscope_api_key=api_key, top_p=0.8, max_retries=1024
     )

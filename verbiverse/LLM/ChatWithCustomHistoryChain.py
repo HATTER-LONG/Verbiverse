@@ -27,6 +27,10 @@ class ChatLLMWithCustomHistory:
         signalBus.llm_config_change_signal.connect(self.createChain)
 
     def createChain(self):
+        """
+        A function that creates a chain by initializing various attributes such as 
+        chat, target_language, answer_language, content, prompt, chain, and chat_history_for_chain.
+        """
         try:
             self.chat = getChatModelByCfg()
         except Exception as e:
@@ -45,18 +49,25 @@ class ChatLLMWithCustomHistory:
 
     def setChatHistoryForChain(self, chat_message_history: str):
         """
-        Set the chat history for the langchain chat model.
+        Set the chat history for the chain.
 
-        :param chat_message_history: A string representing the chat history.
+        Args:
+            chat_message_history (str): The chat message history to be set.
+
+        Returns:
+            None
         """
         self.chat_history_for_chain = chat_message_history
 
     def stream(self, message: str):
         """
-        Call the langchain chat model with the given message and chat history.
+        Stream a message through the chat model with a custom chat history.
 
-        :param message: A string representing the message to send to the chat model.
-        :return: A generator yielding the responses from the chat model.
+        Args:
+            message (str): The message to be streamed.
+
+        Returns:
+            The result of streaming the message through the chat model.
         """
         msg = {
             "data": message,
