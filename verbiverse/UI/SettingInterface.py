@@ -1,6 +1,6 @@
 from typing import Union
 
-from CustomWidgets import StyleSheet
+from CustomWidgets.StyleSheet import StyleSheet
 from Functions.Config import AUTHOR, FEEDBACK_URL, HELP_URL, VERSION, YEAR, cfg, isWin11
 from Functions.SignalBus import signalBus
 from PySide6.QtCore import Qt, QUrl, Signal

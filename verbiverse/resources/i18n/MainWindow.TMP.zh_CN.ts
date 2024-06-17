@@ -4,17 +4,17 @@
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../../MainWindow.py" line="78"/>
+        <location filename="../../MainWindow.py" line="79"/>
         <source>Home</source>
         <translation>主页</translation>
     </message>
     <message>
-        <location filename="../../MainWindow.py" line="79"/>
+        <location filename="../../MainWindow.py" line="80"/>
         <source>Read with LLM</source>
         <translation>LLM 辅助阅读</translation>
     </message>
     <message>
-        <location filename="../../MainWindow.py" line="84"/>
+        <location filename="../../MainWindow.py" line="85"/>
         <source>Settings</source>
         <translation>设置</translation>
     </message>

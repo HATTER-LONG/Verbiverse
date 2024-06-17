@@ -121,6 +121,7 @@ HELP_URL = "https://github.com/HATTER-LONG/Verbiverse"
 REPO_URL = "https://github.com/HATTER-LONG/Verbiverse"
 FEEDBACK_URL = "https://github.com/HATTER-LONG/Verbiverse/issues"
 RELEASE_URL = "https://github.com/HATTER-LONG/Verbiverse/releases/latest"
+CONFIG_PATH = "app/config/"
 
 
 cfg = Config()
