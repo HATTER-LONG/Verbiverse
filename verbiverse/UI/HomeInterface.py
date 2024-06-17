@@ -1,4 +1,4 @@
-from CustomWidgets import LinkCardView, StyleSheet
+from CustomWidgets import CFileListWidget, LinkCardView, StyleSheet
 from Functions.Config import REPO_URL
 from Functions.SignalBus import signalBus
 from ModuleLogger import logger
@@ -127,6 +127,7 @@ class HomeInterface(ScrollArea):
         super().__init__(parent=parent)
         self.banner = BannerWidget(self)
         self.view = QWidget(self)
+        self.file_list = CFileListWidget(self)
         self.vBoxLayout = QVBoxLayout(self.view)
         self.__initWidget()
         self.loadSamples()
@@ -134,6 +135,7 @@ class HomeInterface(ScrollArea):
     def __initWidget(self):
         self.view.setObjectName("view")
         self.setObjectName("homeInterface")
+        self.file_list.setObjectName("fileList")
         StyleSheet.HOME_INTERFACE.apply(self)
 
         self.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
@@ -143,6 +145,7 @@ class HomeInterface(ScrollArea):
         self.vBoxLayout.setContentsMargins(0, 0, 0, 36)
         self.vBoxLayout.setSpacing(40)
         self.vBoxLayout.addWidget(self.banner)
+        self.vBoxLayout.addWidget(self.file_list)
         self.vBoxLayout.setAlignment(Qt.AlignTop)
 
     def loadSamples(self):

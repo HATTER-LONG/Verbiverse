@@ -1,5 +1,4 @@
-SettingInterface,
-#view {
+SettingInterface, #view {
     background-color: transparent;
 }
 
@@ -15,5 +14,3 @@ BannerWidget > #verbiverse_label {
     color: black;
     padding-left: 28px;
 }
-
-
