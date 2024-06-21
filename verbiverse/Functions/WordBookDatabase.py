@@ -1,77 +1,26 @@
-"""
-**Database Vocabulary**
-
-This section introduces the concept of a database-based vocabulary system.
-
-**Format**
-
-- The vocabulary is stored in a SQLite database.
-- The table structure has five columns:
-    - `word`: The unique identifier for each word.
-    - `example`: An example sentence demonstrating the word's usage.
-    - `added_on`: The timestamp when the word was added to the vocabulary.
-    - `next_review_on`: The scheduled time for the next review of the word based on the Ebbinghaus memory curve.
-    - `review_times`: The number of times the word has been reviewed.
-
-**Functions**
-
-The provided text outlines the functionalities of a class that interacts with the vocabulary database:
-
-1. **Initialize with Database Path:**
-   - The constructor takes the database path as an argument.
-   - It checks if the table exists, and if not, creates it with the specified structure.
-   - It loads all words and their attributes into a `word_map` member variable.
-
-2. **Get All Words:**
-   - Retrieves all words and their corresponding information from the database.
-   - Stores the retrieved data in the `word_map` member variable.
-
-3. **Add Word and Example:**
-   - Checks if the word exists in the `word_map` and the database.
-   - If new:
-     - Inserts the word, example, and current timestamp into the database.
-     - Calculates the next review time using the Ebbinghaus memory curve.
-     - Updates the `word_map` with the new word information.
-   - If existing:
-     - Updates the `added_on` and `next_review_on` timestamps for the word in the database.
-     - Updates the `word_map` with the revised word information.
-
-4. **Get Word Information:**
-   - Takes a word as input.
-   - Checks if the word exists in the `word_map`.
-   - If found, returns a dictionary containing the word's information: example, added_on, next_review_on, and review_times.
-   - If not found, returns an empty dictionary.
-
-5. **Get Words for Review:**
-   - Identifies words that are scheduled for review based on their `next_review_on` timestamps.
-   - Returns a list of these words.
-
-6. **Get Review Times for a Word:**
-   - Takes a word as input.
-   - Retrieves the `review_times` value for the word from the database or `word_map`.
-   - Returns the number of times the word has been reviewed.
-
-**Testing**
-
-The text emphasizes the importance of creating comprehensive test cases to ensure the correct behavior of each function. These tests should cover all aspects of the functionality, including edge cases and error conditions.
-
-This translation aims to provide a clear and concise understanding of the provided
-"""
-
 import datetime
 import sqlite3
 
 
 class Word:
-    def __init__(self, word, example, added_on, next_review_on, review_times):
+    def __init__(
+        self,
+        word: str,
+        explain: str,
+        example: str,
+        added_on: datetime.datetime,
+        next_review_on: datetime.datetime,
+        review_times: int,
+    ):
         self.word = word
+        self.explain = explain
         self.example = example
         self.added_on = added_on
         self.next_review_on = next_review_on
         self.review_times = review_times
 
     def __str__(self):
-        return f"word: {self.word}, example: {self.example}, added_on: {self.added_on}, next_review_on: {self.next_review_on}, review_times: {self.review_times}"
+        return f"word: {self.word}, explain: {self.explain}, example: {self.example}, added_on: {self.added_on}, next_review_on: {self.next_review_on}, review_times: {self.review_times}"
 
 
 class WordsBookDatabase:
@@ -103,6 +52,7 @@ class WordsBookDatabase:
         create_table_sql = """
             CREATE TABLE IF NOT EXISTS words (
                 word TEXT PRIMARY KEY,
+                explain TEXT,
                 example TEXT,
                 added_on DATETIME,
                 next_review_on DATETIME,
@@ -120,7 +70,7 @@ class WordsBookDatabase:
             word_map[row[0]] = Word(*row)
         return word_map
 
-    def addWord(self, word, example):
+    def addWord(self, word: str, explain: str, example: str):
         word = word.lower()
         current_time = datetime.datetime.now()
         next_review_on = self.calculateNextReview(current_time)
@@ -128,28 +78,31 @@ class WordsBookDatabase:
         if word in self.word_map:
             update_sql = """
                 UPDATE words
-                SET example = ?, added_on = ?, next_review_on = ?
+                SET explain = ?, example = ?, added_on = ?, next_review_on = ?
                 WHERE word = ?
             """
             self.cursor.execute(
-                update_sql, (example, current_time, next_review_on, word)
+                update_sql, (explain, example, current_time, next_review_on, word)
             )
             self.conn.commit()
 
+            self.word_map[word].explain = explain
             self.word_map[word].example = example
             self.word_map[word].added_on = current_time
             self.word_map[word].next_review_on = next_review_on
         else:
             insert_sql = """
-                INSERT INTO words (word, example, added_on, next_review_on)
-                VALUES (?, ?, ?, ?)
+                INSERT INTO words (word, explain, example, added_on, next_review_on)
+                VALUES (?, ?, ?, ?, ?)
             """
             self.cursor.execute(
-                insert_sql, (word, example, current_time, next_review_on)
+                insert_sql, (word, explain, example, current_time, next_review_on)
             )
             self.conn.commit()
 
-            self.word_map[word] = Word(word, example, current_time, next_review_on, 0)
+            self.word_map[word] = Word(
+                word, explain, example, current_time, next_review_on, 0
+            )
 
     def getWord(self, word) -> Word:
         return self.word_map.get(word)
