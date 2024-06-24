@@ -1,6 +1,10 @@
 import datetime
 import sqlite3
 
+from Functions.Config import cfg
+from ModuleLogger import logger
+from qfluentwidgets import qconfig
+
 
 class Word:
     def __init__(
@@ -32,10 +36,14 @@ class WordsBookDatabase:
             cls._instance.alreadyInit = False
         return cls._instance
 
-    def __init__(self, db_path="./wordbook.db"):
+    def __init__(self, db_path=None):
         if self.alreadyInit:
             return
-        self.db_path = db_path
+        if db_path is None:
+            self.db_path = qconfig.get(cfg.user_db_path)
+        else:
+            self.db_path = db_path
+        logger.info("init words book database: %s" % self.db_path)
         self.conn = sqlite3.connect(self.db_path)
         self.cursor = self.conn.cursor()
 
