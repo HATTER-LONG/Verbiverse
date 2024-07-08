@@ -24,6 +24,8 @@ class CFileListWidget(QWidget, Ui_CFileListWidget):
     def updateConfig(self):
         if os.path.exists(CONFIG_PATH + "historyfilelist.json"):
             with open(CONFIG_PATH + "historyfilelist.json", "w", encoding="utf-8") as f:
+                # f.seek(0)
+                # f.truncate()
                 json.dump(self.file_list, f)
 
     def loadConfigFile(self):
@@ -35,6 +37,8 @@ class CFileListWidget(QWidget, Ui_CFileListWidget):
                     logger.error("load filelist.json error: %s" % e)
                     self.file_list = []
         else:
+            with open(CONFIG_PATH + "historyfilelist.json", "w", encoding="utf-8") as f:
+                pass
             self.file_list = []
 
     @Slot(QUrl)
