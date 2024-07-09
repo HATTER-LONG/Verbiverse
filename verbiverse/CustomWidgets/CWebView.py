@@ -42,7 +42,9 @@ class LoadPdfText(QThread):
         except CancelledError:
             logger.info(f"already cancel current load: [{self.pdf_loc_path}]")
         except Exception as error:
-            logger.error(f"load pdf error: [{error}]")
+            error_message = f"load pdf file to analyse error: [{error}], please check pdf file type."
+            logger.error(error_message)
+            signalBus.error_signal.emit(error_message)
         else:
             logger.info(f"finish pdf load: [{self.pdf_loc_path}]")
 
