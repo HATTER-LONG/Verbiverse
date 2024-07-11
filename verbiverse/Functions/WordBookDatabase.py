@@ -40,9 +40,10 @@ class WordsBookDatabase:
         if self.alreadyInit:
             return
         if db_path is None:
-            self.db_path = qconfig.get(cfg.user_db_path)
+            self.db_path = qconfig.get(cfg.database_folder)
         else:
             self.db_path = db_path
+        self.db_path += "/WordsDataBase.db"
         logger.info("init words book database: %s" % self.db_path)
         self.conn = sqlite3.connect(self.db_path)
         self.cursor = self.conn.cursor()
@@ -138,8 +139,16 @@ if __name__ == "__main__":
     db2 = WordsBookDatabase()
     print(db2)
     # 添加单词
-    db.addWord("hello", "How are you?")
-    db.addWord("world", "The world is a beautiful place.")
+    db.addWord(
+        "hello",
+        "explain test long strings:12345678901234567890123456789012345678901234567890",
+        "How are you?",
+    )
+    db.addWord(
+        "world",
+        "explain test long strings:12345678901234567890123456789012345678901234567890",
+        "The world is a beautiful place.",
+    )
 
     for word in db.word_map:
         print(word, db.word_map[word])

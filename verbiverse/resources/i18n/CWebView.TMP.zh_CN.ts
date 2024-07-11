@@ -4,7 +4,7 @@
 <context>
     <name>CWebView</name>
     <message>
-        <location filename="../../CustomWidgets/CWebView.py" line="134"/>
+        <location filename="../../CustomWidgets/CWebView.py" line="136"/>
         <source>Need wait last loader stop, maybe cost some time!!!</source>
         <translation>需要等待上一次文档加载停止，可能需要些时间！</translation>
     </message>

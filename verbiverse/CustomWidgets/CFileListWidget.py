@@ -37,9 +37,11 @@ class CFileListWidget(QWidget, Ui_CFileListWidget):
                     logger.error("load filelist.json error: %s" % e)
                     self.file_list = []
         else:
-            with open(CONFIG_PATH + "historyfilelist.json", "w", encoding="utf-8") as f:
-                pass
             self.file_list = []
+            if not os.path.exists(CONFIG_PATH):
+                os.makedirs(CONFIG_PATH)
+            with open(CONFIG_PATH + "historyfilelist.json", "w", encoding="utf-8") as f:
+                json.dump(self.file_list, f)
 
     @Slot(QUrl)
     def addFile(self, file_url: QUrl):

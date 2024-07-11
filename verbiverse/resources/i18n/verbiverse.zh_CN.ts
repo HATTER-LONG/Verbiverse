@@ -4,7 +4,7 @@
 <context>
     <name>CWebView</name>
     <message>
-        <location filename="../../CustomWidgets/CWebView.py" line="134"/>
+        <location filename="../../CustomWidgets/CWebView.py" line="136"/>
         <source>Need wait last loader stop, maybe cost some time!!!</source>
         <translation>需要等待上一次文档加载停止，可能需要些时间！</translation>
     </message>
@@ -345,17 +345,22 @@
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../../MainWindow.py" line="79"/>
+        <location filename="../../MainWindow.py" line="81"/>
         <source>Home</source>
         <translation>主页</translation>
     </message>
     <message>
-        <location filename="../../MainWindow.py" line="80"/>
+        <location filename="../../MainWindow.py" line="82"/>
         <source>Read with LLM</source>
         <translation>LLM 辅助阅读</translation>
     </message>
     <message>
-        <location filename="../../MainWindow.py" line="85"/>
+        <location filename="../../MainWindow.py" line="83"/>
+        <source>Words review</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../MainWindow.py" line="88"/>
         <source>Settings</source>
         <translation>设置</translation>
     </message>

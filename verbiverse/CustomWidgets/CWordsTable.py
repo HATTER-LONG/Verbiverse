@@ -1,24 +1,17 @@
-import sys
-
+from Functions.WordBookDatabase import Word, WordsBookDatabase
 from PySide6.QtCore import QModelIndex, Qt
 from PySide6.QtGui import QPalette
 from PySide6.QtWidgets import (
-    QApplication,
+    QHBoxLayout,
+    QHeaderView,
     QStyleOptionViewItem,
-    QTableWidget,
     QTableWidgetItem,
     QWidget,
-    QHBoxLayout,
 )
-
 from qfluentwidgets import (
+    TableItemDelegate,
     TableWidget,
     isDarkTheme,
-    setTheme,
-    Theme,
-    TableView,
-    TableItemDelegate,
-    setCustomStyleSheet,
 )
 
 
@@ -39,8 +32,8 @@ class CustomTableItemDelegate(TableItemDelegate):
 
 
 class WordsTable(QWidget):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, parent=None):
+        super().__init__(parent)
 
         self.hBoxLayout = QHBoxLayout(self)
         self.tableView = TableWidget(self)
@@ -48,60 +41,49 @@ class WordsTable(QWidget):
         self.tableView.setBorderRadius(8)
 
         self.tableView.setWordWrap(False)
-        self.tableView.setRowCount(60)
+        self.tableView.setRowCount(30)
         self.tableView.setColumnCount(5)
-        songInfos = [
-            ["かばん", "aiko", "かばん", "2004", "5:04"],
-            ["爱你", "王心凌", "爱你", "2004", "3:39"],
-            ["星のない世界", "aiko", "星のない世界/横顔", "2007", "5:30"],
-            ["横顔", "aiko", "星のない世界/横顔", "2007", "5:06"],
-            ["秘密", "aiko", "秘密", "2008", "6:27"],
-            ["シアワセ", "aiko", "秘密", "2008", "5:25"],
-            ["二人", "aiko", "二人", "2008", "5:00"],
-            ["スパークル", "RADWIMPS", "君の名は。", "2016", "8:54"],
-            ["なんでもないや", "RADWIMPS", "君の名は。", "2016", "3:16"],
-            ["前前前世", "RADWIMPS", "人間開花", "2016", "4:35"],
-            ["恋をしたのは", "aiko", "恋をしたのは", "2016", "6:02"],
-            ["夏バテ", "aiko", "恋をしたのは", "2016", "4:41"],
-            ["もっと", "aiko", "もっと", "2016", "4:50"],
-            ["問題集", "aiko", "もっと", "2016", "4:18"],
-            ["半袖", "aiko", "もっと", "2016", "5:50"],
-            ["ひねくれ", "鎖那", "Hush a by little girl", "2017", "3:54"],
-            ["シュテルン", "鎖那", "Hush a by little girl", "2017", "3:16"],
-            ["愛は勝手", "aiko", "湿った夏の始まり", "2018", "5:31"],
-            ["ドライブモード", "aiko", "湿った夏の始まり", "2018", "3:37"],
-            ["うん。", "aiko", "湿った夏の始まり", "2018", "5:48"],
-            ["キラキラ", "aikoの詩。", "2019", "5:08", "aiko"],
-            ["恋のスーパーボール", "aiko", "aikoの詩。", "2019", "4:31"],
-            ["磁石", "aiko", "どうしたって伝えられないから", "2021", "4:24"],
-            ["食べた愛", "aiko", "食べた愛/あたしたち", "2021", "5:17"],
-            ["列車", "aiko", "食べた愛/あたしたち", "2021", "4:18"],
-            ["花の塔", "さユり", "花の塔", "2022", "4:35"],
-            ["夏恋のライフ", "aiko", "夏恋のライフ", "2022", "5:03"],
-            ["あかときリロード", "aiko", "あかときリロード", "2023", "4:04"],
-            [
-                "荒れた唇は恋を失くす",
-                "aiko",
-                "今の二人をお互いが見てる",
-                "2023",
-                "4:07",
-            ],
-            ["ワンツースリー", "aiko", "今の二人をお互いが見てる", "2023", "4:47"],
-        ]
-        songInfos += songInfos
-        for i, songInfo in enumerate(songInfos):
-            for j in range(5):
-                self.tableView.setItem(i, j, QTableWidgetItem(songInfo[j]))
 
         self.tableView.verticalHeader().hide()
         self.tableView.setHorizontalHeaderLabels(
-            ["Title", "Artist", "Album", "Year", "Duration"]
+            [
+                self.tr("Word"),
+                self.tr("Explain"),
+                self.tr("Examples"),
+                self.tr("AddTime"),
+                self.tr("Review"),
+            ]
         )
         self.tableView.resizeColumnsToContents()
-        # self.tableView.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+        # self.tableView.horizontalHeader().setSectionResizeMode(
+        #     QHeaderView.Custom
+        # )
         # self.tableView.setSortingEnabled(True)
 
-        self.setStyleSheet("Demo{background: rgb(255, 255, 255)} ")
-        self.hBoxLayout.setContentsMargins(50, 30, 50, 30)
+        # self.setStyleSheet("Demo{background: rgb(255, 255, 255)} ")
+        self.hBoxLayout.setContentsMargins(10, 10, 10, 10)
         self.hBoxLayout.addWidget(self.tableView)
-        self.resize(735, 760)
+        self.db = WordsBookDatabase()
+        self.updateTable()
+
+    def getColumDataFromWord(self, index: int, word: Word):
+        if index == 0:
+            return word.word
+        elif index == 1:
+            return word.explain
+        elif index == 2:
+            return word.example
+        elif index == 3:
+            return word.added_on
+        elif index == 4:
+            return word.next_review_on
+
+    def updateTable(self):
+        words: map[Word] = self.db.getAllWords()
+        for word in words:
+            print(words[word])
+        for i, word in enumerate(words):
+            for j in range(5):
+                self.tableView.setItem(
+                    i, j, QTableWidgetItem(self.getColumDataFromWord(j, words[word]))
+                )

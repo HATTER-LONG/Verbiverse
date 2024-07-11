@@ -48,6 +48,7 @@ class MainWindow(FluentWindow):
         from UI import (
             HomeInterface,
             ReadAndChatWidget,
+            WordsTableInterface,
             SettingInterface,
         )
 
@@ -57,7 +58,7 @@ class MainWindow(FluentWindow):
         self.interfaceList = []
         self.home_page = HomeInterface(self)
         self.read_page = ReadAndChatWidget(self)
-        self.words_page = Widget("Words", self)
+        self.words_page = WordsTableInterface(self)
 
         # for i in range(0, 12):
         #     message_label1 = CMessageBox(":/images/github_rebot.png", "Rebot", self)
