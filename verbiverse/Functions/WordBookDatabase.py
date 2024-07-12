@@ -52,7 +52,7 @@ class WordsBookDatabase:
 
         self.initTable()
 
-        self.word_map = self.getAllWords()
+        self.word_map = self.updateWordsMap()
         self.alreadyInit = True
 
     def __del__(self):
@@ -74,13 +74,16 @@ class WordsBookDatabase:
         self.cursor.execute(create_table_sql)
         self.conn.commit()
 
-    def getAllWords(self):
+    def updateWordsMap(self):
         self.cursor.execute("SELECT * FROM words")
         rows = self.cursor.fetchall()
         word_map = {}
         for row in rows:
             word_map[row[0]] = Word(*row)
         return word_map
+
+    def getAllWords(self):
+        return self.word_map
 
     def addWord(self, word: str, explain: str, example: str, resource: str = ""):
         word = word.lower()

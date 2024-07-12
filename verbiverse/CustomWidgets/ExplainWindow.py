@@ -32,6 +32,8 @@ class ExplainWindow(QWidget, Ui_ExplainWindow):
         self.add_button.setFixedSize(32, 32)
         self.add_button.setIconSize(QSize(12, 12))
         self.add_button.clicked.connect(self.addWord)
+        if already_add:
+            self.add_button.setEnabled(False)
         self.setWindowFlags(Qt.FramelessWindowHint)
 
         self.close_button.clicked.connect(self.closeWindow)
@@ -42,8 +44,9 @@ class ExplainWindow(QWidget, Ui_ExplainWindow):
         db = WordsBookDatabase()
         if not db.parseExplainAndAddWords(self.title, self.content, self.resource):
             logger.error(f"add word error: {self.title}")
+            signalBus.error_signal.emit("add word Failed: %s" % self.title)
         else:
-            signalBus.info_signal("add word success: %s" % self.title)
+            signalBus.info_signal.emit("add word success: %s" % self.title)
 
         self.add_button.setEnabled(False)
 

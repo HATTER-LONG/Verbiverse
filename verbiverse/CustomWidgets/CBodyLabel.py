@@ -29,7 +29,7 @@ class CBodyLabel(BodyLabel):
             logger.warning("flyout explain thread is not done")
             return
         self.explain_flyout = explain_flyout
-        self.explain_flyout.setTextResource("Chat with LLM message")
+        self.explain_flyout.view.setTextResource("Chat with LLM message")
         self.explain_flyout.closed.connect(self.explainClose)
         self.explain_flyout.view.pin_explain_signal.connect(self.pinFlyout)
 

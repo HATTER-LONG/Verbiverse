@@ -153,14 +153,15 @@ class CWebView(FramelessWebEngineView):
         """
         self.clean()
         if doc_location.isLocalFile():
-            self.pdf_path = urllib.parse.quote(doc_location.url().encode("utf-8"))
+            self.pdf_path = doc_location
+            path = urllib.parse.quote(doc_location.url().encode("utf-8"))
             # Test error load code
-            # self.pdf_path = doc_location.url().encode("utf-8")
+            # path = doc_location.url().encode("utf-8")
             self.loader = LoadPdfText(doc_location.toLocalFile())
             self.loader.load_pdf_finish.connect(self.updatePdfReader)
             self.loader.start()
             logger.info(
-                f"open url: [file:///{self.pdf_js_path}?file={self.pdf_path}#page={self.pdf_current_page}]"
+                f"open url: [file:///{self.pdf_js_path}?file={path}#page={self.pdf_current_page}]"
             )
 
             if not self.already_connect_loadprocess_signal:
@@ -173,7 +174,7 @@ class CWebView(FramelessWebEngineView):
                 self.already_connect_loadprocess_signal = True
 
             url = QUrl.fromUserInput(
-                f"file:///{self.pdf_js_path}?file={self.pdf_path}#page={self.pdf_current_page}"
+                f"file:///{self.pdf_js_path}?file={path}#page={self.pdf_current_page}"
             )
             self.load(url)
         else:
@@ -184,8 +185,9 @@ class CWebView(FramelessWebEngineView):
     @Slot(PdfReader)
     def updatePdfReader(self, reader: PdfReader):
         self.pdf_reader = reader
+        path = urllib.parse.quote(self.pdf_path.url().encode("utf-8"))
         logger.info(
-            f"read pdf [{self.pdf_path}] finish get [{len(self.pdf_reader.pages)}] pages"
+            f"read pdf [{path}] finish get [{len(self.pdf_reader.pages)}] pages"
         )
 
     @Slot(int)
@@ -229,7 +231,9 @@ class CWebView(FramelessWebEngineView):
             logger.warning("flyout explain thread is not done")
             return
         self.explain_flyout = explain_flyout
-        self.explain_flyout.setTextResource(self.pdf_path + ":" + self.pdf_current_page)
+        self.explain_flyout.view.setTextResource(
+            self.pdf_path.toLocalFile() + ":" + str(self.pdf_current_page)
+        )
         self.explain_flyout.closed.connect(self.explainClose)
         self.explain_flyout.view.pin_explain_signal.connect(self.pinFlyout)
 
@@ -270,7 +274,10 @@ class CWebView(FramelessWebEngineView):
     def pinFlyout(self, title: str, content: str, already_add: bool):
         logger.debug(f"pin flyout {title} \n content{content}")
         self.explain_window = ExplainWindow(
-            title, content, self.pdf_path + ":" + self.pdf_current_page, already_add
+            title,
+            content,
+            self.pdf_path.toLocalFile() + ":" + str(self.pdf_current_page),
+            already_add,
         )
         self.explain_window.show()
         self.explain_window.close_signal.connect(self.pinWindowClose)

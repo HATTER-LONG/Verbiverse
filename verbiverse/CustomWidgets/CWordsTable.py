@@ -1,3 +1,5 @@
+import os
+
 from Functions.WordBookDatabase import Word, WordsBookDatabase
 from PySide6.QtCore import QModelIndex, Qt
 from PySide6.QtGui import QPalette
@@ -42,7 +44,7 @@ class WordsTable(QWidget):
 
         self.tableView.setWordWrap(False)
         self.tableView.setRowCount(30)
-        self.tableView.setColumnCount(5)
+        self.tableView.setColumnCount(6)
 
         self.tableView.verticalHeader().hide()
         self.tableView.setHorizontalHeaderLabels(
@@ -52,12 +54,13 @@ class WordsTable(QWidget):
                 self.tr("Examples"),
                 self.tr("AddTime"),
                 self.tr("Review"),
+                self.tr("Resource"),
             ]
         )
         self.tableView.resizeColumnsToContents()
-        # self.tableView.horizontalHeader().setSectionResizeMode(
-        #     QHeaderView.Custom
-        # )
+        self.tableView.horizontalHeader().setSectionResizeMode(
+            QHeaderView.ResizeToContents
+        )
         # self.tableView.setSortingEnabled(True)
 
         # self.setStyleSheet("Demo{background: rgb(255, 255, 255)} ")
@@ -77,13 +80,14 @@ class WordsTable(QWidget):
             return word.added_on
         elif index == 4:
             return word.next_review_on
+        elif index == 5:
+            return os.path.basename(word.resource)
 
     def updateTable(self):
         words: map[Word] = self.db.getAllWords()
-        for word in words:
-            print(words[word])
+
         for i, word in enumerate(words):
-            for j in range(5):
+            for j in range(6):
                 self.tableView.setItem(
                     i, j, QTableWidgetItem(self.getColumDataFromWord(j, words[word]))
                 )

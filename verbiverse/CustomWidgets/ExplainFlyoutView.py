@@ -119,9 +119,9 @@ class ExplainFlyoutView(FlyoutViewBase):
         db = WordsBookDatabase()
         if not db.parseExplainAndAddWords(self.title, self.content, self.resource):
             logger.error(f"add word error: {self.title}")
-            signalBus.error_signal("add word Failed: %s" % self.title)
+            signalBus.error_signal.emit("add word Failed: %s" % self.title)
         else:
-            signalBus.info_signal("add word success: %s" % self.title)
+            signalBus.info_signal.emit("add word success: %s" % self.title)
             self.already_add = True
         self.add_button.setEnabled(False)
 
