@@ -66,8 +66,6 @@ class WordsTable(QWidget):
         # self.setStyleSheet("Demo{background: rgb(255, 255, 255)} ")
         self.hBoxLayout.setContentsMargins(10, 10, 10, 10)
         self.hBoxLayout.addWidget(self.tableView)
-        self.db = WordsBookDatabase()
-        self.updateTable()
 
     def getColumDataFromWord(self, index: int, word: Word):
         if index == 0:
@@ -84,7 +82,8 @@ class WordsTable(QWidget):
             return os.path.basename(word.resource)
 
     def updateTable(self):
-        words: map[Word] = self.db.getAllWords()
+        db = WordsBookDatabase()
+        words: map[Word] = db.updateWordsMap()
 
         for i, word in enumerate(words):
             for j in range(6):

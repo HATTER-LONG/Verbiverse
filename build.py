@@ -20,6 +20,7 @@ NEED_TRANSLATE_FILE_PATH_LIST = [
     "./verbiverse/UI/ReadAndChatWidget.ui",
     "./verbiverse/CustomWidgets/CContexMenu.py",
     "./verbiverse/CustomWidgets/CWebView.py",
+    "./verbiverse/CustomWidgets/CWordsTable.py",
     "./verbiverse/Functions/ErrorString.py",
 ]
 TRANSLATE_RESOURCE_PATH = "./verbiverse/resources/i18n/"

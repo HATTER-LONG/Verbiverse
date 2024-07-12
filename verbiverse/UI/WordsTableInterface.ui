@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>505</width>
-    <height>416</height>
+    <width>530</width>
+    <height>429</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -15,7 +15,21 @@
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="0" column="0">
-    <widget class="WordsTable" name="words_table" native="true"/>
+    <layout class="QVBoxLayout" name="verticalLayout">
+     <property name="leftMargin">
+      <number>0</number>
+     </property>
+     <item alignment="Qt::AlignRight">
+      <widget class="PrimaryToolButton" name="refresh">
+       <property name="text">
+        <string/>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="WordsTable" name="words_table" native="true"/>
+     </item>
+    </layout>
    </item>
   </layout>
  </widget>
@@ -25,6 +39,11 @@
    <extends>QWidget</extends>
    <header location="global">CustomWidgets</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>PrimaryToolButton</class>
+   <extends>QToolButton</extends>
+   <header location="global">qfluentwidgets</header>
   </customwidget>
  </customwidgets>
  <resources/>
