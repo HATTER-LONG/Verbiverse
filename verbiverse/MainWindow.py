@@ -48,6 +48,7 @@ class MainWindow(FluentWindow):
         from UI import (
             HomeInterface,
             ReadAndChatWidget,
+            WordsTableInterface,
             SettingInterface,
         )
 
@@ -57,6 +58,7 @@ class MainWindow(FluentWindow):
         self.interfaceList = []
         self.home_page = HomeInterface(self)
         self.read_page = ReadAndChatWidget(self)
+        self.words_page = WordsTableInterface(self)
 
         # for i in range(0, 12):
         #     message_label1 = CMessageBox(":/images/github_rebot.png", "Rebot", self)
@@ -69,6 +71,7 @@ class MainWindow(FluentWindow):
 
         self.interfaceList.append(self.home_page)
         self.interfaceList.append(self.read_page)
+        self.interfaceList.append(self.words_page)
         self.interfaceList.append(self.setting_page)
 
         self.initNavigation()
@@ -78,6 +81,7 @@ class MainWindow(FluentWindow):
     def initNavigation(self):
         self.addSubInterface(self.home_page, FIF.HOME, self.tr("Home"))
         self.addSubInterface(self.read_page, FIF.CHAT, self.tr("Read with LLM"))
+        self.addSubInterface(self.words_page, FIF.HISTORY, self.tr("Words review"))
 
         self.addSubInterface(
             self.setting_page,

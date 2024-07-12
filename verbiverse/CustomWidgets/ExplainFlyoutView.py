@@ -1,3 +1,6 @@
+from Functions.SignalBus import signalBus
+from Functions.WordBookDatabase import WordsBookDatabase
+from ModuleLogger import logger
 from PySide6.QtCore import QMargins, QRectF, QSize, Qt, Signal
 from PySide6.QtGui import QPainter
 from PySide6.QtWidgets import QHBoxLayout, QLabel, QVBoxLayout, QWidget
@@ -5,6 +8,7 @@ from qfluentwidgets import (
     FluentIcon,
     FluentStyleSheet,
     FlyoutViewBase,
+    PrimaryToolButton,
     TextWrap,
     TransparentToolButton,
     drawIcon,
@@ -30,7 +34,7 @@ class IconWidget(QWidget):
 
 
 class ExplainFlyoutView(FlyoutViewBase):
-    pin_explain_signal = Signal(str, str)
+    pin_explain_signal = Signal(str, str, bool)
 
     def __init__(self, title: str, parent=None):
         super().__init__(parent)
@@ -49,6 +53,13 @@ class ExplainFlyoutView(FlyoutViewBase):
         # self.contentLabel.setWordWrap(True)
         self.iconWidget = IconWidget(self.icon, self)
         self.pin_button = TransparentToolButton(FluentIcon.PIN, self)
+
+        self.add_button = PrimaryToolButton(FIF.ADD, self)
+        self.add_button.clicked.connect(self.addWord)
+        self.resource = "None"
+        self.already_add = False
+        # if self.isSentenceString(self.title):
+        #     self.add_button.setEnabled(False)
 
         self.__initWidgets()
 
@@ -78,6 +89,7 @@ class ExplainFlyoutView(FlyoutViewBase):
             self.iconWidget.setFixedHeight(36)
 
         self.vBoxLayout.addLayout(self.viewLayout)
+        self.vBoxLayout.addWidget(self.add_button, 0, Qt.AlignRight | Qt.AlignBottom)
         self.viewLayout.addWidget(self.iconWidget, 0, Qt.AlignTop)
 
         # add text
@@ -95,9 +107,23 @@ class ExplainFlyoutView(FlyoutViewBase):
         # margins.setRight(20)
         self.viewLayout.setContentsMargins(margins)
 
+    def setTextResource(self, resource: str):
+        self.resource = resource
+        logger.info("resource: %s" % resource)
+
     def pinWindow(self):
-        self.pin_explain_signal.emit(self.title, self.content)
+        self.pin_explain_signal.emit(self.title, self.content, self.already_add)
         self.close()
+
+    def addWord(self):
+        db = WordsBookDatabase()
+        if not db.parseExplainAndAddWords(self.title, self.content, self.resource):
+            logger.error(f"add word error: {self.title}")
+            signalBus.error_signal.emit("add word Failed: %s" % self.title)
+        else:
+            signalBus.info_signal.emit("add word success: %s" % self.title)
+            self.already_add = True
+        self.add_button.setEnabled(False)
 
     def addWidget(self, widget: QWidget, stretch=0, align=Qt.AlignLeft):
         """add widget to view"""

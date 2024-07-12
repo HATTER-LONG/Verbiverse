@@ -22,8 +22,11 @@ class CFileListWidget(QWidget, Ui_CFileListWidget):
         signalBus.open_localfile_signal.connect(self.addFile)
 
     def updateConfig(self):
-        with open(CONFIG_PATH + "historyfilelist.json", "w", encoding="utf-8") as f:
-            json.dump(self.file_list, f)
+        if os.path.exists(CONFIG_PATH + "historyfilelist.json"):
+            with open(CONFIG_PATH + "historyfilelist.json", "w", encoding="utf-8") as f:
+                # f.seek(0)
+                # f.truncate()
+                json.dump(self.file_list, f)
 
     def loadConfigFile(self):
         if os.path.exists(CONFIG_PATH + "historyfilelist.json"):
@@ -35,6 +38,10 @@ class CFileListWidget(QWidget, Ui_CFileListWidget):
                     self.file_list = []
         else:
             self.file_list = []
+            if not os.path.exists(CONFIG_PATH):
+                os.makedirs(CONFIG_PATH)
+            with open(CONFIG_PATH + "historyfilelist.json", "w", encoding="utf-8") as f:
+                json.dump(self.file_list, f)
 
     @Slot(QUrl)
     def addFile(self, file_url: QUrl):
