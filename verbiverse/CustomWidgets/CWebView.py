@@ -229,6 +229,7 @@ class CWebView(FramelessWebEngineView):
             logger.warning("flyout explain thread is not done")
             return
         self.explain_flyout = explain_flyout
+        self.explain_flyout.setTextResource(self.pdf_path + ":" + self.pdf_current_page)
         self.explain_flyout.closed.connect(self.explainClose)
         self.explain_flyout.view.pin_explain_signal.connect(self.pinFlyout)
 
@@ -265,10 +266,12 @@ class CWebView(FramelessWebEngineView):
         if self.explain_window is None:
             self.stopWorker()
 
-    @Slot(str, str)
-    def pinFlyout(self, title: str, content: str):
+    @Slot(str, str, bool)
+    def pinFlyout(self, title: str, content: str, already_add: bool):
         logger.debug(f"pin flyout {title} \n content{content}")
-        self.explain_window = ExplainWindow(title, content)
+        self.explain_window = ExplainWindow(
+            title, content, self.pdf_path + ":" + self.pdf_current_page, already_add
+        )
         self.explain_window.show()
         self.explain_window.close_signal.connect(self.pinWindowClose)
 

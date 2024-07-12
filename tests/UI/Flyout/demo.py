@@ -19,8 +19,8 @@ from qfluentwidgets import (
 
 import verbiverse  # noqa: F401
 from verbiverse.CustomWidgets.ExplainFlyoutView import ExplainFlyoutView
+from verbiverse.CustomWidgets.ExplainWindow import ExplainWindow
 from verbiverse.resources import resources_rc  # noqa: F401
-from verbiverse.UI.ExplainWindow import ExplainWindow
 
 
 class CustomMessageBox(MessageBoxBase):
@@ -76,8 +76,8 @@ class Demo(QWidget):
         self.flyout.view.setContent(msg)
         self.flyout.view.pin_explain_signal.connect(self.onPinClicked)
 
-    def onPinClicked(self, title, content):
-        print(title, content)
+    def onPinClicked(self, title, content, already_add):
+        print(title, content, already_add)
         msg = (
             content
             + """
@@ -85,7 +85,7 @@ class Demo(QWidget):
 1234567890 abcdefghijk lmn opq rstuvwx yzABCDE FGHI JKLMNOPQR STUV WXYZ
         """
         )
-        self.w = ExplainWindow(title, content)
+        self.w = ExplainWindow(title, content, "target resource", already_add)
         self.w.show()
         self.w.setContent(msg)
 

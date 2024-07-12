@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'WordTableInterface.ui'
+## Form generated from reading UI file 'WordsTableInterface.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.6.2
 ##
