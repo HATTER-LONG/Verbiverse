@@ -1,7 +1,6 @@
 import os
 import sys
 import urllib.parse
-from concurrent.futures import CancelledError
 
 from CContexMenu import CContexMenu
 from ExplainWindow import ExplainWindow
@@ -11,42 +10,12 @@ from Functions.SignalBus import signalBus
 from Functions.WebChannelBridge import BridgeClass
 from LLM.ExplainWorkerThread import ExplainWorkerThread
 from ModuleLogger import logger
-from PySide6.QtCore import QMutex, QPoint, Qt, QThread, QUrl, Signal, Slot
+from PySide6.QtCore import QMutex, QPoint, Qt, QUrl, Slot
 from PySide6.QtWebChannel import QWebChannel
 from PySide6.QtWebEngineCore import QWebEnginePage
-from PySide6.QtWidgets import QApplication, QMessageBox
+from PySide6.QtWidgets import QMessageBox
 from qfluentwidgets import Flyout, isDarkTheme, qconfig
 from qframelesswindow.webengine import FramelessWebEngineView
-
-
-class LoadPdfText(QThread):
-    """Signal to load pdf text"""
-
-    load_pdf_finish = Signal(PdfReader)
-
-    def __init__(self, pdf_loc_path: str):
-        super().__init__()
-        self.pdf_loc_path = pdf_loc_path
-        self.stop = False
-
-    def stopLoad(self):
-        logger.info(f"stop load pdf: [{self.pdf_loc_path}]")
-        self.loader.cancel()
-
-    def run(self):
-        logger.info(f"ready to load pdf by new process: [{self.pdf_loc_path}]")
-        try:
-            self.loader = PdfReader(self.pdf_loc_path)
-            self.loader.load()
-            self.load_pdf_finish.emit(self.loader)
-        except CancelledError:
-            logger.info(f"already cancel current load: [{self.pdf_loc_path}]")
-        except Exception as error:
-            error_message = f"load pdf file to analyse error: [{error}], please check pdf file type."
-            logger.error(error_message)
-            signalBus.error_signal.emit(error_message)
-        else:
-            logger.info(f"finish pdf load: [{self.pdf_loc_path}]")
 
 
 class CWebView(FramelessWebEngineView):
@@ -97,7 +66,6 @@ class CWebView(FramelessWebEngineView):
         self.page().setWebChannel(self.__channel)
         self.mutex = QMutex()
 
-        self.loader: LoadPdfText = None
         self.pdf_path = None
         self.pdf_current_page = 1
         self.pdf_reader: PdfReader = None
@@ -129,15 +97,6 @@ class CWebView(FramelessWebEngineView):
 
     def clean(self):
         self.mutex.lock()
-        if self.loader is not None and self.loader.isRunning():
-            self.loader.stopLoad()
-            signalBus.warning_signal.emit(
-                self.tr("Need wait last loader stop, maybe cost some time!!!")
-            )
-            while not self.loader.wait(100):
-                QApplication.processEvents()
-
-        self.loader = None
         self.error_message = None
         self.pdf_current_page = 1
         self.pdf_path = None
@@ -157,9 +116,6 @@ class CWebView(FramelessWebEngineView):
             path = urllib.parse.quote(doc_location.url().encode("utf-8"))
             # Test error load code
             # path = doc_location.url().encode("utf-8")
-            self.loader = LoadPdfText(doc_location.toLocalFile())
-            self.loader.load_pdf_finish.connect(self.updatePdfReader)
-            self.loader.start()
             logger.info(
                 f"open url: [file:///{self.pdf_js_path}?file={path}#page={self.pdf_current_page}]"
             )
@@ -182,14 +138,6 @@ class CWebView(FramelessWebEngineView):
             logger.error(message)
             QMessageBox.critical(self, "Failed to open", message)
 
-    @Slot(PdfReader)
-    def updatePdfReader(self, reader: PdfReader):
-        self.pdf_reader = reader
-        path = urllib.parse.quote(self.pdf_path.url().encode("utf-8"))
-        logger.info(
-            f"read pdf [{path}] finish get [{len(self.pdf_reader.pages)}] pages"
-        )
-
     @Slot(int)
     def updatePdfPageNum(self, page_num: int) -> None:
         """
@@ -208,7 +156,12 @@ class CWebView(FramelessWebEngineView):
     def setSelection(self, mode: int, len: int):
         self.page().triggerAction(QWebEnginePage.SelectAll)
 
+    def setPdfReader(self, pdf_reader: PdfReader):
+        self.pdf_reader = pdf_reader
+
     def text(self) -> str:
+        if self.pdf_reader is None:
+            raise Exception("PDF reader not init finished")
         return self.pdf_reader.getTextByPageNum(self.pdf_current_page - 1).page_content
 
     @Slot(QPoint)
