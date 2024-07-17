@@ -1,9 +1,7 @@
 from typing import List
 
-from Functions.Config import cfg
 from langchain_community.document_loaders import PyPDFLoader
 from langchain_core.documents import Document
-from ModuleLogger import logger
 from pebble import concurrent
 
 
@@ -20,7 +18,6 @@ def loadPdfFile(path: str) -> (PyPDFLoader, List[Document]):
     """
     ret = PyPDFLoader(path)
 
-    logger.info(f"database path {cfg.get(cfg.database_folder)}")
     return ret, ret.load()
 
 
@@ -28,6 +25,7 @@ class PdfReader:
     "Load PDF content using the feature and assign the loader and pages attributes."
 
     def __init__(self, pdf_path):
+        self.pdf_path = pdf_path
         self.feature = loadPdfFile(pdf_path)
 
     def load(self):

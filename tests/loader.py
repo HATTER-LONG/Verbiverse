@@ -107,5 +107,22 @@ def langchainWithOpenAI():
     print(results)
 
 
+def summary():
+    from langchain.chains.summarize import load_summarize_chain
+    from langchain_openai import ChatOpenAI
+
+    llm = ChatOpenAI(
+        model_name="Qwen/Qwen2-7B-Instruct-GGUF",
+        openai_api_key="lm-studio",
+        openai_api_base="http://localhost:1234/v1",
+        temperature=0.7,
+    )
+    docs = pdfLoader()
+    chain = load_summarize_chain(llm, chain_type="map_reduce", verbose=True)
+    ret = chain.invoke(docs)
+    print(ret["output_text"])
+
+
 # llamaIndexWithLmStudio()
-langchainWithOpenAI()
+# langchainWithOpenAI()
+summary()

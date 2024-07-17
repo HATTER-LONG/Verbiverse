@@ -2,7 +2,7 @@ from Functions.Config import cfg
 from Functions.LanguageType import ExplainLanguage
 from Functions.SignalBus import signalBus
 from ModuleLogger import logger
-from OpenAI import getOpenAIChatModel
+from OpenAI import getOpenAIChatModel, getOpenAIEmbedding
 from PySide6.QtCore import QFile, QIODevice
 from qfluentwidgets import qconfig
 from TongYiQWen import getTongYiChatModel
@@ -59,14 +59,15 @@ def getCheckPrompt() -> str:
 
 # Retrieves the translate by English prompt text from a resource
 
+
 def __getExplainPromptByLanguage(prompt: str, default_prompt: str) -> str:
     """
     Retrieves the explain prompt for a specific language based on the provided prompt name.
-    
+
     Args:
         prompt (str): The prompt name to retrieve.
         default_prompt (str): The default prompt to use if the specified prompt is not found.
-    
+
     Returns:
         str: The explain prompt text based on the provided prompt or the default prompt if not found.
     """
@@ -122,6 +123,7 @@ def getExplainPrompt(
     else:
         return __getPromptResource(":/prompt/explain_prompt.txt")
 
+
 def getChatModelByCfg():
     """
     Retrieves a chat model based on the configuration.
@@ -147,6 +149,22 @@ def getChatModelByCfg():
         signalBus.error_signal.emit(str(e))
         raise e
     return chat
+
+
+def getEmbedModelByCfg():
+    embed = None
+    provider = qconfig.get(cfg.provider)
+    try:
+        if provider == "openai":
+            embed = getOpenAIEmbedding()
+        # elif provider == "tongyi":
+        #     embed = getTongYiChatModel()
+        else:
+            raise Exception(f"Not supported {provider} for now")
+    except Exception as e:
+        signalBus.error_signal.emit(str(e))
+        raise e
+    return embed
 
 
 def getTargetLanguage():

@@ -56,8 +56,8 @@ class ReadAndChatWidget(QWidget, Ui_ReadAndChatWidget):
         # )
 
         self.loader: LoadPdfText = None
-        self.pdf_reader = None
-        self.local_file_path = None
+        self.pdf_reader: PdfReader = None
+        self.local_file_path: QUrl = None
         signalBus.open_localfile_signal.connect(self.openLocalPdfDoc)
 
     def clean(self):
@@ -87,6 +87,7 @@ class ReadAndChatWidget(QWidget, Ui_ReadAndChatWidget):
     def updatePdfReader(self, reader: PdfReader):
         self.pdf_reader = reader
         self.web_view.setPdfReader(reader)
+        self.chat_widget.setRAGData(reader)
         path = self.local_file_path.toLocalFile()
         logger.info(
             f"read pdf [{path}] finish get [{len(self.pdf_reader.pages)}] pages"
