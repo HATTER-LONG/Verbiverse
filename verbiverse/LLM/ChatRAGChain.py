@@ -6,7 +6,7 @@ from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_core.runnables import RunnablePassthrough
 from langchain_core.runnables.history import RunnableWithMessageHistory
 
-from langchain.chains import create_retrieval_chain
+from langchain.chains import create_retrieval_chain, create_history_aware_retriever
 from langchain.chains.combine_documents import create_stuff_documents_chain
 from langchain_core.prompts import ChatPromptTemplate
 from LLMServerInfo import (
@@ -16,6 +16,7 @@ from LLMServerInfo import (
     getTargetLanguage,
 )
 from ModuleLogger import logger
+from langchain_core.chat_history import BaseChatMessageHistory
 
 import hashlib
 import os
@@ -38,6 +39,7 @@ class ChatRAGChain:
         self.pdf_reader = pdf_reader
         self.db = self.embedding()
         self.createChatChain()
+        self.stored_messages = {}
         signalBus.llm_config_change_signal.connect(self.createChatChain)
 
     def embedding(self) -> None:
@@ -45,7 +47,7 @@ class ChatRAGChain:
         if not os.path.exists(self.database_path):
             logger.info(f"create embed db [{self.database_path}]")
             text_splitter = RecursiveCharacterTextSplitter(
-                chunk_size=500, chunk_overlap=50
+                chunk_size=1000, chunk_overlap=200
             )
             splits = text_splitter.split_documents(self.pdf_reader.pages)
             return Chroma.from_documents(
@@ -74,6 +76,25 @@ class ChatRAGChain:
 
         self.language = getTargetLanguage()
         # self.chat_prompt = getChatPrompt()
+        contextualize_q_system_prompt = (
+            "Given a chat history and the latest user question "
+            "which might reference context in the chat history, "
+            "formulate a standalone question which can be understood "
+            "without the chat history. Do NOT answer the question, "
+            "just reformulate it if needed and otherwise return it as is."
+        )
+        contextualize_q_prompt = ChatPromptTemplate.from_messages(
+            [
+                ("system", contextualize_q_system_prompt),
+                MessagesPlaceholder("chat_history"),
+                ("human", "{input}"),
+            ]
+        )
+
+        retriever = self.db.as_retriever()
+        history_aware_retriever = create_history_aware_retriever(
+            self.chat, retriever, contextualize_q_prompt
+        )
         self.prompt = ChatPromptTemplate.from_messages(
             [
                 (
@@ -86,50 +107,58 @@ class ChatRAGChain:
                     "\n\n"
                     "{context}",
                 ),
-                # MessagesPlaceholder(variable_name="chat_history"),
+                MessagesPlaceholder(variable_name="chat_history"),
                 ("human", "{input}"),
             ]
         )
 
-        retriever = self.db.as_retriever(search_type="mmr", search_kwargs={"k": 4})
         question_answer_chain = create_stuff_documents_chain(self.chat, self.prompt)
 
-        self.rag_chain = create_retrieval_chain(retriever, question_answer_chain)
+        self.rag_chain = create_retrieval_chain(
+            history_aware_retriever, question_answer_chain
+        )
+
         # self.chain = self.prompt | self.chat
 
-        # self.demo_ephemeral_chat_history_for_chain = ChatMessageHistory()
+        self.demo_ephemeral_chat_history_for_chain = ChatMessageHistory()
 
-        # self.chain_with_message_history = RunnableWithMessageHistory(
-        #     self.chain,
-        #     lambda session_id: self.demo_ephemeral_chat_history_for_chain,
-        #     input_messages_key="input",
-        #     history_messages_key="chat_history",
-        # )
+        self.chain_with_message_history = RunnableWithMessageHistory(
+            self.rag_chain,
+            lambda session_id: self.demo_ephemeral_chat_history_for_chain,
+            input_messages_key="input",
+            history_messages_key="chat_history",
+            output_messages_key="answer",
+        )
 
-        # self.chain_with_trimming = (
-        #     RunnablePassthrough.assign(messages_trimmed=self.trim_messages)
-        #     | self.chain_with_message_history
-        # )
+        self.chain_with_trimming = (
+            RunnablePassthrough.assign(messages_trimmed=self.trim_messages)
+            | self.chain_with_message_history
+        )
 
-    # def trim_messages(self, jchain_input):
-    #     """
-    #     Trims the messages in the `demo_ephemeral_chat_history_for_chain` attribute to the last 10 messages.
+    def get_session_history(self, session_id: str) -> BaseChatMessageHistory:
+        if session_id not in self.stored_messages:
+            self.stored_messages[session_id] = ChatMessageHistory()
+        return self.stored_messages[session_id]
 
-    #     Args:
-    #         jchain_input (Any): The input for the function. Currently not used.
+    def trim_messages(self, jchain_input):
+        """
+        Trims the messages in the `demo_ephemeral_chat_history_for_chain` attribute to the last 10 messages.
 
-    #     Returns:
-    #         bool: True if the messages were successfully trimmed, False otherwise.
-    #     """
-    #     stored_messages = self.demo_ephemeral_chat_history_for_chain.messages
-    #     if len(stored_messages) <= 10:
-    #         return False
+        Args:
+            jchain_input (Any): The input for the function. Currently not used.
 
-    #     self.demo_ephemeral_chat_history_for_chain.clear()
-    #     for message in stored_messages[-10:]:
-    #         self.demo_ephemeral_chat_history_for_chain.add_message(message)
+        Returns:
+            bool: True if the messages were successfully trimmed, False otherwise.
+        """
+        stored_messages = self.demo_ephemeral_chat_history_for_chain.messages
+        if len(stored_messages) <= 10:
+            return False
 
-    #     return True
+        self.demo_ephemeral_chat_history_for_chain.clear()
+        for message in stored_messages[-10:]:
+            self.demo_ephemeral_chat_history_for_chain.add_message(message)
+
+        return True
 
     def invoke(self, message):
         """
@@ -141,11 +170,11 @@ class ChatRAGChain:
         Returns:
             str or None: The content of the response from the chat chain, or None if the chat chain is not ready.
         """
-        if self.rag_chain is None:
+        if self.chain_with_trimming is None:
             logger.warn("chat chain is not ready")
             return None
         msg = {"input": message}
-        return self.rag_chain.invoke(
+        return self.chain_with_trimming.invoke(
             msg,
             {"configurable": {"session_id": "unused"}},
         ).content
@@ -160,11 +189,13 @@ class ChatRAGChain:
         Returns:
             Any: The streamed content from the chat chain, or None if the chat chain is not ready.
         """
-        if self.rag_chain is None:
+        if self.chain_with_trimming is None:
             logger.warn("chat chain is not ready")
             return None
 
         msg = {"input": message, "language": self.language}
         print(msg)
-        logger.info("ttt")
-        return self.rag_chain.stream(msg)
+        return self.chain_with_trimming.stream(
+            msg,
+            {"configurable": {"session_id": "unused"}},
+        )

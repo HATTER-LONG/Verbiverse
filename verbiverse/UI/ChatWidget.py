@@ -80,6 +80,7 @@ class ChatWidget(QWidget, Ui_ChatWidget):
         self.user_check_button.setEnabled(False)
         message_text = self.user_text_edit.toPlainText()
         if message_text:
+            self.initChatChain()
             self.initCheckChain()
             self.need_update_label = CMessageBox(
                 ":/images/github_rebot.png", "Robot Checker", self
