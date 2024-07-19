@@ -5,7 +5,7 @@ from ModuleLogger import logger
 from OpenAI import getOpenAIChatModel, getOpenAIEmbedding
 from PySide6.QtCore import QFile, QIODevice
 from qfluentwidgets import qconfig
-from TongYiQWen import getTongYiChatModel
+from TongYiQWen import getTongYiChatModel, getDashScopeEmbedding
 
 
 # Helper function to load a resource from the specified path with error handling
@@ -157,8 +157,8 @@ def getEmbedModelByCfg():
     try:
         if provider == "openai":
             embed = getOpenAIEmbedding()
-        # elif provider == "tongyi":
-        #     embed = getTongYiChatModel()
+        elif provider == "tongyi":
+            embed = getDashScopeEmbedding()
         else:
             raise Exception(f"Not supported {provider} for now")
     except Exception as e:

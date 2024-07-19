@@ -113,6 +113,13 @@ class SettingInterface(ScrollArea):
             self.tr("Set your preferred model name"),
             parent=self.function_info_group,
         )
+        self.embed_model_name = InputSettingCard(
+            cfg.embed_model_name,
+            FIF.HEART,
+            self.tr("Embed Model name"),
+            self.tr("Set your preferred embedding model name"),
+            parent=self.function_info_group,
+        )
         self.user_key = PasswordInputSettingCard(
             cfg.user_key,
             FIF.FINGERPRINT,
@@ -272,6 +279,7 @@ class SettingInterface(ScrollArea):
         # add cards to group
         self.function_info_group.addSettingCard(self.provider_info)
         self.function_info_group.addSettingCard(self.model_name)
+        self.function_info_group.addSettingCard(self.embed_model_name)
         self.function_info_group.addSettingCard(self.user_key)
         self.function_info_group.addSettingCard(self.provide_url)
         self.function_info_group.addSettingCard(self.target_language_card)
@@ -325,6 +333,9 @@ class SettingInterface(ScrollArea):
             lambda _: signalBus.llm_config_change_signal.emit()
         )
         self.model_name.editing_finished.connect(
+            lambda: signalBus.llm_config_change_signal.emit()
+        )
+        self.embed_model_name.editing_finished.connect(
             lambda: signalBus.llm_config_change_signal.emit()
         )
         self.user_key.editing_finished.connect(

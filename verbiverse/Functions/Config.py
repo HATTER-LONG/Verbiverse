@@ -69,6 +69,7 @@ class Config(QConfig):
         "LLM", "Provider", "openai", OptionsValidator(["openai", "tongyi"])
     )
     model_name = ConfigItem("LLM", "ModelName", "", ConfigValidator())
+    embed_model_name = ConfigItem("LLM", "EmbedModelName", "", ConfigValidator())
     user_key = ConfigItem("LLM", "UserKey", "", ConfigValidator())
     provider_url = ConfigItem("LLM", "URL", "Default", ProviderUrlValidator())
     database_folder = ConfigItem("LLM", "Database", "app/database", FolderValidator())

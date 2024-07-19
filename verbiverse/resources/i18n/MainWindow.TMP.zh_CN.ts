@@ -16,7 +16,7 @@
     <message>
         <location filename="../../MainWindow.py" line="84"/>
         <source>Words review</source>
-        <translation type="unfinished"></translation>
+        <translation>单词本</translation>
     </message>
     <message>
         <location filename="../../MainWindow.py" line="89"/>
