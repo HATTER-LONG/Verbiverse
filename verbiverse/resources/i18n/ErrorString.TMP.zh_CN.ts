@@ -10,17 +10,22 @@
     </message>
     <message>
         <location filename="../../Functions/ErrorString.py" line="12"/>
-        <source>No valid LLM name was found. Please set it in the configuration interface.</source>
+        <source>No valid LLM model name. Please set it in the configuration interface.</source>
         <translation>LLM 模型名称无效，请在配置页面设置正确的名称。</translation>
     </message>
     <message>
         <location filename="../../Functions/ErrorString.py" line="15"/>
-        <source>No valid LLM API was found. Please set it in the configuration interface.</source>
+        <source>No valid Embed LLM model name. Please set it in the configuration interface.</source>
+        <translation>LLM 向量嵌入模型名称无效，请在配置页面设置正确的名称。</translation>
+    </message>
+    <message>
+        <location filename="../../Functions/ErrorString.py" line="18"/>
+        <source>No valid LLM API. Please set it in the configuration interface.</source>
         <translation>LLM 密钥无效，请在配置页面设置正确的密钥。</translation>
     </message>
     <message>
-        <location filename="../../Functions/ErrorString.py" line="20"/>
-        <source>No valid LLM URL was found. Please set it in the configuration interface.</source>
+        <location filename="../../Functions/ErrorString.py" line="23"/>
+        <source>No valid LLM URL. Please set it in the configuration interface.</source>
         <translation>LLM 代理 URL 无效，请在配置页面设置正确的代理。</translation>
     </message>
 </context>

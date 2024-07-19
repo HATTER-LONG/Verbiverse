@@ -4,14 +4,9 @@
 <context>
     <name>ReadAndChatWidget</name>
     <message>
-        <location filename="../../UI/ReadAndChatWidget.ui" line="14"/>
-        <source>Form</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../UI/ReadAndChatWidget.ui" line="46"/>
-        <source>about:blank</source>
-        <translation type="unfinished"></translation>
+        <location filename="../../UI/ReadAndChatWidget.py" line="68"/>
+        <source>Need wait last loader stop, maybe cost some time!!!</source>
+        <translation>需要等待上一次文档加载停止，可能需要些时间！</translation>
     </message>
 </context>
 </TS>
