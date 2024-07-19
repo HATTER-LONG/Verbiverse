@@ -1,5 +1,5 @@
 from Functions.SignalBus import signalBus
-from langchain.memory import ChatMessageHistory
+from langchain_community.chat_message_histories import ChatMessageHistory
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_core.runnables import RunnablePassthrough
 from langchain_core.runnables.history import RunnableWithMessageHistory
@@ -9,6 +9,7 @@ from ModuleLogger import logger
 
 class ChatChain:
     """Chat LLM with message history"""
+
     def __init__(self):
         self.createChatChain()
         signalBus.llm_config_change_signal.connect(self.createChatChain)
@@ -58,10 +59,10 @@ class ChatChain:
     def trim_messages(self, jchain_input):
         """
         Trims the messages in the `demo_ephemeral_chat_history_for_chain` attribute to the last 10 messages.
-        
+
         Args:
             jchain_input (Any): The input for the function. Currently not used.
-        
+
         Returns:
             bool: True if the messages were successfully trimmed, False otherwise.
         """

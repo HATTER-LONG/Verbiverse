@@ -61,11 +61,17 @@ class ChatWorkThread(QThread):
         try:
             if self.stream:
                 content = self.chat_chain.stream(self.message)
-                # LLM chain not ready
+                print(content)
                 if content is None:
                     return
                 for chunk in content:
-                    self.messageCallBackSignal.emit(chunk.content)
+                    if hasattr(chunk, "get") and chunk.get("answer") is not None:
+                        self.messageCallBackSignal.emit(chunk.get("answer"))
+                    elif hasattr(chunk, "content"):
+                        self.messageCallBackSignal.emit(chunk.content)
+                    else:
+                        logger.error("not support chunk type")
+
             else:
                 content = self.chat_chain.invoke(self.message)
                 # LLM chain not ready

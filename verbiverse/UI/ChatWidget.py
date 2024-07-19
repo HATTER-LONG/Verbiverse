@@ -1,13 +1,11 @@
 from ChatWidget_ui import Ui_ChatWidget
-from CustomWidgets.ExplainFlyoutView import ExplainFlyoutView
-from LLM.ChatChain import ChatChain
+from LLM.ChatRAGChain import ChatRAGChain
 from LLM.ChatWithCustomHistoryChain import ChatLLMWithCustomHistory
 from LLM.ChatWorkerThread import ChatWorkThread
 from MessageBox import CMessageBox
 from ModuleLogger import logger
 from PySide6.QtCore import Qt, Slot
 from PySide6.QtWidgets import QWidget
-
 from qfluentwidgets import FluentIcon as FIF
 
 
@@ -34,13 +32,17 @@ class ChatWidget(QWidget, Ui_ChatWidget):
         self.user_check_button.setIcon(FIF.EDIT)
         self.connectSignal()
 
+    def setRAGData(self, reader):
+        self.chat_chain = None
+        self.reader = reader
+
     def connectSignal(self):
         self.user_send_button.clicked.connect(self.sendMessage)
         self.user_check_button.clicked.connect(self.checkInput)
 
     def initChatChain(self):
         if self.chat_chain is None:
-            self.chat_chain = ChatChain()
+            self.chat_chain = ChatRAGChain(self.reader)
 
     def initCheckChain(self):
         if self.check_chain is None:
@@ -77,6 +79,7 @@ class ChatWidget(QWidget, Ui_ChatWidget):
         self.user_check_button.setEnabled(False)
         message_text = self.user_text_edit.toPlainText()
         if message_text:
+            self.initChatChain()
             self.initCheckChain()
             self.need_update_label = CMessageBox(
                 ":/images/github_rebot.png", "Robot Checker", self

@@ -4,6 +4,7 @@ from PySide6.QtCore import QObject, QUrl, Signal
 
 class SignalBus(QObject):
     """Signal bus"""
+
     # localfile ctrl signal
     open_localfile_signal = Signal(QUrl)
     load_localfile_signal = Signal(int)

@@ -9,20 +9,23 @@ from pebble import concurrent
 def loadPdfFile(path: str) -> (PyPDFLoader, List[Document]):
     """
     A function that loads a PDF file from the specified path and returns a PyPDFLoader instance along with a list of Document objects.
-    
+
     Parameters:
     - path (str): The path to the PDF file to be loaded.
-    
+
     Returns:
     - Tuple[PyPDFLoader, List[Document]]: A tuple containing the PyPDFLoader instance and a list of Document objects.
     """
     ret = PyPDFLoader(path)
+
     return ret, ret.load()
 
 
 class PdfReader:
     "Load PDF content using the feature and assign the loader and pages attributes."
+
     def __init__(self, pdf_path):
+        self.pdf_path = pdf_path
         self.feature = loadPdfFile(pdf_path)
 
     def load(self):
