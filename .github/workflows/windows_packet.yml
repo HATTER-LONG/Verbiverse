@@ -5,6 +5,12 @@ on:
     branches:
       - main
       - "release/**"
+  workflow_dispatch:
+    inputs:
+      name:
+        description: 'Packet Windows Rlease Version'
+        required: true
+        default: 'Verbiverse'
 jobs:
   windows_packet:
     runs-on: windows-latest
