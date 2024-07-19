@@ -33,7 +33,7 @@ class ChatRAGChain:
         filename_md5 = (
             str(hashlib.md5(pdf_reader.pdf_path.encode("utf-8")).hexdigest()) + "_db"
         )
-        logger.info(f"pdf database name: [{pdf_reader.pdf_path}] - > [{filename_md5}]")
+        logger.info(f"pdf database name: [{pdf_reader.pdf_path}] -> [{filename_md5}]")
         self.database_path = cfg.get(cfg.database_folder) + "/" + filename_md5
 
         self.pdf_reader = pdf_reader

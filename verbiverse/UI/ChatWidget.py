@@ -1,5 +1,4 @@
 from ChatWidget_ui import Ui_ChatWidget
-from LLM.ChatChain import ChatChain
 from LLM.ChatRAGChain import ChatRAGChain
 from LLM.ChatWithCustomHistoryChain import ChatLLMWithCustomHistory
 from LLM.ChatWorkerThread import ChatWorkThread
