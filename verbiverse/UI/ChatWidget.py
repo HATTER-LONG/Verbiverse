@@ -52,13 +52,17 @@ class ChatWidget(QWidget, Ui_ChatWidget):
     def sendMessage(self):
         if self.need_update_label is not None:
             return
+        try:
+            self.initChatChain()
+        except Exception as e:
+            logger.error(e)
+            return
         self.user_send_button.setEnabled(False)
 
         message_text = self.user_text_edit.toPlainText()
         self.user_text_edit.setText("")
 
         if message_text:
-            self.initChatChain()
             message_label1 = CMessageBox(":/images/human_nobg.png", "User", self)
             message_label1.setMessageText(message_text)
             self.messages_list.addWidget(message_label1)
@@ -76,11 +80,15 @@ class ChatWidget(QWidget, Ui_ChatWidget):
     def checkInput(self):
         if self.need_update_label is not None:
             return
+        try:
+            self.initChatChain()
+            self.initCheckChain()
+        except Exception as e:
+            logger.error(e)
+            return
         self.user_check_button.setEnabled(False)
         message_text = self.user_text_edit.toPlainText()
         if message_text:
-            self.initChatChain()
-            self.initCheckChain()
             self.need_update_label = CMessageBox(
                 ":/images/github_rebot.png", "Robot Checker", self
             )

@@ -70,7 +70,7 @@ class ChatWorkThread(QThread):
                     elif hasattr(chunk, "content"):
                         self.messageCallBackSignal.emit(chunk.content)
                     else:
-                        logger.error("not support chunk type")
+                        logger.warning("not support chunk type")
 
             else:
                 content = self.chat_chain.invoke(self.message)

@@ -37,7 +37,6 @@ class ChatRAGChain:
         self.database_path = cfg.get(cfg.database_folder) + "/" + filename_md5
 
         self.pdf_reader = pdf_reader
-        self.db = self.embedding()
         self.createChatChain()
         self.stored_messages = {}
         signalBus.llm_config_change_signal.connect(self.createChatChain)
@@ -67,6 +66,7 @@ class ChatRAGChain:
         This function sets up the chat model, target language, chat prompt, and message history for the chain.
         It then creates a chain with message history and applies trimming functionality to it.
         """
+        self.db = self.embedding()
         self.rag_chain = None
         try:
             self.chat = getChatModelByCfg()
@@ -91,7 +91,7 @@ class ChatRAGChain:
             ]
         )
 
-        retriever = self.db.as_retriever()
+        retriever = self.db.as_retriever(search_kwargs={"k": 2})
         history_aware_retriever = create_history_aware_retriever(
             self.chat, retriever, contextualize_q_prompt
         )

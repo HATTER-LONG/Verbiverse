@@ -16,17 +16,21 @@ def __getConfig() -> (str, str, str):
     api_key = qconfig.get(cfg.user_key)
     api_url = qconfig.get(cfg.provider_url)
     model = qconfig.get(cfg.model_name)
+    embed_model = qconfig.get(cfg.embed_model_name)
 
     logger.info("OpenAI model: %s", model)
+    logger.info("OpenAI embedding model: %s", embed_model)
     logger.info("OpenAI API url: %s", api_url)
     if model == "":
         raise Exception(error_string.NO_VALID_LLM_NAME)
+    if embed_model == "":
+        raise Exception(error_string.NO_VALID_EMBED_LLM_NAME)
     if api_key == "":
         raise Exception(error_string.NO_VALID_LLM_API)
     if api_url == "":
         raise Exception(error_string.NO_VALID_LLM_URL)
 
-    return api_key, api_url, model
+    return api_key, api_url, model, embed_model
 
 
 def getOpenAIChatModel() -> ChatOpenAI:
@@ -38,7 +42,7 @@ def getOpenAIChatModel() -> ChatOpenAI:
         ChatOpenAI: An instance of the ChatOpenAI class with the specified API key, URL, model name,
         and temperature set to 0.7.
     """
-    api_key, api_url, model = __getConfig()
+    api_key, api_url, model, _ = __getConfig()
 
     return ChatOpenAI(
         model_name=model,
@@ -49,10 +53,10 @@ def getOpenAIChatModel() -> ChatOpenAI:
 
 
 def getOpenAIEmbedding() -> OpenAIEmbeddings:
-    api_key, api_url, model = __getConfig()
+    api_key, api_url, _, embed_model = __getConfig()
     return OpenAIEmbeddings(
-        model="mixedbread-ai/mxbai-embed-large-v1",
-        openai_api_key="lm-studio",
+        model=embed_model,
+        openai_api_key=api_key,
         openai_api_base=api_url,
         check_embedding_ctx_length=False,
     )
@@ -67,7 +71,7 @@ def getOpenAILLMModel() -> OpenAI:
         OpenAI: An instance of the OpenAI class with the specified model name,
         API key, API URL, and temperature set to 0.7.
     """
-    api_key, api_url, model = __getConfig()
+    api_key, api_url, model, _ = __getConfig()
 
     return OpenAI(
         model_name=model,
