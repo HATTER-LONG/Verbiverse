@@ -47,8 +47,8 @@ def getTongYiChatModel() -> ChatTongyi:
 
 
 def getDashScopeEmbedding() -> DashScopeEmbeddings:
-    api_key, model, _ = __getConfig()
-    return DashScopeEmbeddings(model=model, dashscope_api_key=api_key)
+    api_key, _, embed_model = __getConfig()
+    return DashScopeEmbeddings(model=embed_model, dashscope_api_key=api_key)
 
 
 def getTongYiLLMModel() -> Tongyi:
