@@ -1,3 +1,5 @@
+import traceback
+
 from Functions.ErrorString import error_string
 from Functions.SignalBus import signalBus
 from ModuleLogger import logger
@@ -61,7 +63,6 @@ class ChatWorkThread(QThread):
         try:
             if self.stream:
                 content = self.chat_chain.stream(self.message)
-                print(content)
                 if content is None:
                     return
                 for chunk in content:
@@ -79,5 +80,6 @@ class ChatWorkThread(QThread):
                     return
                 self.messageCallBackSignal.emit(content)
         except Exception as e:
+            traceback.print_exc()
             logger.error("Error while running chat thread: %s", e)
             signalBus.error_signal.emit(error_string.NO_VALID_LLM + ": " + str(e))

@@ -189,13 +189,13 @@ class ChatRAGChain:
         Returns:
             Any: The streamed content from the chat chain, or None if the chat chain is not ready.
         """
-        if self.chain_with_trimming is None:
+        if self.chain_with_message_history is None:
             logger.warn("chat chain is not ready")
             return None
 
         msg = {"input": message, "language": self.language}
         print(msg)
-        return self.chain_with_trimming.stream(
+        return self.chain_with_message_history.stream(
             msg,
             {"configurable": {"session_id": "unused"}},
         )
