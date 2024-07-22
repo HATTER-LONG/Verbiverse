@@ -4,7 +4,7 @@ from Functions.Config import cfg
 from Functions.Log import get_logger
 from Functions.SignalBus import signalBus
 from PySide6.QtCore import Qt, QTranslator, Slot
-from PySide6.QtGui import QFontDatabase, QIcon
+from PySide6.QtGui import QIcon
 from PySide6.QtWidgets import (
     QApplication,
     QFrame,
@@ -48,8 +48,9 @@ class MainWindow(FluentWindow):
         from UI import (
             HomeInterface,
             ReadAndChatWidget,
-            WordsTableInterface,
             SettingInterface,
+            WordsTableInterface,
+            VideoInterface,
         )
 
         # QFontDatabase.addApplicationFont(":/fonts/Segoe UI.ttf")
@@ -58,7 +59,7 @@ class MainWindow(FluentWindow):
         self.interfaceList = []
         self.home_page = HomeInterface(self)
         self.read_page = ReadAndChatWidget(self)
-        self.video_page = Widget("Video", self)
+        self.video_page = VideoInterface(self)
         self.words_page = WordsTableInterface(self)
 
         # for i in range(0, 12):

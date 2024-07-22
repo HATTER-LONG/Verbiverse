@@ -53,6 +53,15 @@ class BannerWidget(QWidget):
             self.callback,
             "ReadAndChatWidget",
         )
+
+        self.link_card_view.addButtonCard(
+            FluentIcon.VIDEO,
+            self.tr("Open Video"),
+            self.tr("Open a video file."),
+            self.videoFileSelect,
+            "VideoInterface",
+        )
+
         self.link_card_view.addCard(
             FluentIcon.GITHUB,
             self.tr("GitHub repo"),
@@ -61,6 +70,7 @@ class BannerWidget(QWidget):
         )
 
         self.m_fileDialog = None
+        self.m_videoDialog = None
         signalBus.load_localfile_signal.connect(self.processCall)
         self.process = 0
 
@@ -83,6 +93,22 @@ class BannerWidget(QWidget):
             to_open = self.m_fileDialog.selectedUrls()[0]
             if to_open.isValid():
                 signalBus.open_localfile_signal.emit(to_open)
+
+    def videoFileSelect(self, args):
+        if not self.m_videoDialog:
+            directory = QStandardPaths.writableLocation(
+                QStandardPaths.DocumentsLocation
+            )
+            self.m_videoDialog = QFileDialog(self, "Choose a video file", directory)
+            self.m_videoDialog.setFileMode(QFileDialog.FileMode.ExistingFile)
+            self.m_videoDialog.setAcceptMode(QFileDialog.AcceptOpen)
+            # self.m_fileDialog.setMimeTypeFilters(["application/pdf"])
+        if self.m_videoDialog.exec() == QDialog.Accepted:
+            to_open = self.m_videoDialog.selectedUrls()[0]
+            if to_open.isValid():
+                signalBus.open_video_signal.emit(to_open)
+
+        signalBus.switch_page_signal.emit(args)
 
     def paintEvent(self, e):
         super().paintEvent(e)

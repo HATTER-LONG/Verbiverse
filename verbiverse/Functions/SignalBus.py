@@ -7,6 +7,7 @@ class SignalBus(QObject):
 
     # localfile ctrl signal
     open_localfile_signal = Signal(QUrl)
+    open_video_signal = Signal(QUrl)
     load_localfile_signal = Signal(int)
     switch_page_signal = Signal(str)
 
