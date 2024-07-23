@@ -4,6 +4,7 @@ from PySide6.QtMultimediaWidgets import QGraphicsVideoItem
 from PySide6.QtWidgets import QGraphicsScene, QGraphicsView, QVBoxLayout
 from qfluentwidgets import FluentStyleSheet
 from qfluentwidgets.multimedia import StandardMediaPlayBar
+from ModuleLogger import logger
 
 
 class GraphicsVideoItem(QGraphicsVideoItem):
@@ -45,15 +46,18 @@ class CVideoWidget(QGraphicsView):
         self.fitInView(self.videoItem, Qt.KeepAspectRatio)
 
     def mousePressEvent(self, event):
-        if event.button() == Qt.LeftButton:
+        if self.playBar.opacityEffect.opacity() == 1:
+            self.isHover = False
+            self.timer.start(500)
+        else:
             self.isHover = True
-            if self.playBar.opacityEffect.opacity() == 0:
-                self.playBar.fadeIn()
-            else:
-                self.playBar.fadeOut()
-            event.accept()
+            self.playBar.fadeIn()
 
     def mouseDoubleClickEvent(self, event):
+        if not self.isHover:
+            self.timer.stop()
+        if self.isHover and self.playBar.opacityEffect.opacity() == 0:
+            self.playBar.fadeIn()
         self.togglePlayState()
         self.playBar.playButton.setPlay(self.player.isPlaying())
         event.accept()
@@ -71,7 +75,7 @@ class CVideoWidget(QGraphicsView):
 
     def leaveEvent(self, e):
         self.isHover = False
-        self.timer.start(1000)
+        self.timer.start(2000)
 
     def _onHideTimeOut(self):
         if not self.isHover:
