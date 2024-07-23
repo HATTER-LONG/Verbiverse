@@ -15,11 +15,11 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QFont, QFontDatabase, QGradient, QIcon,
     QImage, QKeySequence, QLinearGradient, QPainter,
     QPalette, QPixmap, QRadialGradient, QTransform)
-from PySide6.QtWidgets import (QApplication, QGridLayout, QHBoxLayout, QLabel,
-    QSizePolicy, QSpacerItem, QToolButton, QVBoxLayout,
-    QWidget)
+from PySide6.QtWidgets import (QApplication, QGridLayout, QHBoxLayout, QSizePolicy,
+    QSpacerItem, QVBoxLayout, QWidget)
 
 from CustomWidgets import CVideoWidget
+from qfluentwidgets import (BodyLabel, TransparentToolButton)
 
 class Ui_VideoInterface(object):
     def setupUi(self, VideoInterface):
@@ -50,20 +50,14 @@ class Ui_VideoInterface(object):
 
         self.horizontalLayout_2 = QHBoxLayout()
         self.horizontalLayout_2.setObjectName(u"horizontalLayout_2")
-        self.label_2 = QLabel(self.widget)
-        self.label_2.setObjectName(u"label_2")
+        self.subtitle_label = BodyLabel(self.widget)
+        self.subtitle_label.setObjectName(u"subtitle_label")
+        self.subtitle_label.setMinimumSize(QSize(0, 42))
+        font = QFont()
+        font.setPointSize(20)
+        self.subtitle_label.setFont(font)
 
-        self.horizontalLayout_2.addWidget(self.label_2)
-
-        self.label = QLabel(self.widget)
-        self.label.setObjectName(u"label")
-
-        self.horizontalLayout_2.addWidget(self.label)
-
-        self.label_3 = QLabel(self.widget)
-        self.label_3.setObjectName(u"label_3")
-
-        self.horizontalLayout_2.addWidget(self.label_3)
+        self.horizontalLayout_2.addWidget(self.subtitle_label)
 
 
         self.horizontalLayout.addLayout(self.horizontalLayout_2)
@@ -75,10 +69,10 @@ class Ui_VideoInterface(object):
 
         self.horizontalLayout_3.addLayout(self.horizontalLayout)
 
-        self.toolButton = QToolButton(self.widget)
-        self.toolButton.setObjectName(u"toolButton")
+        self.parse_button = TransparentToolButton(self.widget)
+        self.parse_button.setObjectName(u"parse_button")
 
-        self.horizontalLayout_3.addWidget(self.toolButton)
+        self.horizontalLayout_3.addWidget(self.parse_button)
 
 
         self.gridLayout.addLayout(self.horizontalLayout_3, 0, 0, 1, 1)
@@ -98,9 +92,7 @@ class Ui_VideoInterface(object):
 
     def retranslateUi(self, VideoInterface):
         VideoInterface.setWindowTitle(QCoreApplication.translate("VideoInterface", u"Form", None))
-        self.label_2.setText(QCoreApplication.translate("VideoInterface", u"TextLabel", None))
-        self.label.setText(QCoreApplication.translate("VideoInterface", u"TextLabel", None))
-        self.label_3.setText(QCoreApplication.translate("VideoInterface", u"TextLabel", None))
-        self.toolButton.setText(QCoreApplication.translate("VideoInterface", u"...", None))
+        self.subtitle_label.setText("")
+        self.parse_button.setText("")
     # retranslateUi
 

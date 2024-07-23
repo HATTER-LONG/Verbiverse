@@ -54,23 +54,20 @@
             <item>
              <layout class="QHBoxLayout" name="horizontalLayout_2">
               <item>
-               <widget class="QLabel" name="label_2">
-                <property name="text">
-                 <string>TextLabel</string>
+               <widget class="BodyLabel" name="subtitle_label">
+                <property name="minimumSize">
+                 <size>
+                  <width>0</width>
+                  <height>42</height>
+                 </size>
                 </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QLabel" name="label">
-                <property name="text">
-                 <string>TextLabel</string>
+                <property name="font">
+                 <font>
+                  <pointsize>20</pointsize>
+                 </font>
                 </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QLabel" name="label_3">
                 <property name="text">
-                 <string>TextLabel</string>
+                 <string/>
                 </property>
                </widget>
               </item>
@@ -92,9 +89,9 @@
            </layout>
           </item>
           <item>
-           <widget class="QToolButton" name="toolButton">
+           <widget class="TransparentToolButton" name="parse_button">
             <property name="text">
-             <string>...</string>
+             <string/>
             </property>
            </widget>
           </item>
@@ -113,6 +110,16 @@
    <extends>QWidget</extends>
    <header location="global">CustomWidgets</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>BodyLabel</class>
+   <extends>QLabel</extends>
+   <header location="global">qfluentwidgets</header>
+  </customwidget>
+  <customwidget>
+   <class>TransparentToolButton</class>
+   <extends>QToolButton</extends>
+   <header location="global">qfluentwidgets</header>
   </customwidget>
  </customwidgets>
  <resources/>

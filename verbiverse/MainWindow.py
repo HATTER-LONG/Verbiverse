@@ -158,7 +158,9 @@ class MainWindow(FluentWindow):
 def main():
     logger = get_logger("main")
     logger.info("start application...")
-    setTheme(Theme.LIGHT)
+
+    print(cfg.get(cfg.themeMode))
+    setTheme(cfg.get(cfg.themeMode))
 
     app = QApplication(sys.argv)
 

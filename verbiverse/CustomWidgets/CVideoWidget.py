@@ -69,9 +69,9 @@ class CVideoWidget(QGraphicsView):
     def wheelEvent(self, e):
         return
 
-    def enterEvent(self, e):
-        self.isHover = True
-        self.playBar.fadeIn()
+    # def enterEvent(self, e):
+    #     self.isHover = True
+    #     self.playBar.fadeIn()
 
     def leaveEvent(self, e):
         self.isHover = False
