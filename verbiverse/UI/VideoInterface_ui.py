@@ -17,7 +17,7 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QPalette, QPixmap, QRadialGradient, QTransform)
 from PySide6.QtWidgets import (QApplication, QGridLayout, QSizePolicy, QWidget)
 
-from qfluentwidgets.multimedia import VideoWidget
+from CustomWidgets import CVideoWidget
 
 class Ui_VideoInterface(object):
     def setupUi(self, VideoInterface):
@@ -26,7 +26,7 @@ class Ui_VideoInterface(object):
         VideoInterface.resize(487, 368)
         self.gridLayout = QGridLayout(VideoInterface)
         self.gridLayout.setObjectName(u"gridLayout")
-        self.video_widget = VideoWidget(VideoInterface)
+        self.video_widget = CVideoWidget(VideoInterface)
         self.video_widget.setObjectName(u"video_widget")
 
         self.gridLayout.addWidget(self.video_widget, 0, 0, 1, 1)

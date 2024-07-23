@@ -15,15 +15,15 @@
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="0" column="0">
-    <widget class="VideoWidget" name="video_widget" native="true"/>
+    <widget class="CVideoWidget" name="video_widget" native="true"/>
    </item>
   </layout>
  </widget>
  <customwidgets>
   <customwidget>
-   <class>VideoWidget</class>
+   <class>CVideoWidget</class>
    <extends>QWidget</extends>
-   <header location="global">qfluentwidgets.multimedia</header>
+   <header location="global">CustomWidgets</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

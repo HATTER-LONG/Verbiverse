@@ -71,11 +71,15 @@ class BannerWidget(QWidget):
 
         self.m_fileDialog = None
         self.m_videoDialog = None
-        signalBus.load_localfile_signal.connect(self.processCall)
         self.process = 0
+        signalBus.load_localfile_signal.connect(self.openLocalFileCall)
+        # TODO: need optimize no static str
+        signalBus.open_video_signal.connect(
+            lambda _: signalBus.switch_page_signal.emit("VideoInterface")
+        )
 
     # TODO: add process dialogs
-    def processCall(self, process: int):
+    def openLocalFileCall(self, process: int):
         logger.debug(f"Open local pdf file process: {process}")
         if process == 100:
             signalBus.switch_page_signal.emit("ReadAndChatWidget")
@@ -107,8 +111,6 @@ class BannerWidget(QWidget):
             to_open = self.m_videoDialog.selectedUrls()[0]
             if to_open.isValid():
                 signalBus.open_video_signal.emit(to_open)
-
-        signalBus.switch_page_signal.emit(args)
 
     def paintEvent(self, e):
         super().paintEvent(e)

@@ -14,12 +14,22 @@
         <translation>打开本地 PDF 文件</translation>
     </message>
     <message>
-        <location filename="../../UI/HomeInterface.py" line="58"/>
+        <location filename="../../UI/HomeInterface.py" line="59"/>
+        <source>Open Video</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../UI/HomeInterface.py" line="60"/>
+        <source>Open a video file.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../UI/HomeInterface.py" line="67"/>
         <source>GitHub repo</source>
         <translation>GitHub 仓库</translation>
     </message>
     <message>
-        <location filename="../../UI/HomeInterface.py" line="59"/>
+        <location filename="../../UI/HomeInterface.py" line="68"/>
         <source>Project homepage.</source>
         <translation>项目主页</translation>
     </message>
