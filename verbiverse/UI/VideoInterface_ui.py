@@ -15,31 +15,39 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QFont, QFontDatabase, QGradient, QIcon,
     QImage, QKeySequence, QLinearGradient, QPainter,
     QPalette, QPixmap, QRadialGradient, QTransform)
-from PySide6.QtWidgets import (QApplication, QGridLayout, QHBoxLayout, QSizePolicy,
-    QSpacerItem, QTextEdit, QVBoxLayout, QWidget)
+from PySide6.QtWidgets import (QAbstractScrollArea, QApplication, QGridLayout, QHBoxLayout,
+    QSizePolicy, QSpacerItem, QSplitter, QTextEdit,
+    QVBoxLayout, QWidget)
 
-from CustomWidgets import (CSubtitleLabel, CVideoWidget)
+from CustomWidgets import (CSubtitleLabel, CTabWidget, CVideoWidget)
 from qfluentwidgets import TransparentToolButton
 
 class Ui_VideoInterface(object):
     def setupUi(self, VideoInterface):
         if not VideoInterface.objectName():
             VideoInterface.setObjectName(u"VideoInterface")
-        VideoInterface.resize(629, 497)
+        VideoInterface.resize(839, 544)
         VideoInterface.setContextMenuPolicy(Qt.CustomContextMenu)
         self.gridLayout_2 = QGridLayout(VideoInterface)
         self.gridLayout_2.setObjectName(u"gridLayout_2")
-        self.verticalLayout = QVBoxLayout()
+        self.splitter = QSplitter(VideoInterface)
+        self.splitter.setObjectName(u"splitter")
+        self.splitter.setOrientation(Qt.Horizontal)
+        self.widget = QWidget(self.splitter)
+        self.widget.setObjectName(u"widget")
+        self.verticalLayout = QVBoxLayout(self.widget)
         self.verticalLayout.setObjectName(u"verticalLayout")
-        self.video_widget = CVideoWidget(VideoInterface)
+        self.verticalLayout.setContentsMargins(0, 0, 0, 0)
+        self.video_widget = CVideoWidget(self.widget)
         self.video_widget.setObjectName(u"video_widget")
+        self.video_widget.setMinimumSize(QSize(500, 0))
         self.video_widget.setContextMenuPolicy(Qt.ActionsContextMenu)
 
         self.verticalLayout.addWidget(self.video_widget)
 
-        self.widget = QWidget(VideoInterface)
-        self.widget.setObjectName(u"widget")
-        self.gridLayout = QGridLayout(self.widget)
+        self.subtitle_widget = QWidget(self.widget)
+        self.subtitle_widget.setObjectName(u"subtitle_widget")
+        self.gridLayout = QGridLayout(self.subtitle_widget)
         self.gridLayout.setObjectName(u"gridLayout")
         self.gridLayout.setContentsMargins(5, 5, 5, 5)
         self.horizontalLayout_3 = QHBoxLayout()
@@ -55,7 +63,7 @@ class Ui_VideoInterface(object):
 
         self.horizontalLayout.addLayout(self.horizontalLayout_2)
 
-        self.subtitel_browser = CSubtitleLabel(self.widget)
+        self.subtitel_browser = CSubtitleLabel(self.subtitle_widget)
         self.subtitel_browser.setObjectName(u"subtitel_browser")
         sizePolicy = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Minimum)
         sizePolicy.setHorizontalStretch(0)
@@ -69,6 +77,7 @@ class Ui_VideoInterface(object):
         self.subtitel_browser.setFont(font)
         self.subtitel_browser.setContextMenuPolicy(Qt.DefaultContextMenu)
         self.subtitel_browser.setAcceptDrops(False)
+        self.subtitel_browser.setSizeAdjustPolicy(QAbstractScrollArea.AdjustToContents)
         self.subtitel_browser.setLineWrapMode(QTextEdit.NoWrap)
         self.subtitel_browser.setTextInteractionFlags(Qt.NoTextInteraction)
 
@@ -81,7 +90,7 @@ class Ui_VideoInterface(object):
 
         self.horizontalLayout_3.addLayout(self.horizontalLayout)
 
-        self.parse_button = TransparentToolButton(self.widget)
+        self.parse_button = TransparentToolButton(self.subtitle_widget)
         self.parse_button.setObjectName(u"parse_button")
 
         self.horizontalLayout_3.addWidget(self.parse_button)
@@ -89,12 +98,21 @@ class Ui_VideoInterface(object):
 
         self.gridLayout.addLayout(self.horizontalLayout_3, 0, 0, 1, 1)
 
+        self.verticalSpacer = QSpacerItem(20, 30, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Fixed)
 
-        self.verticalLayout.addWidget(self.widget)
+        self.gridLayout.addItem(self.verticalSpacer, 1, 0, 1, 1)
+
+
+        self.verticalLayout.addWidget(self.subtitle_widget)
 
         self.verticalLayout.setStretch(0, 8)
+        self.splitter.addWidget(self.widget)
+        self.tab_widget = CTabWidget(self.splitter)
+        self.tab_widget.setObjectName(u"tab_widget")
+        self.tab_widget.setMinimumSize(QSize(200, 0))
+        self.splitter.addWidget(self.tab_widget)
 
-        self.gridLayout_2.addLayout(self.verticalLayout, 0, 0, 1, 1)
+        self.gridLayout_2.addWidget(self.splitter, 0, 0, 1, 1)
 
 
         self.retranslateUi(VideoInterface)

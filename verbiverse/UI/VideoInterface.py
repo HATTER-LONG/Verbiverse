@@ -1,11 +1,19 @@
+import glob
 import os
+import traceback
 
 import pysrt
 from Functions.SignalBus import signalBus
 from ModuleLogger import logger
 from PySide6.QtCore import QPoint, Qt, QThread, QUrl, Slot
-from PySide6.QtGui import QAction, QCursor, QMouseEvent
-from PySide6.QtWidgets import QDialog, QFileDialog, QWidget
+from PySide6.QtGui import QAction
+from PySide6.QtWidgets import (
+    QAbstractItemView,
+    QDialog,
+    QFileDialog,
+    QListWidgetItem,
+    QWidget,
+)
 from qfluentwidgets import FluentIcon as FIF
 from qfluentwidgets import (
     RoundMenu,
@@ -17,18 +25,59 @@ class VideoInterface(QWidget, Ui_VideoInterface):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setupUi(self)
+        self.splitter.setStretchFactor(0, 2)
+        self.splitter.setStretchFactor(1, 1)
         self.parse_button.setIcon(FIF.ROBOT)
-        signalBus.open_video_signal.connect(self.open)
         self.subtitel_browser.setContextMenuPolicy(Qt.CustomContextMenu)
         self.setContextMenuPolicy(Qt.CustomContextMenu)
         self.customContextMenuRequested.connect(self._onContextMenuRequested)
         self.file_path = None
         self.subtitle_path = None
         self.subtitle = None
+        self.subtitle_map = {}
         self.last_timestamp = -1
         self.current_subtitle = None
+        self.subtitel_browser.hide()
         self.video_widget.playBar.setVolume(80)
+        self.tab_widget.subtitle.itemDoubleClicked.connect(self.selectSubtitle)
+        self.tab_widget.file_list.itemDoubleClicked.connect(self.selectVideoFile)
         self.video_widget.player.positionChanged.connect(self.updatePlayPos)
+        signalBus.open_video_signal.connect(self.open)
+
+    def initSubTitleList(self):
+        for index, item in enumerate(self.subtitle):
+            text = item.text.replace("\n", " ")
+            self.subtitle_map[text] = index
+            widget = QListWidgetItem(f"[{item.start}] {text}")
+            widget.setData(Qt.UserRole, index)
+            self.tab_widget.subtitle.addItem(widget)
+
+    def initVideoList(self):
+        self.tab_widget.file_list.clear()
+        file_dir = os.path.dirname(self.file_path)
+        _, file_ext = os.path.splitext(self.file_path)
+        logger.info(f"file dir: {file_dir} file ext: {file_ext}")
+        search_pattern = os.path.join(file_dir, "*%s" % file_ext)
+        files = sorted(glob.glob(search_pattern))
+        index = 0
+        for i, file in enumerate(files):
+            if file == self.file_path:
+                index = i
+            name = os.path.basename(file)
+            widget = QListWidgetItem(name)
+            widget.setData(Qt.UserRole, file)
+            self.tab_widget.file_list.addItem(widget)
+        self.tab_widget.file_list.setCurrentRow(index)
+
+    def selectSubtitle(self, item: QListWidgetItem):
+        index = item.data(Qt.UserRole)
+        time = self.subtitle[index].start.ordinal
+        logger.info(f"select subtitle: {index} {time}")
+        self.video_widget.player.setPosition(time)
+
+    def selectVideoFile(self, item: QListWidgetItem):
+        file_path = item.data(Qt.UserRole)
+        signalBus.open_video_signal.emit(QUrl.fromLocalFile(file_path))
 
     def updatePlayPos(self, time):
         if not self.subtitle or (
@@ -39,6 +88,7 @@ class VideoInterface(QWidget, Ui_VideoInterface):
         self.current_subtitle = self.subtitle.at(seconds=(time / 1000))
 
         if len(self.current_subtitle.text) > 0:
+            self.subtitel_browser.show()
             text = ""
             if len(self.current_subtitle.text) < 100:
                 text = self.current_subtitle.text.replace("\n", " ")
@@ -46,10 +96,37 @@ class VideoInterface(QWidget, Ui_VideoInterface):
                 text = self.current_subtitle.text
             if text != self.subtitel_browser.toPlainText():
                 self.subtitel_browser.setText(text)
+                index = self.subtitle_map[text]
+                self.tab_widget.subtitle.setCurrentRow(index)
+                self.tab_widget.subtitle.scrollTo(
+                    self.tab_widget.subtitle.currentIndex(),
+                    hint=QAbstractItemView.PositionAtCenter,
+                )
+
+    def clear(self):
+        self.file_path = None
+        self.clearSubTitle()
+        self.clearVideoFileList()
+
+    def clearSubTitle(self):
+        self.subtitle_path = None
+        self.subtitle = None
+        self.subtitle_map = {}
+        self.last_timestamp = -1
+        self.current_subtitle = None
+        self.subtitel_browser.setText("")
+        self.subtitel_browser.hide()
+        self.tab_widget.subtitle.clear()
+
+    def clearVideoFileList(self):
+        self.tab_widget.file_list.clear()
 
     @Slot(QUrl)
     def open(self, file_path: QUrl):
         logger.info(f"open video file: [{file_path}]")
+        if not file_path.isValid():
+            return
+        self.clear()
         self.file_path = file_path.toLocalFile()
         try:
             self.video_widget.stop()
@@ -57,9 +134,11 @@ class VideoInterface(QWidget, Ui_VideoInterface):
             QThread.msleep(200)
             self.video_widget.setVideo(file_path)
             self.video_widget.play()
-            self.findSubtitle()
         except Exception as error:
             logger.error(f"open video error: [{error}]")
+            traceback.print_exc()
+        self.findSubtitle()
+        self.initVideoList()
 
     def findSubtitle(self):
         file_dir = os.path.dirname(self.file_path)
@@ -70,10 +149,11 @@ class VideoInterface(QWidget, Ui_VideoInterface):
         if os.path.exists(srt_path):
             logger.info(f"subtitle file: [{srt_path}]")
             self.subtitle = pysrt.open(srt_path)
+            self.initSubTitleList()
             signalBus.info_signal.emit("Auto load subtitle file: " + srt_path)
 
     def _onAddSubtitle(self):
-        logger.info("add subtitle")
+        self.clearSubTitle()
         diaglog = QFileDialog(self, "Choose a video subtitle file", self.file_path)
         diaglog.setFileMode(QFileDialog.FileMode.ExistingFile)
         diaglog.setAcceptMode(QFileDialog.AcceptOpen)
@@ -83,6 +163,7 @@ class VideoInterface(QWidget, Ui_VideoInterface):
             self.subtitle_path = diaglog.selectedUrls()[0]
             logger.info(f"subtitle file: [{self.subtitle_path}]")
             self.subtitle = pysrt.open(self.subtitle_path.toLocalFile())
+            self.initSubTitleList()
 
     @Slot(QPoint)
     def _onContextMenuRequested(self, event: QPoint) -> None:

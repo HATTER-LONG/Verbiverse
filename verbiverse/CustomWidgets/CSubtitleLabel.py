@@ -1,6 +1,6 @@
 from ModuleLogger import logger
-from PySide6.QtCore import Qt, QPoint, Slot
-from PySide6.QtGui import QTextCharFormat, QTextCursor, QContextMenuEvent
+from PySide6.QtCore import QPoint, Qt, Slot
+from PySide6.QtGui import QContextMenuEvent, QTextCharFormat, QTextCursor
 from PySide6.QtWidgets import QTextBrowser
 
 
@@ -10,16 +10,17 @@ class CSubtitleLabel(QTextBrowser):
         self.setStyleSheet(
             """
             QTextBrowser {
-                border-radius: 10px; /* 圆角半径 */
-                background-color: lightgray; /* 背景颜色 */
-                border: 1px solid black; /* 边框颜色 */
+                color: black;
+                border-radius: 10px; 
+                background-color: lightgray; 
+                border: 1px solid black; 
             }
         """
         )
 
         self.cursor = QTextCursor(self.document())
         self.highlight_format = QTextCharFormat()
-        self.highlight_format.setBackground(Qt.yellow)
+        self.highlight_format.setBackground(Qt.gray)
         self.document().contentsChanged.connect(self.updateSize)
 
         self.setContextMenuPolicy(Qt.CustomContextMenu)
