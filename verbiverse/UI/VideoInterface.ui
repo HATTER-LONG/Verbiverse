@@ -10,6 +10,9 @@
     <height>497</height>
    </rect>
   </property>
+  <property name="contextMenuPolicy">
+   <enum>Qt::CustomContextMenu</enum>
+  </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
@@ -17,7 +20,11 @@
    <item row="0" column="0">
     <layout class="QVBoxLayout" name="verticalLayout" stretch="8,0">
      <item>
-      <widget class="CVideoWidget" name="video_widget" native="true"/>
+      <widget class="CVideoWidget" name="video_widget" native="true">
+       <property name="contextMenuPolicy">
+        <enum>Qt::ActionsContextMenu</enum>
+       </property>
+      </widget>
      </item>
      <item>
       <widget class="QWidget" name="widget" native="true">
@@ -52,26 +59,46 @@
              </spacer>
             </item>
             <item>
-             <layout class="QHBoxLayout" name="horizontalLayout_2">
-              <item>
-               <widget class="BodyLabel" name="subtitle_label">
-                <property name="minimumSize">
-                 <size>
-                  <width>0</width>
-                  <height>42</height>
-                 </size>
-                </property>
-                <property name="font">
-                 <font>
-                  <pointsize>20</pointsize>
-                 </font>
-                </property>
-                <property name="text">
-                 <string/>
-                </property>
-               </widget>
-              </item>
-             </layout>
+             <layout class="QHBoxLayout" name="horizontalLayout_2"/>
+            </item>
+            <item>
+             <widget class="CSubtitleLabel" name="subtitel_browser">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>40</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>16777215</width>
+                <height>42</height>
+               </size>
+              </property>
+              <property name="font">
+               <font>
+                <pointsize>20</pointsize>
+               </font>
+              </property>
+              <property name="contextMenuPolicy">
+               <enum>Qt::DefaultContextMenu</enum>
+              </property>
+              <property name="acceptDrops">
+               <bool>false</bool>
+              </property>
+              <property name="lineWrapMode">
+               <enum>QTextEdit::NoWrap</enum>
+              </property>
+              <property name="textInteractionFlags">
+               <set>Qt::NoTextInteraction</set>
+              </property>
+             </widget>
             </item>
             <item>
              <spacer name="horizontalSpacer_2">
@@ -112,14 +139,14 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>BodyLabel</class>
-   <extends>QLabel</extends>
-   <header location="global">qfluentwidgets</header>
-  </customwidget>
-  <customwidget>
    <class>TransparentToolButton</class>
    <extends>QToolButton</extends>
    <header location="global">qfluentwidgets</header>
+  </customwidget>
+  <customwidget>
+   <class>CSubtitleLabel</class>
+   <extends>QTextBrowser</extends>
+   <header location="global">CustomWidgets</header>
   </customwidget>
  </customwidgets>
  <resources/>

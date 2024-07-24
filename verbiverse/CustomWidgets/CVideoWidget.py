@@ -69,13 +69,18 @@ class CVideoWidget(QGraphicsView):
     def wheelEvent(self, e):
         return
 
-    # def enterEvent(self, e):
-    #     self.isHover = True
-    #     self.playBar.fadeIn()
+    def enterEvent(self, e):
+        self.isHover = True
+        # self.playBar.fadeIn()
+        self.play()
+
+        self.playBar.playButton.setPlay(self.player.isPlaying())
 
     def leaveEvent(self, e):
         self.isHover = False
         self.timer.start(2000)
+        self.pause()
+        self.playBar.playButton.setPlay(self.player.isPlaying())
 
     def _onHideTimeOut(self):
         if not self.isHover:
