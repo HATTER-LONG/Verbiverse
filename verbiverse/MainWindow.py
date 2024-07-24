@@ -95,7 +95,7 @@ class MainWindow(FluentWindow):
         )
 
     def initWindow(self):
-        self.resize(1000, 800)
+        self.resize(1300, 800)
 
         self.setWindowIcon(QIcon(":/images/logo.png"))
         self.setWindowTitle("Verbiverse")

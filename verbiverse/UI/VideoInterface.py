@@ -1,3 +1,4 @@
+import os
 import pysrt
 from Functions.SignalBus import signalBus
 from ModuleLogger import logger
@@ -35,26 +36,12 @@ class VideoInterface(QWidget, Ui_VideoInterface):
         self.last_timestamp = time
         self.current_subtitle = self.subtitle.at(seconds=(time / 1000))
         if len(self.current_subtitle.text) > 0:
-            self.subtitle_label.setText(self.current_subtitle.text.replace("\n", " "))
-        # current_time_ms = time
-        # start_index = max(self.last_subtitle_index, 0)
-        # current_subtitle = None
-        # for subtitle_index in range(start_index, len(self.subtitle)):
-        #     subtitle = self.subtitle[subtitle_index]
-        #     logger.debug(f"subtitle: [{subtitle.start.milliseconds}]")
-
-        #     if (
-        #         current_time_ms >= subtitle.start.milliseconds
-        #         and current_time_ms < subtitle.end.milliseconds
-        #     ):
-        #         logger.debug(f"current time: [{current_time_ms}]")
-        #         self.current_subtitle = subtitle
-        #         self.last_subtitle_index = subtitle_index  # Update last index
-        #         break
-
-        # if current_subtitle:
-        #     self.current_subtitle = current_subtitle
-        #     logger.debug(f"current subtitle: [{self.current_subtitle}]")
+            if len(self.current_subtitle.text) < 100:
+                self.subtitle_label.setText(
+                    self.current_subtitle.text.replace("\n", " ")
+                )
+            else:
+                self.subtitle_label.setText(self.current_subtitle.text)
 
     def _formatTime(self, time):
         time = int(time / 1000)
@@ -66,21 +53,31 @@ class VideoInterface(QWidget, Ui_VideoInterface):
     @Slot(QUrl)
     def open(self, file_path: QUrl):
         logger.info(f"open video file: [{file_path}]")
-        self.file_path = file_path
+        self.file_path = file_path.toLocalFile()
         try:
             self.video_widget.stop()
             # FIX: WTF .... https://stackoverflow.com/questions/77219901/can-not-change-media-using-setsource-in-pyside6
             QThread.msleep(200)
             self.video_widget.setVideo(file_path)
             self.video_widget.play()
+            self.findSubtitle()
         except Exception as error:
             logger.error(f"open video error: [{error}]")
 
+    def findSubtitle(self):
+        file_dir = os.path.dirname(self.file_path)
+        file_name = os.path.basename(self.file_path)
+        srt_name = os.path.splitext(file_name)[0] + ".srt"
+        srt_path = os.path.join(file_dir, srt_name)
+
+        if os.path.exists(srt_path):
+            logger.info(f"subtitle file: [{srt_path}]")
+            self.subtitle = pysrt.open(srt_path)
+            signalBus.info_signal.emit("Auto load subtitle file: " + srt_path)
+
     def _onAddSubtitle(self):
         logger.info("add subtitle")
-        diaglog = QFileDialog(
-            self, "Choose a video subtitle file", self.file_path.toLocalFile()
-        )
+        diaglog = QFileDialog(self, "Choose a video subtitle file", self.file_path)
         diaglog.setFileMode(QFileDialog.FileMode.ExistingFile)
         diaglog.setAcceptMode(QFileDialog.AcceptOpen)
 
@@ -89,9 +86,6 @@ class VideoInterface(QWidget, Ui_VideoInterface):
             self.subtitle_path = diaglog.selectedUrls()[0]
             logger.info(f"subtitle file: [{self.subtitle_path}]")
             self.subtitle = pysrt.open(self.subtitle_path.toLocalFile())
-            logger.info(f"subtitle count: [{len(self.subtitle)}]")
-            logger.debug(f"subtitle: [{self.subtitle[0]}]")
-            logger.debug(f"subtitle: [{self.subtitle[0].start}]")
 
     @Slot(QPoint)
     def _onContextMenuRequested(self, event: QPoint) -> None:
