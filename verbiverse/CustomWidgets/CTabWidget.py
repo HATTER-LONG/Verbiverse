@@ -1,12 +1,9 @@
-from PySide6.QtCore import Qt
 from PySide6.QtWidgets import (
-    QLabel,
     QStackedWidget,
     QVBoxLayout,
     QWidget,
-    QListWidgetItem,
 )
-from qfluentwidgets import SegmentedWidget, ListWidget
+from qfluentwidgets import ListWidget, SegmentedWidget
 
 
 class CTabWidget(QWidget):
@@ -37,8 +34,10 @@ class CTabWidget(QWidget):
         self.file_list = ListWidget(self)
 
         # add items to pivot
-        self.addSubInterface(self.subtitle, "SubTitleInterface", "SubTitle")
-        self.addSubInterface(self.file_list, "videoFileInterface", "Video List")
+        self.addSubInterface(self.subtitle, "SubTitleInterface", self.tr("SubTitle"))
+        self.addSubInterface(
+            self.file_list, "videoFileInterface", self.tr("Video List")
+        )
 
         self.vBoxLayout.addWidget(self.pivot)
         self.vBoxLayout.addWidget(self.stackedWidget)

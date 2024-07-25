@@ -16,7 +16,7 @@
     <message>
         <location filename="../../MainWindow.py" line="87"/>
         <source>Video Player</source>
-        <translation type="unfinished"></translation>
+        <translation>视频播放</translation>
     </message>
     <message>
         <location filename="../../MainWindow.py" line="88"/>

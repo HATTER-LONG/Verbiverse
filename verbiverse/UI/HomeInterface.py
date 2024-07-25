@@ -48,7 +48,7 @@ class BannerWidget(QWidget):
 
         self.link_card_view.addButtonCard(
             FluentIcon.LIBRARY,
-            self.tr("Getting started"),
+            self.tr("Read PDF"),
             self.tr("Open a local pdf file."),
             self.callback,
             "ReadAndChatWidget",
@@ -56,7 +56,7 @@ class BannerWidget(QWidget):
 
         self.link_card_view.addButtonCard(
             FluentIcon.VIDEO,
-            self.tr("Open Video"),
+            self.tr("Watch Video"),
             self.tr("Open a video file."),
             self.videoFileSelect,
             "VideoInterface",

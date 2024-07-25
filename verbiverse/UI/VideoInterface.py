@@ -10,7 +10,7 @@ from Functions.SignalBus import signalBus
 from LLM.ExplainWorkerThread import ExplainWorkerThread
 from ModuleLogger import logger
 from PySide6.QtCore import QPoint, Qt, QThread, QUrl, Slot
-from PySide6.QtGui import QAction, QCursor, QShortcut, QKeySequence
+from PySide6.QtGui import QAction, QCursor, QKeySequence, QShortcut
 from PySide6.QtWidgets import (
     QAbstractItemView,
     QDialog,
@@ -92,11 +92,13 @@ class VideoInterface(QWidget, Ui_VideoInterface):
         self.tab_widget.file_list.setCurrentRow(index)
 
     def selectSubtitle(self, item: QListWidgetItem):
+        if not self.video_widget.player.isPlaying():
+            self.video_widget.play()
         index = item.data(Qt.UserRole)
         time = self.subtitle[index].start.ordinal
         logger.info(f"select subtitle: {index} {time}")
         self.video_widget.player.setPosition(time)
-        self.updatePlayPos(time)
+        # self.updatePlayPos(time)
 
     def selectVideoFile(self, item: QListWidgetItem):
         file_path = item.data(Qt.UserRole)
@@ -174,7 +176,6 @@ class VideoInterface(QWidget, Ui_VideoInterface):
             logger.info(f"subtitle file: [{srt_path}]")
             self.subtitle = pysrt.open(srt_path)
             self.initSubTitleList()
-            signalBus.info_signal.emit("Auto load subtitle file: " + srt_path)
 
     def _onAddSubtitle(self):
         self.clearSubTitle()
@@ -195,7 +196,7 @@ class VideoInterface(QWidget, Ui_VideoInterface):
 
         menu.addAction(
             QAction(
-                FIF.CHAT.icon(),
+                FIF.ADD_TO.icon(),
                 self.tr("Add Subtitle"),
                 self,
                 triggered=self._onAddSubtitle,

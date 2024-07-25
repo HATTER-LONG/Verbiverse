@@ -4,24 +4,24 @@
 <context>
     <name>BannerWidget</name>
     <message>
-        <location filename="../../UI/HomeInterface.py" line="51"/>
-        <source>Getting started</source>
-        <translation>开始</translation>
-    </message>
-    <message>
         <location filename="../../UI/HomeInterface.py" line="52"/>
         <source>Open a local pdf file.</source>
         <translation>打开本地 PDF 文件</translation>
     </message>
     <message>
+        <location filename="../../UI/HomeInterface.py" line="51"/>
+        <source>Read PDF</source>
+        <translation>阅读 PDF</translation>
+    </message>
+    <message>
         <location filename="../../UI/HomeInterface.py" line="59"/>
-        <source>Open Video</source>
-        <translation type="unfinished"></translation>
+        <source>Watch Video</source>
+        <translation>观看视频</translation>
     </message>
     <message>
         <location filename="../../UI/HomeInterface.py" line="60"/>
         <source>Open a video file.</source>
-        <translation type="unfinished"></translation>
+        <translation>打开本地视频</translation>
     </message>
     <message>
         <location filename="../../UI/HomeInterface.py" line="67"/>

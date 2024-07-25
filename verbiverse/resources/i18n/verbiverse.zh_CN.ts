@@ -10,6 +10,15 @@
 </context>
 
 <context>
+    <name>VideoInterface</name>
+    <message>
+        <location filename="../../UI/VideoInterface.py" line="198"/>
+        <source>Add Subtitle</source>
+        <translation>添加字幕</translation>
+    </message>
+</context>
+
+<context>
     <name>ChatWidget</name>
     <message>
         <location filename="../../UI/ChatWidget.ui" line="14"/>
@@ -25,6 +34,25 @@
         <location filename="../../UI/ChatWidget.ui" line="170"/>
         <source>Check</source>
         <translation>检查</translation>
+    </message>
+</context>
+
+<context>
+    <name>CFileListWidget</name>
+    <message>
+        <location filename="../../CustomWidgets/CFileListWidget.ui" line="14"/>
+        <source>Form</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../CustomWidgets/CFileListWidget.ui" line="40"/>
+        <source>Recently opened files</source>
+        <translation>最近打开的文件</translation>
+    </message>
+    <message>
+        <location filename="../../CustomWidgets/CFileListWidget.ui" line="63"/>
+        <source>Clear</source>
+        <translation>清空</translation>
     </message>
 </context>
 
@@ -290,6 +318,20 @@
 </context>
 
 <context>
+    <name>CTabWidget</name>
+    <message>
+        <location filename="../../CustomWidgets/CTabWidget.py" line="37"/>
+        <source>SubTitle</source>
+        <translation>字幕</translation>
+    </message>
+    <message>
+        <location filename="../../CustomWidgets/CTabWidget.py" line="40"/>
+        <source>Video List</source>
+        <translation>视频</translation>
+    </message>
+</context>
+
+<context>
     <name>ErrorString</name>
     <message>
         <location filename="../../Functions/ErrorString.py" line="9"/>
@@ -321,24 +363,24 @@
 <context>
     <name>BannerWidget</name>
     <message>
-        <location filename="../../UI/HomeInterface.py" line="51"/>
-        <source>Getting started</source>
-        <translation>开始</translation>
-    </message>
-    <message>
         <location filename="../../UI/HomeInterface.py" line="52"/>
         <source>Open a local pdf file.</source>
         <translation>打开本地 PDF 文件</translation>
     </message>
     <message>
+        <location filename="../../UI/HomeInterface.py" line="51"/>
+        <source>Read PDF</source>
+        <translation>阅读 PDF</translation>
+    </message>
+    <message>
         <location filename="../../UI/HomeInterface.py" line="59"/>
-        <source>Open Video</source>
-        <translation type="unfinished"></translation>
+        <source>Watch Video</source>
+        <translation>观看视频</translation>
     </message>
     <message>
         <location filename="../../UI/HomeInterface.py" line="60"/>
         <source>Open a video file.</source>
-        <translation type="unfinished"></translation>
+        <translation>打开本地视频</translation>
     </message>
     <message>
         <location filename="../../UI/HomeInterface.py" line="67"/>
@@ -410,7 +452,7 @@
     <message>
         <location filename="../../MainWindow.py" line="87"/>
         <source>Video Player</source>
-        <translation type="unfinished"></translation>
+        <translation>视频播放</translation>
     </message>
     <message>
         <location filename="../../MainWindow.py" line="88"/>
