@@ -77,6 +77,8 @@ class Ui_VideoInterface(object):
         self.subtitel_browser.setFont(font)
         self.subtitel_browser.setContextMenuPolicy(Qt.DefaultContextMenu)
         self.subtitel_browser.setAcceptDrops(False)
+        self.subtitel_browser.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        self.subtitel_browser.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         self.subtitel_browser.setSizeAdjustPolicy(QAbstractScrollArea.AdjustToContents)
         self.subtitel_browser.setLineWrapMode(QTextEdit.NoWrap)
         self.subtitel_browser.setTextInteractionFlags(Qt.NoTextInteraction)

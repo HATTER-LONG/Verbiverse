@@ -46,7 +46,8 @@ class VideoInterface(QWidget, Ui_VideoInterface):
 
     def initSubTitleList(self):
         for index, item in enumerate(self.subtitle):
-            text = item.text.replace("\n", " ")
+            # text = item.text.replace("\n", " ")
+            text = item.text
             self.subtitle_map[text] = index
             widget = QListWidgetItem(f"[{item.start}] {text}")
             widget.setData(Qt.UserRole, index)
@@ -91,7 +92,8 @@ class VideoInterface(QWidget, Ui_VideoInterface):
             self.subtitel_browser.show()
             text = ""
             if len(self.current_subtitle.text) < 100:
-                text = self.current_subtitle.text.replace("\n", " ")
+                # text = self.current_subtitle.text.replace("\n", " ")
+                text = self.current_subtitle.text
             else:
                 text = self.current_subtitle.text
             if text != self.subtitel_browser.toPlainText():

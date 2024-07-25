@@ -1,5 +1,5 @@
 from ModuleLogger import logger
-from PySide6.QtCore import QPoint, Qt, Slot
+from PySide6.QtCore import QPoint, QSize, Qt, Slot
 from PySide6.QtGui import QContextMenuEvent, QTextCharFormat, QTextCursor
 from PySide6.QtWidgets import QTextBrowser
 
@@ -34,15 +34,13 @@ class CSubtitleLabel(QTextBrowser):
         event.ignore()
 
     def updateSize(self):
-        doc_size = self.document().idealWidth()
-        new_width = doc_size + 20
-        self.setFixedWidth(new_width)
-
-    def sizeHint(self):
-        size = super().sizeHint()
-        doc_width = self.document().idealWidth()
-        size.setWidth(doc_width + 20)
-        return size
+        doc_size = self.document().size().toSize()
+        new_size = QSize(
+            doc_size.width() + 10,
+            doc_size.height() + 10,
+        )
+        self.setMaximumSize(new_size)
+        self.setMinimumSize(new_size)
 
     def mouseMoveEvent(self, event):
         logger.info(f"mouse move event: [{event}]")
