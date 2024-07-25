@@ -100,7 +100,7 @@ class Ui_VideoInterface(object):
 
         self.gridLayout.addLayout(self.horizontalLayout_3, 0, 0, 1, 1)
 
-        self.verticalSpacer = QSpacerItem(20, 30, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Fixed)
+        self.verticalSpacer = QSpacerItem(20, 20, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Fixed)
 
         self.gridLayout.addItem(self.verticalSpacer, 1, 0, 1, 1)
 

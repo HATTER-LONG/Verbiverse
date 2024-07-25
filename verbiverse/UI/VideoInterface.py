@@ -3,10 +3,14 @@ import os
 import traceback
 
 import pysrt
+from CustomWidgets import ExplainWindow
+from CustomWidgets.ExplainFlyoutView import ExplainFlyoutView
+from Functions.LanguageType import ExplainLanguage
 from Functions.SignalBus import signalBus
+from LLM.ExplainWorkerThread import ExplainWorkerThread
 from ModuleLogger import logger
 from PySide6.QtCore import QPoint, Qt, QThread, QUrl, Slot
-from PySide6.QtGui import QAction
+from PySide6.QtGui import QAction, QCursor
 from PySide6.QtWidgets import (
     QAbstractItemView,
     QDialog,
@@ -16,6 +20,8 @@ from PySide6.QtWidgets import (
 )
 from qfluentwidgets import FluentIcon as FIF
 from qfluentwidgets import (
+    Flyout,
+    FlyoutAnimationType,
     RoundMenu,
 )
 from VideoInterface_ui import Ui_VideoInterface
@@ -29,15 +35,19 @@ class VideoInterface(QWidget, Ui_VideoInterface):
         self.splitter.setStretchFactor(1, 1)
         self.parse_button.setIcon(FIF.ROBOT)
         self.subtitel_browser.setContextMenuPolicy(Qt.CustomContextMenu)
+        self.subtitel_browser.explain_signal.connect(self._onExplainSignal)
         self.setContextMenuPolicy(Qt.CustomContextMenu)
         self.customContextMenuRequested.connect(self._onContextMenuRequested)
         self.file_path = None
+
         self.subtitle_path = None
         self.subtitle = None
         self.subtitle_map = {}
         self.last_timestamp = -1
         self.current_subtitle = None
+        self.subtitle_index = -1
         self.subtitel_browser.hide()
+
         self.video_widget.playBar.setVolume(80)
         self.tab_widget.subtitle.itemDoubleClicked.connect(self.selectSubtitle)
         self.tab_widget.file_list.itemDoubleClicked.connect(self.selectVideoFile)
@@ -46,10 +56,10 @@ class VideoInterface(QWidget, Ui_VideoInterface):
 
     def initSubTitleList(self):
         for index, item in enumerate(self.subtitle):
-            # text = item.text.replace("\n", " ")
-            text = item.text
-            self.subtitle_map[text] = index
-            widget = QListWidgetItem(f"[{item.start}] {text}")
+            if len(item.text) == 0:
+                continue
+            self.subtitle_map[item.text] = index
+            widget = QListWidgetItem(f"[{item.start}] {item.text}")
             widget.setData(Qt.UserRole, index)
             self.tab_widget.subtitle.addItem(widget)
 
@@ -82,28 +92,25 @@ class VideoInterface(QWidget, Ui_VideoInterface):
 
     def updatePlayPos(self, time):
         if not self.subtitle or (
-            time - self.last_timestamp > 0 and time - self.last_timestamp < 500
+            time - self.last_timestamp > 0 and time - self.last_timestamp < 200
         ):
             return
         self.last_timestamp = time
-        self.current_subtitle = self.subtitle.at(seconds=(time / 1000))
+        subtitle_item = self.subtitle.at(seconds=(time / 1000))
+        if subtitle_item is None or self.current_subtitle == subtitle_item:
+            return
+        self.current_subtitle = subtitle_item
 
         if len(self.current_subtitle.text) > 0:
             self.subtitel_browser.show()
-            text = ""
-            if len(self.current_subtitle.text) < 100:
-                # text = self.current_subtitle.text.replace("\n", " ")
-                text = self.current_subtitle.text
-            else:
-                text = self.current_subtitle.text
-            if text != self.subtitel_browser.toPlainText():
-                self.subtitel_browser.setText(text)
-                index = self.subtitle_map[text]
-                self.tab_widget.subtitle.setCurrentRow(index)
-                self.tab_widget.subtitle.scrollTo(
-                    self.tab_widget.subtitle.currentIndex(),
-                    hint=QAbstractItemView.PositionAtCenter,
-                )
+            text = self.current_subtitle.text
+            self.subtitel_browser.setText(text)
+            self.subtitle_index = self.subtitle_map[text]
+            self.tab_widget.subtitle.setCurrentRow(self.subtitle_index)
+            self.tab_widget.subtitle.scrollTo(
+                self.tab_widget.subtitle.currentIndex(),
+                hint=QAbstractItemView.PositionAtCenter,
+            )
 
     def clear(self):
         self.file_path = None
@@ -115,6 +122,7 @@ class VideoInterface(QWidget, Ui_VideoInterface):
         self.subtitle = None
         self.subtitle_map = {}
         self.last_timestamp = -1
+        self.subtitle_index = -1
         self.current_subtitle = None
         self.subtitel_browser.setText("")
         self.subtitel_browser.hide()
@@ -179,5 +187,90 @@ class VideoInterface(QWidget, Ui_VideoInterface):
                 triggered=self._onAddSubtitle,
             )
         )
-
         menu.exec(self.mapToGlobal(event))
+
+    @Slot(str)
+    def _onExplainSignal(self, word: str):
+        if hasattr(self, "worker") and self.worker is not None:
+            logger.warning("flyout explain thread is not done")
+            return
+        logger.info(f"explain signal: {word}")
+        cursor_pos = QCursor.pos()
+        # cursor_pos.setX(cursor_pos.x() - 200)
+        cursor_pos.setY(cursor_pos.y() - 100)
+        self.explain_flyout = Flyout.make(
+            ExplainFlyoutView(word),
+            cursor_pos,
+            self,
+            aniType=FlyoutAnimationType.SLIDE_RIGHT,
+        )
+
+        location = (
+            self.file_path + " -> " + str(self.subtitle[self.subtitle_index].start)
+        )
+        logger.info(f"explanation location: {location}")
+        self.explain_flyout.view.setTextResource(location)
+        self.explain_flyout.closed.connect(self.explainClose)
+        self.explain_flyout.view.pin_explain_signal.connect(self.pinFlyout)
+
+        self.explain_window = None
+
+        all_text = ""
+        for i in range(self.subtitle_index - 10, self.subtitle_index + 5):
+            all_text = all_text + self.subtitle[i].text
+        self.worker = ExplainWorkerThread(
+            selected_text=word,
+            all_text=all_text,
+            language_type=ExplainLanguage.MOTHER_TONGUE,
+        )
+        self.worker.messageCallBackSignal.connect(self.onExplainResultUpdate)
+        self.worker.finished.connect(self.finishedExplain)
+        self.worker.start()
+
+    @Slot(str)
+    def onExplainResultUpdate(self, explain: str):
+        if self.explain_flyout is not None:
+            self.explain_flyout.view.setContent(
+                self.explain_flyout.view.getContent() + explain
+            )
+        elif self.explain_window is not None:
+            self.explain_window.setContent(self.explain_window.getContent() + explain)
+
+    @Slot()
+    def explainClose(self):
+        logger.debug("flyout close")
+        self.explain_flyout = None
+        if self.explain_window is None:
+            self.stopWorker()
+
+    @Slot()
+    def finishedExplain(self):
+        self.explain_flyout = None
+        self.explain_window = None
+        self.worker = None
+
+    @Slot(str, str, bool)
+    def pinFlyout(self, title: str, content: str, already_add: bool):
+        logger.debug(f"pin flyout {title} \n content{content}")
+        self.explain_window = ExplainWindow(
+            title,
+            content,
+            self.file_path + " -> " + str(self.subtitle[self.subtitle_index].start),
+            already_add,
+        )
+        self.explain_window.show()
+        self.explain_window.close_signal.connect(self.pinWindowClose)
+
+    @Slot()
+    def pinWindowClose(self):
+        logger.debug("webview window close")
+        self.explain_window = None
+        if self.explain_flyout is None:
+            self.stopWorker()
+
+    def stopWorker(self):
+        if self.worker is not None:
+            logger.debug("close video interface explain thread ... ")
+            self.worker.stop()
+            self.worker.wait()
+            logger.debug("close video interface explain thread done !!! ")

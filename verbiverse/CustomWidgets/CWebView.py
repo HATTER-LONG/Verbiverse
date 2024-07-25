@@ -185,7 +185,7 @@ class CWebView(FramelessWebEngineView):
             return
         self.explain_flyout = explain_flyout
         self.explain_flyout.view.setTextResource(
-            self.pdf_path.toLocalFile() + ":" + str(self.pdf_current_page)
+            self.pdf_path.toLocalFile() + " -> " + str(self.pdf_current_page)
         )
         self.explain_flyout.closed.connect(self.explainClose)
         self.explain_flyout.view.pin_explain_signal.connect(self.pinFlyout)
@@ -229,7 +229,7 @@ class CWebView(FramelessWebEngineView):
         self.explain_window = ExplainWindow(
             title,
             content,
-            self.pdf_path.toLocalFile() + ":" + str(self.pdf_current_page),
+            self.pdf_path.toLocalFile() + " -> " + str(self.pdf_current_page),
             already_add,
         )
         self.explain_window.show()
