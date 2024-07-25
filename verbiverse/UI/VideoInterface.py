@@ -10,7 +10,7 @@ from Functions.SignalBus import signalBus
 from LLM.ExplainWorkerThread import ExplainWorkerThread
 from ModuleLogger import logger
 from PySide6.QtCore import QPoint, Qt, QThread, QUrl, Slot
-from PySide6.QtGui import QAction, QCursor
+from PySide6.QtGui import QAction, QCursor, QShortcut, QKeySequence
 from PySide6.QtWidgets import (
     QAbstractItemView,
     QDialog,
@@ -52,6 +52,17 @@ class VideoInterface(QWidget, Ui_VideoInterface):
         self.tab_widget.subtitle.itemDoubleClicked.connect(self.selectSubtitle)
         self.tab_widget.file_list.itemDoubleClicked.connect(self.selectVideoFile)
         self.video_widget.player.positionChanged.connect(self.updatePlayPos)
+        space_shortcut = QShortcut(QKeySequence(Qt.Key.Key_Space), self)
+        space_shortcut.activated.connect(self.video_widget.togglePlayState)
+        left_shortcut = QShortcut(QKeySequence(Qt.Key.Key_Left), self)
+        left_shortcut.activated.connect(
+            lambda: self.video_widget.playBar.skipBack(5000)
+        )
+        right_shortcut = QShortcut(QKeySequence(Qt.Key.Key_Right), self)
+        right_shortcut.activated.connect(
+            lambda: self.video_widget.playBar.skipForward(5000)
+        )
+
         signalBus.open_video_signal.connect(self.open)
 
     def initSubTitleList(self):
@@ -85,6 +96,7 @@ class VideoInterface(QWidget, Ui_VideoInterface):
         time = self.subtitle[index].start.ordinal
         logger.info(f"select subtitle: {index} {time}")
         self.video_widget.player.setPosition(time)
+        self.updatePlayPos(time)
 
     def selectVideoFile(self, item: QListWidgetItem):
         file_path = item.data(Qt.UserRole)
@@ -96,15 +108,17 @@ class VideoInterface(QWidget, Ui_VideoInterface):
         ):
             return
         self.last_timestamp = time
-        subtitle_item = self.subtitle.at(seconds=(time / 1000))
+        # + 1 avoid cannot search select subtitle item
+        subtitle_item = self.subtitle.at(milliseconds=time + 1)
         if subtitle_item is None or self.current_subtitle == subtitle_item:
             return
         self.current_subtitle = subtitle_item
 
         if len(self.current_subtitle.text) > 0:
-            self.subtitel_browser.show()
             text = self.current_subtitle.text
+            logger.info(f"update subtitle: {text}")
             self.subtitel_browser.setText(text)
+            self.subtitel_browser.show()
             self.subtitle_index = self.subtitle_map[text]
             self.tab_widget.subtitle.setCurrentRow(self.subtitle_index)
             self.tab_widget.subtitle.scrollTo(
@@ -195,9 +209,10 @@ class VideoInterface(QWidget, Ui_VideoInterface):
             logger.warning("flyout explain thread is not done")
             return
         logger.info(f"explain signal: {word}")
+        # 向上偏移避免超出屏幕
         cursor_pos = QCursor.pos()
-        # cursor_pos.setX(cursor_pos.x() - 200)
-        cursor_pos.setY(cursor_pos.y() - 100)
+        cursor_pos.setX(cursor_pos.x() + 10)
+        cursor_pos.setY(cursor_pos.y() - 200)
         self.explain_flyout = Flyout.make(
             ExplainFlyoutView(word),
             cursor_pos,

@@ -69,12 +69,12 @@ class CVideoWidget(QGraphicsView):
     def wheelEvent(self, e):
         return
 
-    def enterEvent(self, e):
-        self.isHover = True
-        # self.playBar.fadeIn()
-        self.play()
+    # def enterEvent(self, e):
+    #     self.isHover = True
+    #     # self.playBar.fadeIn()
+    #     self.play()
 
-        self.playBar.playButton.setPlay(self.player.isPlaying())
+    #     self.playBar.playButton.setPlay(self.player.isPlaying())
 
     def leaveEvent(self, e):
         self.isHover = False
@@ -101,6 +101,8 @@ class CVideoWidget(QGraphicsView):
             self.pause()
         else:
             self.play()
+
+        self.playBar.playButton.setPlay(self.player.isPlaying())
 
     def resizeEvent(self, e):
         super().resizeEvent(e)
