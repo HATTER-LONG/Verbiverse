@@ -9,7 +9,7 @@ from Functions.LanguageType import ExplainLanguage
 from Functions.SignalBus import signalBus
 from LLM.ExplainWorkerThread import ExplainWorkerThread
 from ModuleLogger import logger
-from PySide6.QtCore import QPoint, Qt, QThread, QUrl, Slot, QTimer
+from PySide6.QtCore import QPoint, Qt, QThread, QTimer, QUrl, Slot
 from PySide6.QtGui import QAction, QCursor, QKeySequence, QShortcut
 from PySide6.QtMultimedia import QMediaPlayer
 from PySide6.QtWidgets import (
