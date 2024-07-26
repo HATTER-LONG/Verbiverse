@@ -39,6 +39,7 @@ class VideoInterface(QWidget, Ui_VideoInterface):
         self.subtitel_browser.explain_signal.connect(self._onExplainSignal)
         self.setContextMenuPolicy(Qt.CustomContextMenu)
         self.customContextMenuRequested.connect(self._onContextMenuRequested)
+        self.parse_button.clicked.connect(self.explainCurrentSubTitle)
         self.file_path = None
         self.timer = QTimer(self)
         self.timer.timeout.connect(self.updateHistoryPos)
@@ -241,6 +242,11 @@ class VideoInterface(QWidget, Ui_VideoInterface):
         )
         menu.exec(self.mapToGlobal(event))
 
+    @Slot()
+    def explainCurrentSubTitle(self):
+        if len(self.current_subtitle.text) > 0:
+            self._onExplainSignal(self.current_subtitle.text)
+
     @Slot(str)
     def _onExplainSignal(self, word: str):
         if hasattr(self, "worker") and self.worker is not None:
@@ -269,7 +275,10 @@ class VideoInterface(QWidget, Ui_VideoInterface):
         self.explain_window = None
 
         all_text = ""
-        for i in range(self.subtitle_index - 10, self.subtitle_index + 5):
+        for i in range(
+            max(0, self.subtitle_index - 15),
+            min(len(self.subtitle), self.subtitle_index + 15),
+        ):
             all_text = all_text + self.subtitle[i].text
         self.worker = ExplainWorkerThread(
             selected_text=word,

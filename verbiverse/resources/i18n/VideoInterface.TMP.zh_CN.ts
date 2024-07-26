@@ -4,7 +4,7 @@
 <context>
     <name>VideoInterface</name>
     <message>
-        <location filename="../../UI/VideoInterface.py" line="198"/>
+        <location filename="../../UI/VideoInterface.py" line="237"/>
         <source>Add Subtitle</source>
         <translation>添加字幕</translation>
     </message>

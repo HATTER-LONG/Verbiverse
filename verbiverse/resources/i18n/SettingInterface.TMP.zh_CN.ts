@@ -89,7 +89,6 @@
         <translation>设置你想要通过 LLM 所使用的母语</translation>
     </message>
     <message>
-        <location filename="../../UI/SettingInterface.py" line="156"/>
         <location filename="../../UI/SettingInterface.py" line="320"/>
         <source>Choose folder</source>
         <translation>选择文件夹</translation>
@@ -222,9 +221,8 @@
         <translation>更新成功</translation>
     </message>
     <message>
-        <location filename="../../UI/SettingInterface.py" line="158"/>
         <source>Database directory</source>
-        <translation>数据库目录</translation>
+        <translation type="vanished">数据库目录</translation>
     </message>
     <message>
         <location filename="../../UI/SettingInterface.py" line="169"/>
