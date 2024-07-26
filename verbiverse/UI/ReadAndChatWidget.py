@@ -47,6 +47,8 @@ class ReadAndChatWidget(QWidget, Ui_ReadAndChatWidget):
     def __init__(self, parent: QWidget = None):
         super().__init__(parent)
         self.setupUi(self)
+        self.splitter.setStretchFactor(0, 2)
+        self.splitter.setStretchFactor(1, 1)
 
         # #### TEST CODE
         # self.web_view.openLocalPdfDoc(
@@ -73,15 +75,15 @@ class ReadAndChatWidget(QWidget, Ui_ReadAndChatWidget):
         self.pdf_reader = None
         self.local_file_path = None
 
-    @Slot(QUrl)
-    def openLocalPdfDoc(self, doc_location: QUrl):
+    @Slot(QUrl, int)
+    def openLocalPdfDoc(self, doc_location: QUrl, page=0):
         self.clean()
 
         self.local_file_path = doc_location
         self.loader = LoadPdfText(doc_location.toLocalFile())
         self.loader.load_pdf_finish.connect(self.updatePdfReader)
         self.loader.start()
-        self.web_view.openLocalPdfDoc(doc_location)
+        self.web_view.openLocalPdfDoc(doc_location, page)
 
     @Slot(PdfReader)
     def updatePdfReader(self, reader: PdfReader):

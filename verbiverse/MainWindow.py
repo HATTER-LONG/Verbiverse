@@ -4,7 +4,7 @@ from Functions.Config import cfg
 from Functions.Log import get_logger
 from Functions.SignalBus import signalBus
 from PySide6.QtCore import Qt, QTranslator, Slot
-from PySide6.QtGui import QFontDatabase, QIcon
+from PySide6.QtGui import QIcon
 from PySide6.QtWidgets import (
     QApplication,
     QFrame,
@@ -48,8 +48,9 @@ class MainWindow(FluentWindow):
         from UI import (
             HomeInterface,
             ReadAndChatWidget,
-            WordsTableInterface,
             SettingInterface,
+            WordsTableInterface,
+            VideoInterface,
         )
 
         # QFontDatabase.addApplicationFont(":/fonts/Segoe UI.ttf")
@@ -58,6 +59,7 @@ class MainWindow(FluentWindow):
         self.interfaceList = []
         self.home_page = HomeInterface(self)
         self.read_page = ReadAndChatWidget(self)
+        self.video_page = VideoInterface(self)
         self.words_page = WordsTableInterface(self)
 
         # for i in range(0, 12):
@@ -71,6 +73,7 @@ class MainWindow(FluentWindow):
 
         self.interfaceList.append(self.home_page)
         self.interfaceList.append(self.read_page)
+        self.interfaceList.append(self.video_page)
         self.interfaceList.append(self.words_page)
         self.interfaceList.append(self.setting_page)
 
@@ -81,6 +84,7 @@ class MainWindow(FluentWindow):
     def initNavigation(self):
         self.addSubInterface(self.home_page, FIF.HOME, self.tr("Home"))
         self.addSubInterface(self.read_page, FIF.CHAT, self.tr("Read with LLM"))
+        self.addSubInterface(self.video_page, FIF.VIDEO, self.tr("Video Player"))
         self.addSubInterface(self.words_page, FIF.HISTORY, self.tr("Words review"))
 
         self.addSubInterface(
@@ -91,7 +95,7 @@ class MainWindow(FluentWindow):
         )
 
     def initWindow(self):
-        self.resize(1000, 800)
+        self.resize(1300, 800)
 
         self.setWindowIcon(QIcon(":/images/logo.png"))
         self.setWindowTitle("Verbiverse")
@@ -154,7 +158,9 @@ class MainWindow(FluentWindow):
 def main():
     logger = get_logger("main")
     logger.info("start application...")
-    setTheme(Theme.LIGHT)
+
+    print(cfg.get(cfg.themeMode))
+    setTheme(cfg.get(cfg.themeMode))
 
     app = QApplication(sys.argv)
 

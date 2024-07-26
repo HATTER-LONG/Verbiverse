@@ -48,11 +48,20 @@ class BannerWidget(QWidget):
 
         self.link_card_view.addButtonCard(
             FluentIcon.LIBRARY,
-            self.tr("Getting started"),
+            self.tr("Read PDF"),
             self.tr("Open a local pdf file."),
             self.callback,
             "ReadAndChatWidget",
         )
+
+        self.link_card_view.addButtonCard(
+            FluentIcon.VIDEO,
+            self.tr("Watch Video"),
+            self.tr("Open a video file."),
+            self.videoFileSelect,
+            "VideoInterface",
+        )
+
         self.link_card_view.addCard(
             FluentIcon.GITHUB,
             self.tr("GitHub repo"),
@@ -61,11 +70,16 @@ class BannerWidget(QWidget):
         )
 
         self.m_fileDialog = None
-        signalBus.load_localfile_signal.connect(self.processCall)
+        self.m_videoDialog = None
         self.process = 0
+        signalBus.load_localfile_signal.connect(self.openLocalFileCall)
+        # TODO: need optimize no static str
+        signalBus.open_video_signal.connect(
+            lambda _: signalBus.switch_page_signal.emit("VideoInterface")
+        )
 
     # TODO: add process dialogs
-    def processCall(self, process: int):
+    def openLocalFileCall(self, process: int):
         logger.debug(f"Open local pdf file process: {process}")
         if process == 100:
             signalBus.switch_page_signal.emit("ReadAndChatWidget")
@@ -82,7 +96,21 @@ class BannerWidget(QWidget):
         if self.m_fileDialog.exec() == QDialog.Accepted:
             to_open = self.m_fileDialog.selectedUrls()[0]
             if to_open.isValid():
-                signalBus.open_localfile_signal.emit(to_open)
+                signalBus.open_localfile_signal.emit(to_open, 0)
+
+    def videoFileSelect(self, args):
+        if not self.m_videoDialog:
+            directory = QStandardPaths.writableLocation(
+                QStandardPaths.DocumentsLocation
+            )
+            self.m_videoDialog = QFileDialog(self, "Choose a video file", directory)
+            self.m_videoDialog.setFileMode(QFileDialog.FileMode.ExistingFile)
+            self.m_videoDialog.setAcceptMode(QFileDialog.AcceptOpen)
+            # self.m_fileDialog.setMimeTypeFilters(["application/pdf"])
+        if self.m_videoDialog.exec() == QDialog.Accepted:
+            to_open = self.m_videoDialog.selectedUrls()[0]
+            if to_open.isValid():
+                signalBus.open_video_signal.emit(to_open, 0)
 
     def paintEvent(self, e):
         super().paintEvent(e)

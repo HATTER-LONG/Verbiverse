@@ -103,7 +103,7 @@ class CWebView(FramelessWebEngineView):
         self.pdf_reader = None
         self.mutex.unlock()
 
-    def openLocalPdfDoc(self, doc_location: QUrl):
+    def openLocalPdfDoc(self, doc_location: QUrl, page: int = 0):
         """
         Opens a local PDF document.
 
@@ -113,6 +113,7 @@ class CWebView(FramelessWebEngineView):
         self.clean()
         if doc_location.isLocalFile():
             self.pdf_path = doc_location
+            self.pdf_current_page = page
             path = urllib.parse.quote(doc_location.url().encode("utf-8"))
             # Test error load code
             # path = doc_location.url().encode("utf-8")
@@ -147,6 +148,9 @@ class CWebView(FramelessWebEngineView):
             page_num: The new page number.
         """
         self.pdf_current_page = page_num
+        signalBus.update_file_schedule_signal.emit(
+            self.pdf_path.toLocalFile(), page_num
+        )
 
     def hasSelectedText(self) -> bool:
         if len(self.selectedText()) > 0:
@@ -185,7 +189,7 @@ class CWebView(FramelessWebEngineView):
             return
         self.explain_flyout = explain_flyout
         self.explain_flyout.view.setTextResource(
-            self.pdf_path.toLocalFile() + ":" + str(self.pdf_current_page)
+            self.pdf_path.toLocalFile() + " -> " + str(self.pdf_current_page)
         )
         self.explain_flyout.closed.connect(self.explainClose)
         self.explain_flyout.view.pin_explain_signal.connect(self.pinFlyout)
@@ -229,7 +233,7 @@ class CWebView(FramelessWebEngineView):
         self.explain_window = ExplainWindow(
             title,
             content,
-            self.pdf_path.toLocalFile() + ":" + str(self.pdf_current_page),
+            self.pdf_path.toLocalFile() + " -> " + str(self.pdf_current_page),
             already_add,
         )
         self.explain_window.show()

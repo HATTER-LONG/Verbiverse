@@ -17,10 +17,13 @@ NEED_TRANSLATE_FILE_PATH_LIST = [
     "./verbiverse/UI/SettingInterface.py",
     "./verbiverse/UI/HomeInterface.py",
     "./verbiverse/UI/ReadAndChatWidget.py",
+    "./verbiverse/UI/VideoInterface.py",
     "./verbiverse/UI/ChatWidget.ui",
     "./verbiverse/CustomWidgets/CContexMenu.py",
     "./verbiverse/CustomWidgets/CWebView.py",
     "./verbiverse/CustomWidgets/CWordsTable.py",
+    "./verbiverse/CustomWidgets/CFileListWidget.ui",
+    "./verbiverse/CustomWidgets/CTabWidget.py",
     "./verbiverse/Functions/ErrorString.py",
 ]
 TRANSLATE_RESOURCE_PATH = "./verbiverse/resources/i18n/"

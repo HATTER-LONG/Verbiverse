@@ -152,13 +152,13 @@ class SettingInterface(ScrollArea):
             texts=["Chinese", "English", "Japanese"],
             parent=self.function_info_group,
         )
-        self.datebase_save_path = PushSettingCard(
-            self.tr("Choose folder"),
-            FIF.CLOUD,
-            self.tr("Database directory"),
-            cfg.get(cfg.database_folder),
-            self.function_info_group,
-        )
+        # self.datebase_save_path = PushSettingCard(
+        #     self.tr("Choose folder"),
+        #     FIF.CLOUD,
+        #     self.tr("Database directory"),
+        #     cfg.get(cfg.database_folder),
+        #     self.function_info_group,
+        # )
 
         # personalization
         self.personal_group = SettingCardGroup(
@@ -284,7 +284,7 @@ class SettingInterface(ScrollArea):
         self.function_info_group.addSettingCard(self.provide_url)
         self.function_info_group.addSettingCard(self.target_language_card)
         self.function_info_group.addSettingCard(self.mother_tongue_card)
-        self.function_info_group.addSettingCard(self.datebase_save_path)
+        # self.function_info_group.addSettingCard(self.datebase_save_path)
 
         self.personal_group.addSettingCard(self.mica_card)
         self.personal_group.addSettingCard(self.themeCard)
@@ -322,7 +322,7 @@ class SettingInterface(ScrollArea):
             return
 
         cfg.set(cfg.database_folder, folder)
-        self.datebase_save_path.setContent(folder)
+        # self.datebase_save_path.setContent(folder)
         # TODO: 拷贝数据库
 
     def __connectSignalToSlot(self):
@@ -350,7 +350,7 @@ class SettingInterface(ScrollArea):
         self.mother_tongue_card.comboBox.currentIndexChanged.connect(
             lambda _: signalBus.llm_config_change_signal.emit()
         )
-        self.datebase_save_path.clicked.connect(self.__onDatabaseSetFolderCardClicked)
+        # self.datebase_save_path.clicked.connect(self.__onDatabaseSetFolderCardClicked)
 
         # personalization
         self.themeCard.optionChanged.connect(lambda ci: setTheme(cfg.get(ci)))

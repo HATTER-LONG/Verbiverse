@@ -13,3 +13,5 @@ from .SettingInterface import SettingInterface  # noqa: F401,E402
 from .HomeInterface import HomeInterface  # noqa: F401,E402
 from .WordsTableInterface_ui import Ui_WordsTableInterface  # noqa: F401,E402,I001
 from .WordsTableInterface import WordsTableInterface  # noqa: F401,E402
+from .VideoInterface_ui import Ui_VideoInterface  # noqa: F401,E402,I001
+from .VideoInterface import VideoInterface  # noqa: F401,E402

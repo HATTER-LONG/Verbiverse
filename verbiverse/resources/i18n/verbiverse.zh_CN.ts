@@ -10,6 +10,15 @@
 </context>
 
 <context>
+    <name>VideoInterface</name>
+    <message>
+        <location filename="../../UI/VideoInterface.py" line="237"/>
+        <source>Add Subtitle</source>
+        <translation>添加字幕</translation>
+    </message>
+</context>
+
+<context>
     <name>ChatWidget</name>
     <message>
         <location filename="../../UI/ChatWidget.ui" line="14"/>
@@ -25,6 +34,25 @@
         <location filename="../../UI/ChatWidget.ui" line="170"/>
         <source>Check</source>
         <translation>检查</translation>
+    </message>
+</context>
+
+<context>
+    <name>CFileListWidget</name>
+    <message>
+        <location filename="../../CustomWidgets/CFileListWidget.ui" line="14"/>
+        <source>Form</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../CustomWidgets/CFileListWidget.ui" line="40"/>
+        <source>Recently opened files</source>
+        <translation>最近打开的文件</translation>
+    </message>
+    <message>
+        <location filename="../../CustomWidgets/CFileListWidget.ui" line="63"/>
+        <source>Clear</source>
+        <translation>清空</translation>
     </message>
 </context>
 
@@ -116,7 +144,6 @@
         <translation>设置你想要通过 LLM 所使用的母语</translation>
     </message>
     <message>
-        <location filename="../../UI/SettingInterface.py" line="156"/>
         <location filename="../../UI/SettingInterface.py" line="320"/>
         <source>Choose folder</source>
         <translation>选择文件夹</translation>
@@ -249,9 +276,8 @@
         <translation>更新成功</translation>
     </message>
     <message>
-        <location filename="../../UI/SettingInterface.py" line="158"/>
         <source>Database directory</source>
-        <translation>数据库目录</translation>
+        <translation type="vanished">数据库目录</translation>
     </message>
     <message>
         <location filename="../../UI/SettingInterface.py" line="169"/>
@@ -290,6 +316,20 @@
 </context>
 
 <context>
+    <name>CTabWidget</name>
+    <message>
+        <location filename="../../CustomWidgets/CTabWidget.py" line="37"/>
+        <source>SubTitle</source>
+        <translation>字幕</translation>
+    </message>
+    <message>
+        <location filename="../../CustomWidgets/CTabWidget.py" line="40"/>
+        <source>Video List</source>
+        <translation>视频</translation>
+    </message>
+</context>
+
+<context>
     <name>ErrorString</name>
     <message>
         <location filename="../../Functions/ErrorString.py" line="9"/>
@@ -321,22 +361,32 @@
 <context>
     <name>BannerWidget</name>
     <message>
-        <location filename="../../UI/HomeInterface.py" line="51"/>
-        <source>Getting started</source>
-        <translation>开始</translation>
-    </message>
-    <message>
         <location filename="../../UI/HomeInterface.py" line="52"/>
         <source>Open a local pdf file.</source>
         <translation>打开本地 PDF 文件</translation>
     </message>
     <message>
-        <location filename="../../UI/HomeInterface.py" line="58"/>
+        <location filename="../../UI/HomeInterface.py" line="51"/>
+        <source>Read PDF</source>
+        <translation>阅读 PDF</translation>
+    </message>
+    <message>
+        <location filename="../../UI/HomeInterface.py" line="59"/>
+        <source>Watch Video</source>
+        <translation>观看视频</translation>
+    </message>
+    <message>
+        <location filename="../../UI/HomeInterface.py" line="60"/>
+        <source>Open a video file.</source>
+        <translation>打开本地视频</translation>
+    </message>
+    <message>
+        <location filename="../../UI/HomeInterface.py" line="67"/>
         <source>GitHub repo</source>
         <translation>GitHub 仓库</translation>
     </message>
     <message>
-        <location filename="../../UI/HomeInterface.py" line="59"/>
+        <location filename="../../UI/HomeInterface.py" line="68"/>
         <source>Project homepage.</source>
         <translation>项目主页</translation>
     </message>
@@ -379,7 +429,7 @@
 <context>
     <name>ReadAndChatWidget</name>
     <message>
-        <location filename="../../UI/ReadAndChatWidget.py" line="68"/>
+        <location filename="../../UI/ReadAndChatWidget.py" line="70"/>
         <source>Need wait last loader stop, maybe cost some time!!!</source>
         <translation>需要等待上一次文档加载停止，可能需要些时间！</translation>
     </message>
@@ -388,22 +438,27 @@
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../../MainWindow.py" line="82"/>
+        <location filename="../../MainWindow.py" line="85"/>
         <source>Home</source>
         <translation>主页</translation>
     </message>
     <message>
-        <location filename="../../MainWindow.py" line="83"/>
+        <location filename="../../MainWindow.py" line="86"/>
         <source>Read with LLM</source>
         <translation>LLM 辅助阅读</translation>
     </message>
     <message>
-        <location filename="../../MainWindow.py" line="84"/>
+        <location filename="../../MainWindow.py" line="87"/>
+        <source>Video Player</source>
+        <translation>视频播放</translation>
+    </message>
+    <message>
+        <location filename="../../MainWindow.py" line="88"/>
         <source>Words review</source>
         <translation>单词本</translation>
     </message>
     <message>
-        <location filename="../../MainWindow.py" line="89"/>
+        <location filename="../../MainWindow.py" line="93"/>
         <source>Settings</source>
         <translation>设置</translation>
     </message>
