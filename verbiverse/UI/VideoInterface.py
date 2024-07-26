@@ -9,8 +9,9 @@ from Functions.LanguageType import ExplainLanguage
 from Functions.SignalBus import signalBus
 from LLM.ExplainWorkerThread import ExplainWorkerThread
 from ModuleLogger import logger
-from PySide6.QtCore import QPoint, Qt, QThread, QUrl, Slot
+from PySide6.QtCore import QPoint, Qt, QThread, QUrl, Slot, QTimer
 from PySide6.QtGui import QAction, QCursor, QKeySequence, QShortcut
+from PySide6.QtMultimedia import QMediaPlayer
 from PySide6.QtWidgets import (
     QAbstractItemView,
     QDialog,
@@ -39,6 +40,8 @@ class VideoInterface(QWidget, Ui_VideoInterface):
         self.setContextMenuPolicy(Qt.CustomContextMenu)
         self.customContextMenuRequested.connect(self._onContextMenuRequested)
         self.file_path = None
+        self.timer = QTimer(self)
+        self.timer.timeout.connect(self.updateHistoryPos)
 
         self.subtitle_path = None
         self.subtitle = None
@@ -52,6 +55,7 @@ class VideoInterface(QWidget, Ui_VideoInterface):
         self.tab_widget.subtitle.itemDoubleClicked.connect(self.selectSubtitle)
         self.tab_widget.file_list.itemDoubleClicked.connect(self.selectVideoFile)
         self.video_widget.player.positionChanged.connect(self.updatePlayPos)
+        self.video_widget.player.playbackStateChanged.connect(self.updatePlaystate)
         space_shortcut = QShortcut(QKeySequence(Qt.Key.Key_Space), self)
         space_shortcut.activated.connect(self.video_widget.togglePlayState)
         left_shortcut = QShortcut(QKeySequence(Qt.Key.Key_Left), self)
@@ -64,6 +68,26 @@ class VideoInterface(QWidget, Ui_VideoInterface):
         )
 
         signalBus.open_video_signal.connect(self.open)
+
+    def updateHistoryPos(self):
+        if (
+            self.video_widget.player.playbackState()
+            == QMediaPlayer.PlaybackState.PlayingState
+        ):
+            signalBus.update_file_schedule_signal.emit(
+                self.file_path, self.video_widget.player.position()
+            )
+
+    def updatePlaystate(self, state: QMediaPlayer.PlaybackState):
+        logger.info(f"play state: {state}")
+        if (
+            state == QMediaPlayer.PlaybackState.PlayingState
+            and hasattr(self, "play_pos")
+            and self.play_pos is not None
+        ):
+            logger.info(f"seek to {self.play_pos}")
+            self.video_widget.player.setPosition(self.play_pos)
+            self.play_pos = None
 
     def initSubTitleList(self):
         for index, item in enumerate(self.subtitle):
@@ -98,15 +122,14 @@ class VideoInterface(QWidget, Ui_VideoInterface):
         time = self.subtitle[index].start.ordinal
         logger.info(f"select subtitle: {index} {time}")
         self.video_widget.player.setPosition(time)
-        # self.updatePlayPos(time)
 
     def selectVideoFile(self, item: QListWidgetItem):
         file_path = item.data(Qt.UserRole)
-        signalBus.open_video_signal.emit(QUrl.fromLocalFile(file_path))
+        signalBus.open_video_signal.emit(QUrl.fromLocalFile(file_path), 0)
 
     def updatePlayPos(self, time):
         if not self.subtitle or (
-            time - self.last_timestamp > 0 and time - self.last_timestamp < 200
+            time - self.last_timestamp > 0 and time - self.last_timestamp < 500
         ):
             return
         self.last_timestamp = time
@@ -147,22 +170,36 @@ class VideoInterface(QWidget, Ui_VideoInterface):
     def clearVideoFileList(self):
         self.tab_widget.file_list.clear()
 
-    @Slot(QUrl)
-    def open(self, file_path: QUrl):
-        logger.info(f"open video file: [{file_path}]")
+    @Slot(QUrl, int)
+    def open(self, file_path: QUrl, time: int = 0):
+        logger.info(f"open video file: [{file_path} {time}]")
         if not file_path.isValid():
             return
         self.clear()
+        self.timer.stop()
         self.file_path = file_path.toLocalFile()
         try:
             self.video_widget.stop()
             # FIX: WTF .... https://stackoverflow.com/questions/77219901/can-not-change-media-using-setsource-in-pyside6
-            QThread.msleep(200)
+            count = 0
+            while (
+                self.video_widget.player.playbackState()
+                != QMediaPlayer.PlaybackState.StoppedState
+            ):
+                if count > 10:
+                    raise Exception("can not stop player")
+                count += 1
+                QThread.msleep(200)
+
             self.video_widget.setVideo(file_path)
+            self.play_pos = time
             self.video_widget.play()
         except Exception as error:
             logger.error(f"open video error: [{error}]")
             traceback.print_exc()
+            signalBus.error_signal.emit("open video error: [{error}]")
+            return
+        self.timer.start(5000)
         self.findSubtitle()
         self.initVideoList()
 
