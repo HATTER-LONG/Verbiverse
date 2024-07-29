@@ -94,9 +94,13 @@
    <img src="./PIC/example1.png" alt="example" width="600" height="460">
 
 2. 使用本地模型，需要选择 OpenAI 协议，填入本地工具的 LLM 服务地址，使用 LM Studio 为例：
+
    - LM Studio 安装对应模型：
+
      <img src="./PIC/example2.png" alt="example" width="600" height="460">
+
    - 工具配置：
+
      <img src="./PIC/example3.png" alt="example" width="600" height="460">
 
 ## 鸣谢
