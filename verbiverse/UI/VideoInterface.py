@@ -44,6 +44,8 @@ class VideoInterface(QWidget, Ui_VideoInterface):
         self.timer = QTimer(self)
         self.timer.timeout.connect(self.updateHistoryPos)
 
+        self.subtitle_maxline = 0
+        self.subtitle_show_firstline = True
         self.subtitle_path = None
         self.subtitle = None
         self.subtitle_map = {}
@@ -60,15 +62,17 @@ class VideoInterface(QWidget, Ui_VideoInterface):
         space_shortcut = QShortcut(QKeySequence(Qt.Key.Key_Space), self)
         space_shortcut.activated.connect(self.video_widget.togglePlayState)
         left_shortcut = QShortcut(QKeySequence(Qt.Key.Key_Left), self)
-        left_shortcut.activated.connect(
-            lambda: self.video_widget.playBar.skipBack(5000)
-        )
+        left_shortcut.activated.connect(lambda: self.offsetSubtitle(-1))
         right_shortcut = QShortcut(QKeySequence(Qt.Key.Key_Right), self)
-        right_shortcut.activated.connect(
-            lambda: self.video_widget.playBar.skipForward(5000)
-        )
+        right_shortcut.activated.connect(lambda: self.offsetSubtitle(1))
 
         signalBus.open_video_signal.connect(self.open)
+
+    def offsetSubtitle(self, index: int):
+        target_index = max(0, self.subtitle_index + index)
+        time = self.subtitle[target_index].start.ordinal
+        logger.info(f"offset subtitle: {target_index} {time}")
+        self.video_widget.player.setPosition(time)
 
     def updateHistoryPos(self):
         if (
@@ -95,7 +99,11 @@ class VideoInterface(QWidget, Ui_VideoInterface):
             if len(item.text) == 0:
                 continue
             self.subtitle_map[item.text] = index
-            widget = QListWidgetItem(f"[{item.start}] {item.text}")
+            self.subtitle_maxline = max(
+                self.subtitle_maxline, len(item.text.split("\n"))
+            )
+            text = item.text.replace("\n", " ")
+            widget = QListWidgetItem(f"[{item.start}] {text}")
             widget.setData(Qt.UserRole, index)
             self.tab_widget.subtitle.addItem(widget)
 
@@ -138,19 +146,28 @@ class VideoInterface(QWidget, Ui_VideoInterface):
         subtitle_item = self.subtitle.at(milliseconds=time + 1)
         if subtitle_item is None or self.current_subtitle == subtitle_item:
             return
-        self.current_subtitle = subtitle_item
 
-        if len(self.current_subtitle.text) > 0:
-            text = self.current_subtitle.text
-            logger.info(f"update subtitle: {text}")
-            self.subtitel_browser.setText(text)
-            self.subtitel_browser.show()
-            self.subtitle_index = self.subtitle_map[text]
-            self.tab_widget.subtitle.setCurrentRow(self.subtitle_index)
-            self.tab_widget.subtitle.scrollTo(
-                self.tab_widget.subtitle.currentIndex(),
-                hint=QAbstractItemView.PositionAtCenter,
-            )
+        if len(subtitle_item.text) > 0:
+            self.current_subtitle = subtitle_item
+            self.updateSubtitleLine(self.current_subtitle)
+
+    def updateSubtitleLine(self, subtitle_item):
+        subtitle = self.getSubtitleStr(subtitle_item)
+        logger.info(f"update subtitle: {subtitle}")
+        self.subtitel_browser.setText(subtitle)
+        self.subtitel_browser.show()
+        self.subtitle_index = self.subtitle_map[subtitle_item.text]
+        self.tab_widget.subtitle.setCurrentRow(self.subtitle_index)
+        self.tab_widget.subtitle.scrollTo(
+            self.tab_widget.subtitle.currentIndex(),
+            hint=QAbstractItemView.PositionAtCenter,
+        )
+
+    def getSubtitleStr(self, subtitle_item):
+        text = subtitle_item.text
+        if not self.subtitle_show_firstline:
+            text = text.split("\n", 1)[1]
+        return text
 
     def clear(self):
         self.file_path = None
@@ -215,6 +232,10 @@ class VideoInterface(QWidget, Ui_VideoInterface):
             self.subtitle = pysrt.open(srt_path)
             self.initSubTitleList()
 
+    def _onToggleShowFirstLineSubtitle(self):
+        self.subtitle_show_firstline = not self.subtitle_show_firstline
+        self.updateSubtitleLine(self.current_subtitle)
+
     def _onAddSubtitle(self):
         self.clearSubTitle()
         diaglog = QFileDialog(self, "Choose a video subtitle file", self.file_path)
@@ -240,6 +261,16 @@ class VideoInterface(QWidget, Ui_VideoInterface):
                 triggered=self._onAddSubtitle,
             )
         )
+
+        if self.subtitle_maxline >= 2:
+            menu.addAction(
+                QAction(
+                    FIF.HIDE.icon(),
+                    self.tr("Toggle show first line Subtitle"),
+                    self,
+                    triggered=self._onToggleShowFirstLineSubtitle,
+                )
+            )
         menu.exec(self.mapToGlobal(event))
 
     @Slot()

@@ -46,12 +46,13 @@ class CVideoWidget(QGraphicsView):
         self.fitInView(self.videoItem, Qt.KeepAspectRatio)
 
     def mousePressEvent(self, event):
-        if self.playBar.opacityEffect.opacity() == 1:
-            self.isHover = False
-            self.timer.start(500)
-        else:
-            self.isHover = True
-            self.playBar.fadeIn()
+        if event.button() == Qt.LeftButton:
+            if self.playBar.opacityEffect.opacity() == 1:
+                self.isHover = False
+                self.timer.start(500)
+            else:
+                self.isHover = True
+                self.playBar.fadeIn()
 
     def mouseDoubleClickEvent(self, event):
         if not self.isHover:
