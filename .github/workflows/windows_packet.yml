@@ -1,16 +1,16 @@
 name: Windows Packet
 run-name: Windows Packted by GitHub Actions 🚀
 on:
-  push:
-    branches:
-      - main
-      - "release/**"
+  # push:
+  #   branches:
+  #     - main
+  #     - "release/**"
   workflow_dispatch:
     inputs:
       name:
-        description: 'Packet Windows Rlease Version'
+        description: "Packet Windows Rlease Version"
         required: true
-        default: 'Verbiverse'
+        default: "Verbiverse"
 jobs:
   windows_packet:
     runs-on: windows-latest

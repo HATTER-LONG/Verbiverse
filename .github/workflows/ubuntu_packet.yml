@@ -1,16 +1,16 @@
 name: Ubuntu Packet
 run-name: Ubuntu Packted by GitHub Actions 🚀
 on:
-  push:
-    branches:
-      - main
-      - "release/**"
+  # push:
+  #   branches:
+  #     - main
+  #     - "release/**"
   workflow_dispatch:
     inputs:
       name:
-        description: 'Packet Linux Rlease Version'
+        description: "Packet Linux Rlease Version"
         required: true
-        default: 'Verbiverse'
+        default: "Verbiverse"
 jobs:
   ubuntu_packet:
     runs-on: ubuntu-22.04
