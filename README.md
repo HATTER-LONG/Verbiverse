@@ -22,7 +22,7 @@
   <p align="center">
     通过预定义的 Prompt 更加方便、快捷的使用大模型，专为想要提升语言能力的你所设计。
     <br />
-    <a href="https://github.com/HATTER-LONG/Verbiverse#目录"><strong>探索本项目的文档 »</strong></a>
+    <a href="https://github.com/HATTER-LONG/Verbiverse#功能介绍"><strong>探索本项目的文档 »</strong></a>
     <br />
     <br />
     <a href="https://github.com/HATTER-LONG/Verbiverse#上手指南">上手指南</a>
