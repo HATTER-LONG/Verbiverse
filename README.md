@@ -75,13 +75,14 @@
 
 1. clone 源码到本地：`git clone https://github.com/HATTER-LONG/Verbiverse.git`
 2. 使用conda 或 python (>=3.9, <=3.12) venv 创建虚拟环境，推荐使用 conda：
-   - 使用 conda：`conda create -n Verbiverse python=3.11; conda activate Verbiverse`;
+   - 使用 conda：`conda create -n Verbiverse python=3.11`
+     - 激活虚拟环境：`conda activate Verbiverse`;
    - 使用 venv，进入源码目录后：`python3 -m venv ./.venv;source ./venv/bin/activate`;
 3. 安装 poetry：
    - 确认已正确启用虚拟环境；
    - `pip install -U pip setuptools;pip install poetry`;
 4. 安装项目依赖环境：`poetry install`：
-   - 需要代理则取消 `pyproject.toml` 中 `[[tool.poetry.source]]` 相关注释;
+   - 需要代理则取消 `pyproject.toml` 中 `[[tool.poetry.source]]` 相关注释，然后重新 `poetry lock --no-update`;
 5. 运行程序：`python3 main.py`
 
 ### 工具设置
