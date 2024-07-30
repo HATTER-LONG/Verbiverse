@@ -6,3 +6,4 @@ app
 back
 build
 dist
+*.pyc
