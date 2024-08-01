@@ -4,12 +4,12 @@
 <context>
     <name>CTabWidget</name>
     <message>
-        <location filename="../../CustomWidgets/CTabWidget.py" line="37"/>
+        <location filename="../../CustomWidgets/CTabWidget.py" line="21"/>
         <source>SubTitle</source>
         <translation>字幕</translation>
     </message>
     <message>
-        <location filename="../../CustomWidgets/CTabWidget.py" line="40"/>
+        <location filename="../../CustomWidgets/CTabWidget.py" line="24"/>
         <source>Video List</source>
         <translation>视频</translation>
     </message>

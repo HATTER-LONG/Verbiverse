@@ -15,3 +15,4 @@ from .CWordsTable import WordsTable  # noqa: F401
 from .LinkCard import LinkCardView  # noqa: F401
 from .StyleSheet import StyleSheet  # noqa: F401
 from .CTabWidget import CTabWidget  # noqa: F401
+from .CTestLabel import CTestLabel  # noqa: F401

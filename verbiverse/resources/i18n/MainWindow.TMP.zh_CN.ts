@@ -4,27 +4,32 @@
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../../MainWindow.py" line="85"/>
+        <location filename="../../MainWindow.py" line="84"/>
         <source>Home</source>
         <translation>主页</translation>
     </message>
     <message>
-        <location filename="../../MainWindow.py" line="86"/>
+        <location filename="../../MainWindow.py" line="85"/>
         <source>Read with LLM</source>
         <translation>LLM 辅助阅读</translation>
     </message>
     <message>
-        <location filename="../../MainWindow.py" line="87"/>
+        <location filename="../../MainWindow.py" line="86"/>
         <source>Video Player</source>
         <translation>视频播放</translation>
     </message>
     <message>
-        <location filename="../../MainWindow.py" line="88"/>
+        <location filename="../../MainWindow.py" line="87"/>
         <source>Words review</source>
         <translation>单词本</translation>
     </message>
     <message>
-        <location filename="../../MainWindow.py" line="93"/>
+        <location filename="../../MainWindow.py" line="89"/>
+        <source>Test</source>
+        <translation>测试页面</translation>
+    </message>
+    <message>
+        <location filename="../../MainWindow.py" line="94"/>
         <source>Settings</source>
         <translation>设置</translation>
     </message>

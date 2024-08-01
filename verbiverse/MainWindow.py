@@ -62,12 +62,9 @@ class MainWindow(FluentWindow):
         self.video_page = VideoInterface(self)
         self.words_page = WordsTableInterface(self)
 
-        # for i in range(0, 12):
-        #     message_label1 = CMessageBox(":/images/github_rebot.png", "Rebot", self)
-        #     message_label1.setMessageText(
-        #         "This is a test message, it's helpful to dev new function avoid input ever time"
-        #     )
-        #     self.read_page.chat_widget.messages_list.addWidget(message_label1)
+        from UI import CTest
+
+        self.test_page = CTest(self)
 
         self.setting_page = SettingInterface(self)
 
@@ -76,6 +73,8 @@ class MainWindow(FluentWindow):
         self.interfaceList.append(self.video_page)
         self.interfaceList.append(self.words_page)
         self.interfaceList.append(self.setting_page)
+
+        self.interfaceList.append(self.test_page)
 
         self.initNavigation()
         self.initWindow()
@@ -86,6 +85,8 @@ class MainWindow(FluentWindow):
         self.addSubInterface(self.read_page, FIF.CHAT, self.tr("Read with LLM"))
         self.addSubInterface(self.video_page, FIF.VIDEO, self.tr("Video Player"))
         self.addSubInterface(self.words_page, FIF.HISTORY, self.tr("Words review"))
+
+        self.addSubInterface(self.test_page, FIF.HELP, self.tr("Test"))
 
         self.addSubInterface(
             self.setting_page,

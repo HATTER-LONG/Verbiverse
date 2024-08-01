@@ -9,22 +9,6 @@ from qfluentwidgets import ListWidget, SegmentedWidget
 class CTabWidget(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
-        # self.setStyleSheet(
-        #     """
-        #     CTabWidget{background: white}
-        #     ListWidget
-        #     {
-        #         font: 20px 'Segoe UI';
-        #         background: white;
-        #         border-radius: 8px;
-        #     }
-        #     QLabel{
-        #         font: 20px 'Segoe UI';
-        #         background: white;
-        #         border-radius: 8px;
-        #     }
-        # """
-        # )
 
         self.pivot = SegmentedWidget(self)
         self.stackedWidget = QStackedWidget(self)
