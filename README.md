@@ -27,9 +27,9 @@
     <br />
     <a href="https://github.com/HATTER-LONG/Verbiverse#上手指南">上手指南</a>
     ·
-    <a href="https://github.com/HATTER-LONG/Verbiverse/issues">报告Bug</a>
+    <a href="https://github.com/HATTER-LONG/Verbiverse/issues">报告Bug/提出特性</a>
     ·
-    <a href="https://github.com/HATTER-LONG/Verbiverse/issues">提出新特性</a>
+    <a href="https://sspai.com/post/91090">项目源码解析</a>
   </p>
 
 </p>
