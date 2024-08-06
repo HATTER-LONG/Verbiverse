@@ -72,6 +72,7 @@ class CWebView(FramelessWebEngineView):
         self.error_message = None
 
         self.already_connect_loadprocess_signal = False
+        self.setToolTip("")
 
     def themeChanged(self):
         # TODO: https://github.com/shivaprsd/doq use this to support pdf dark mode
