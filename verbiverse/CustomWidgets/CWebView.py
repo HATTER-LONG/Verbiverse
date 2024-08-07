@@ -72,7 +72,6 @@ class CWebView(FramelessWebEngineView):
         self.error_message = None
 
         self.already_connect_loadprocess_signal = False
-        self.setToolTip("")
 
     def themeChanged(self):
         # TODO: https://github.com/shivaprsd/doq use this to support pdf dark mode
@@ -139,6 +138,7 @@ class CWebView(FramelessWebEngineView):
             message = f"{doc_location} is not a valid local file"
             logger.error(message)
             QMessageBox.critical(self, "Failed to open", message)
+        self.setToolTip("")
 
     @Slot(int)
     def updatePdfPageNum(self, page_num: int) -> None:

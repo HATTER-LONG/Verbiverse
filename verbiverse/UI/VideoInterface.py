@@ -59,6 +59,7 @@ class VideoInterface(QWidget, Ui_VideoInterface):
         self.tab_widget.file_list.itemDoubleClicked.connect(self.selectVideoFile)
         self.video_widget.player.positionChanged.connect(self.updatePlayPos)
         self.video_widget.player.playbackStateChanged.connect(self.updatePlaystate)
+        self.video_widget.setToolTip("")
         space_shortcut = QShortcut(QKeySequence(Qt.Key.Key_Space), self)
         space_shortcut.activated.connect(self.video_widget.togglePlayState)
         left_shortcut = QShortcut(QKeySequence(Qt.Key.Key_Left), self)
