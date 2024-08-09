@@ -166,7 +166,7 @@ class VideoInterface(QWidget, Ui_VideoInterface):
 
     def getSubtitleStr(self, subtitle_item):
         text = subtitle_item.text
-        if not self.subtitle_show_firstline:
+        if "\n" in text and not self.subtitle_show_firstline:
             text = text.split("\n", 1)[1]
         return text
 
@@ -277,7 +277,7 @@ class VideoInterface(QWidget, Ui_VideoInterface):
     @Slot()
     def explainCurrentSubTitle(self):
         if len(self.current_subtitle.text) > 0:
-            self._onExplainSignal(self.current_subtitle.text)
+            self._onExplainSignal(self.getSubtitleStr(self.current_subtitle))
 
     @Slot(str)
     def _onExplainSignal(self, word: str):
@@ -311,7 +311,10 @@ class VideoInterface(QWidget, Ui_VideoInterface):
             max(0, self.subtitle_index - 15),
             min(len(self.subtitle), self.subtitle_index + 15),
         ):
-            all_text = all_text + self.subtitle[i].text
+            if all_text != "":
+                all_text = all_text + "\n" + self.getSubtitleStr(self.subtitle[i])
+            else:
+                all_text = self.getSubtitleStr(self.subtitle[i])
         self.worker = ExplainWorkerThread(
             selected_text=word,
             all_text=all_text,

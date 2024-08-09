@@ -17,8 +17,8 @@ from qfluentwidgets import (
     InfoBar,
     InfoBarPosition,
     NavigationItemPosition,
+    StateToolTip,
     SubtitleLabel,
-    Theme,
     setFont,
     setTheme,
 )
@@ -49,8 +49,8 @@ class MainWindow(FluentWindow):
             HomeInterface,
             ReadAndChatWidget,
             SettingInterface,
-            WordsTableInterface,
             VideoInterface,
+            WordsTableInterface,
         )
 
         # QFontDatabase.addApplicationFont(":/fonts/Segoe UI.ttf")
@@ -108,6 +108,8 @@ class MainWindow(FluentWindow):
         signalBus.info_signal.connect(self.showInfoMessage)
         signalBus.warning_signal.connect(self.showWarningMessage)
         signalBus.error_signal.connect(self.showErrorMessage)
+        signalBus.status_signal.connect(self.showStatusMessage)
+        self.stateTooltip = None
 
         signalBus.mica_enable_change_signal.connect(self.setMicaEffectEnabled)
 
@@ -116,6 +118,19 @@ class MainWindow(FluentWindow):
         for w in self.interfaceList:
             if w.objectName() == page_name:
                 self.stackedWidget.setCurrentWidget(w, False)
+
+    @Slot(str, str)
+    def showStatusMessage(self, title: str, content: str):
+        if self.stateTooltip:
+            if len(title) > 0:
+                self.stateTooltip.setTitle(title)
+            self.stateTooltip.setContent(content)
+            self.stateTooltip.setState(True)
+            self.stateTooltip = None
+        else:
+            self.stateTooltip = StateToolTip(title, content, self)
+            # self.stateTooltip.move(510, 30)
+            self.stateTooltip.show()
 
     @Slot(str)
     def showInfoMessage(self, info_message: str):

@@ -83,6 +83,9 @@ class ReadAndChatWidget(QWidget, Ui_ReadAndChatWidget):
         self.loader = LoadPdfText(doc_location.toLocalFile())
         self.loader.load_pdf_finish.connect(self.updatePdfReader)
         self.loader.start()
+        signalBus.status_signal.emit(
+            "Loading PDF", "Some functions are limited, please wait!"
+        )
         self.web_view.openLocalPdfDoc(doc_location, page)
 
     @Slot(PdfReader)
@@ -94,3 +97,5 @@ class ReadAndChatWidget(QWidget, Ui_ReadAndChatWidget):
         logger.info(
             f"read pdf [{path}] finish get [{len(self.pdf_reader.pages)}] pages"
         )
+
+        signalBus.status_signal.emit("Loading PDF", "Load finish!")
