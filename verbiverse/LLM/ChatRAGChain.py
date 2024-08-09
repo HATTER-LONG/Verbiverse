@@ -1,28 +1,43 @@
-from Functions.Config import cfg
-from Functions.LoadPdfText import PdfReader
-from Functions.SignalBus import signalBus
-from langchain_community.chat_message_histories import ChatMessageHistory
-from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
-from langchain_core.runnables import RunnablePassthrough
-from langchain_core.runnables.history import RunnableWithMessageHistory
-
-from langchain.chains import create_retrieval_chain, create_history_aware_retriever
-from langchain.chains.combine_documents import create_stuff_documents_chain
-from langchain_core.prompts import ChatPromptTemplate
-from LLMServerInfo import (
-    getChatModelByCfg,
-    getEmbedModelByCfg,
-    getChatPrompt,
-    getTargetLanguage,
-)
-from ModuleLogger import logger
-from langchain_core.chat_history import BaseChatMessageHistory
-
 import hashlib
 import os
 
+from Functions.Config import cfg
+from Functions.LoadPdfText import PdfReader
+from Functions.SignalBus import signalBus
+from langchain.chains import create_history_aware_retriever, create_retrieval_chain
+from langchain.chains.combine_documents import create_stuff_documents_chain
 from langchain_chroma import Chroma
+from langchain_community.chat_message_histories import ChatMessageHistory
+from langchain_core.chat_history import BaseChatMessageHistory
+from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
+from langchain_core.runnables import RunnablePassthrough
+from langchain_core.runnables.history import RunnableWithMessageHistory
 from langchain_text_splitters import RecursiveCharacterTextSplitter
+from LLMServerInfo import (
+    getChatModelByCfg,
+    getEmbedModelByCfg,
+    getTargetLanguage,
+)
+from ModuleLogger import logger
+from pebble import concurrent
+
+
+@concurrent.thread
+def loadDatabase(database_path, pdf_reader, embed):
+    if not os.path.exists(database_path):
+        logger.info(f"create embed db [{database_path}]")
+        text_splitter = RecursiveCharacterTextSplitter(
+            chunk_size=1000, chunk_overlap=200
+        )
+        splits = text_splitter.split_documents(pdf_reader.pages)
+        return Chroma.from_documents(
+            documents=splits,
+            embedding=embed,
+            persist_directory=database_path,
+        )
+    else:
+        logger.info(f"load embed db [{database_path}]")
+        return Chroma(persist_directory=database_path, embedding_function=embed)
 
 
 class ChatRAGChain:
@@ -43,22 +58,23 @@ class ChatRAGChain:
 
     def embedding(self) -> None:
         self.embed = getEmbedModelByCfg()
-        if not os.path.exists(self.database_path):
-            logger.info(f"create embed db [{self.database_path}]")
-            text_splitter = RecursiveCharacterTextSplitter(
-                chunk_size=1000, chunk_overlap=200
-            )
-            splits = text_splitter.split_documents(self.pdf_reader.pages)
-            return Chroma.from_documents(
-                documents=splits,
-                embedding=self.embed,
-                persist_directory=self.database_path,
-            )
-        else:
-            logger.info(f"load embed db [{self.database_path}]")
-            return Chroma(
-                persist_directory=self.database_path, embedding_function=self.embed
-            )
+        return loadDatabase(self.database_path, self.pdf_reader, self.embed).result()
+        # if not os.path.exists(self.database_path):
+        #     logger.info(f"create embed db [{self.database_path}]")
+        #     text_splitter = RecursiveCharacterTextSplitter(
+        #         chunk_size=1000, chunk_overlap=200
+        #     )
+        #     splits = text_splitter.split_documents(self.pdf_reader.pages)
+        #     return Chroma.from_documents(
+        #         documents=splits,
+        #         embedding=self.embed,
+        #         persist_directory=self.database_path,
+        #     )
+        # else:
+        #     logger.info(f"load embed db [{self.database_path}]")
+        #     return Chroma(
+        #         persist_directory=self.database_path, embedding_function=self.embed
+        #     )
 
     def createChatChain(self) -> None:
         """
@@ -66,7 +82,9 @@ class ChatRAGChain:
         This function sets up the chat model, target language, chat prompt, and message history for the chain.
         It then creates a chain with message history and applies trimming functionality to it.
         """
+        signalBus.status_signal.emit("Embedding PDF", "Please wait!!")
         self.db = self.embedding()
+        signalBus.status_signal.emit("Embedding PDF", "Embedding finished!!")
         self.rag_chain = None
         try:
             self.chat = getChatModelByCfg()
