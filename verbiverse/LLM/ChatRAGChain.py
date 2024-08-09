@@ -19,10 +19,8 @@ from LLMServerInfo import (
     getTargetLanguage,
 )
 from ModuleLogger import logger
-from pebble import concurrent
 
 
-@concurrent.thread
 def loadDatabase(database_path, pdf_reader, embed):
     if not os.path.exists(database_path):
         logger.info(f"create embed db [{database_path}]")
@@ -58,23 +56,7 @@ class ChatRAGChain:
 
     def embedding(self) -> None:
         self.embed = getEmbedModelByCfg()
-        return loadDatabase(self.database_path, self.pdf_reader, self.embed).result()
-        # if not os.path.exists(self.database_path):
-        #     logger.info(f"create embed db [{self.database_path}]")
-        #     text_splitter = RecursiveCharacterTextSplitter(
-        #         chunk_size=1000, chunk_overlap=200
-        #     )
-        #     splits = text_splitter.split_documents(self.pdf_reader.pages)
-        #     return Chroma.from_documents(
-        #         documents=splits,
-        #         embedding=self.embed,
-        #         persist_directory=self.database_path,
-        #     )
-        # else:
-        #     logger.info(f"load embed db [{self.database_path}]")
-        #     return Chroma(
-        #         persist_directory=self.database_path, embedding_function=self.embed
-        #     )
+        return loadDatabase(self.database_path, self.pdf_reader, self.embed)
 
     def createChatChain(self) -> None:
         """
