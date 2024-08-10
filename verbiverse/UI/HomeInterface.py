@@ -97,6 +97,7 @@ class BannerWidget(QWidget):
             to_open = self.m_fileDialog.selectedUrls()[0]
             if to_open.isValid():
                 signalBus.open_localfile_signal.emit(to_open, 0)
+        self.m_fileDialog = None
 
     def videoFileSelect(self, args):
         if not self.m_videoDialog:
@@ -111,6 +112,7 @@ class BannerWidget(QWidget):
             to_open = self.m_videoDialog.selectedUrls()[0]
             if to_open.isValid():
                 signalBus.open_video_signal.emit(to_open, 0)
+        self.m_videoDialog = None
 
     def paintEvent(self, e):
         super().paintEvent(e)
