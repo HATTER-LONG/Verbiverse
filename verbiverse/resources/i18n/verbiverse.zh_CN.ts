@@ -12,12 +12,12 @@
 <context>
     <name>VideoInterface</name>
     <message>
-        <location filename="../../UI/VideoInterface.py" line="259"/>
+        <location filename="../../UI/VideoInterface.py" line="260"/>
         <source>Add Subtitle</source>
         <translation>添加字幕</translation>
     </message>
     <message>
-        <location filename="../../UI/VideoInterface.py" line="269"/>
+        <location filename="../../UI/VideoInterface.py" line="270"/>
         <source>Toggle show first line Subtitle</source>
         <translation>显示/隐藏 第一行字幕</translation>
     </message>
@@ -443,27 +443,27 @@
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../../MainWindow.py" line="85"/>
+        <location filename="../../MainWindow.py" line="86"/>
         <source>Home</source>
         <translation>主页</translation>
     </message>
     <message>
-        <location filename="../../MainWindow.py" line="86"/>
+        <location filename="../../MainWindow.py" line="87"/>
         <source>Read with LLM</source>
         <translation>LLM 辅助阅读</translation>
     </message>
     <message>
-        <location filename="../../MainWindow.py" line="87"/>
+        <location filename="../../MainWindow.py" line="88"/>
         <source>Video Player</source>
         <translation>视频播放</translation>
     </message>
     <message>
-        <location filename="../../MainWindow.py" line="88"/>
+        <location filename="../../MainWindow.py" line="89"/>
         <source>Words review</source>
         <translation>单词本</translation>
     </message>
     <message>
-        <location filename="../../MainWindow.py" line="93"/>
+        <location filename="../../MainWindow.py" line="94"/>
         <source>Settings</source>
         <translation>设置</translation>
     </message>

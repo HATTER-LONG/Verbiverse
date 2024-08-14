@@ -7,6 +7,8 @@ from qasync import QEventLoop, QApplication
 
 from qfluentwidgets import StateToolTip
 
+from verbiverse.Functions.EdgeTTS import EdgeTTS
+
 OUTPUT_FILE = "sample_output.mp3"
 VOICE = "en-US-AvaNeural"
 
@@ -55,7 +57,7 @@ class MainWindow(QMainWindow):
         stateTooltip.setState(True)
 
 
-if __name__ == "__main__":
+def testMiniWindow():
     app = QApplication(sys.argv)
     event_loop = QEventLoop(app)
     asyncio.set_event_loop(event_loop)
@@ -65,3 +67,25 @@ if __name__ == "__main__":
     window.show()
     with event_loop:
         event_loop.run_until_complete(app_close_event.wait())
+
+
+def testModule():
+    edge_tts = EdgeTTS()
+    print(edge_tts)
+    text = "Hello, World!, this is a beautiful day"
+    audio_file = edge_tts.getAudio(text)
+    print(audio_file)
+    print(edge_tts.getAudioList())
+    text = "Nice to meet you!"
+    audio_file = edge_tts.getAudio(text)
+    print(audio_file)
+    print(edge_tts.getAudioList())
+    # edge_tts.clearAudioList()
+    # print(edge_tts.getAudioList())
+    print(edge_tts.map_updated)
+    edge_tts.map_updated = True
+    edge_tts.periodicMap()
+
+
+if __name__ == "__main__":
+    testModule()
