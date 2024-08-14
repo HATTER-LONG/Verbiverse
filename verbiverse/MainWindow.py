@@ -1,3 +1,4 @@
+import asyncio
 import sys
 
 from Functions.Config import cfg
@@ -6,10 +7,10 @@ from Functions.SignalBus import signalBus
 from PySide6.QtCore import Qt, QTranslator, Slot
 from PySide6.QtGui import QIcon
 from PySide6.QtWidgets import (
-    QApplication,
     QFrame,
     QHBoxLayout,
 )
+from qasync import QApplication, QEventLoop
 from qfluentwidgets import (
     FluentBackgroundTheme,
     FluentTranslator,
@@ -33,8 +34,8 @@ class Widget(QFrame):
         self.hBoxLayout = QHBoxLayout(self)
 
         setFont(self.label, 24)
-        self.label.setAlignment(Qt.AlignCenter)
-        self.hBoxLayout.addWidget(self.label, 1, Qt.AlignCenter)
+        self.label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.hBoxLayout.addWidget(self.label, 1, Qt.AlignmentFlag.AlignCenter)
         self.setObjectName(text.replace(" ", "-"))
 
         # !IMPORTANT: leave some space for title bar
@@ -137,7 +138,7 @@ class MainWindow(FluentWindow):
         InfoBar.info(
             title="INFO",
             content=info_message,
-            orient=Qt.Horizontal,
+            orient=Qt.Orientation.Horizontal,
             isClosable=True,
             position=InfoBarPosition.TOP_RIGHT,
             duration=-1,
@@ -149,7 +150,7 @@ class MainWindow(FluentWindow):
         InfoBar.warning(
             title="WARN",
             content=warning_message,
-            orient=Qt.Horizontal,
+            orient=Qt.Orientation.Horizontal,
             isClosable=True,
             position=InfoBarPosition.TOP_RIGHT,
             duration=-1,
@@ -162,7 +163,7 @@ class MainWindow(FluentWindow):
         InfoBar.error(
             title="Error",
             content=error_message,
-            orient=Qt.Horizontal,
+            orient=Qt.Orientation.Horizontal,
             isClosable=True,
             position=InfoBarPosition.TOP_RIGHT,
             duration=-1,
@@ -178,8 +179,12 @@ def main():
     setTheme(cfg.get(cfg.themeMode))
 
     app = QApplication(sys.argv)
+    event_loop = QEventLoop(app)
+    asyncio.set_event_loop(event_loop)
 
-    app.setAttribute(Qt.AA_DontCreateNativeWidgetSiblings)
+    app_close_event = asyncio.Event()
+    app.aboutToQuit.connect(app_close_event.set)
+    app.setAttribute(Qt.ApplicationAttribute.AA_DontCreateNativeWidgetSiblings)
 
     # internationalization
     locale = cfg.get(cfg.language).value
@@ -193,4 +198,5 @@ def main():
     window.show()
 
     logger.info("start finish...")
-    app.exec()
+    with event_loop:
+        event_loop.run_until_complete(app_close_event.wait())
