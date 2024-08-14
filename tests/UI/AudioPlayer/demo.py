@@ -1,4 +1,4 @@
-from verbiverse.UI import AudioPlayer
+from verbiverse.CustomWidgets import AudioPlayer
 from PySide6.QtWidgets import QApplication
 import sys
 

@@ -54,21 +54,21 @@ class EdgeTTS:
 
             self.initialized = True
 
-    def __generateAudio(self, text):
+    async def __generateAudio(self, text):
         hash_object = hashlib.md5(text.encode())
         audio_file_name = f"{hash_object.hexdigest()}.mp3"
         audio_file_path = os.path.join(self.audio_path, audio_file_name)
 
         tts = edge_tts.Communicate(text, self.audio_voice)
-        tts.save_sync(audio_file_path)
+        await tts.save(audio_file_path)
         return audio_file_path
 
-    def getAudio(self, text):
+    async def getAudio(self, text):
         logger.debug("getAudio: %s" % text)
         if text in self.audio_map:
             return self.audio_map[text]
         else:
-            audio_file_path = self.__generateAudio(text)
+            audio_file_path = await self.__generateAudio(text)
             self.audio_map[text] = audio_file_path
             self.map_updated = True
             return audio_file_path

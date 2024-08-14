@@ -129,14 +129,12 @@
         <translation>设置 LLM 提供者 url 地址，输入空则恢复默认</translation>
     </message>
     <message>
-        <location filename="../../UI/SettingInterface.py" line="142"/>
         <source>Target Language</source>
-        <translation>目标语言</translation>
+        <translation type="vanished">目标语言</translation>
     </message>
     <message>
-        <location filename="../../UI/SettingInterface.py" line="143"/>
         <source>Set target language which you want to learn from LLM</source>
-        <translation>设置你需要通过 LLM 学习的语言</translation>
+        <translation type="vanished">设置你需要通过 LLM 学习的语言</translation>
     </message>
     <message>
         <location filename="../../UI/SettingInterface.py" line="150"/>
@@ -299,22 +297,27 @@
 <context>
     <name>CContexMenu</name>
     <message>
-        <location filename="../../CustomWidgets/CContexMenu.py" line="25"/>
+        <location filename="../../CustomWidgets/CContexMenu.py" line="26"/>
+        <location filename="../../CustomWidgets/CContexMenu.py" line="39"/>
         <source>Explain</source>
         <translation>解释</translation>
     </message>
     <message>
-        <location filename="../../CustomWidgets/CContexMenu.py" line="32"/>
         <source>Explain(NL)</source>
-        <translation>解释(母语)</translation>
+        <translation type="vanished">解释(母语)</translation>
     </message>
     <message>
-        <location filename="../../CustomWidgets/CContexMenu.py" line="39"/>
+        <location filename="../../CustomWidgets/CContexMenu.py" line="32"/>
+        <source>Play Audio</source>
+        <translation>播放音频</translation>
+    </message>
+    <message>
+        <location filename="../../CustomWidgets/CContexMenu.py" line="46"/>
         <source>Copy</source>
         <translation>复制</translation>
     </message>
     <message>
-        <location filename="../../CustomWidgets/CContexMenu.py" line="45"/>
+        <location filename="../../CustomWidgets/CContexMenu.py" line="52"/>
         <source>Select all</source>
         <translation>全选</translation>
     </message>
@@ -434,7 +437,7 @@
 <context>
     <name>ReadAndChatWidget</name>
     <message>
-        <location filename="../../UI/ReadAndChatWidget.py" line="70"/>
+        <location filename="../../UI/ReadAndChatWidget.py" line="65"/>
         <source>Need wait last loader stop, maybe cost some time!!!</source>
         <translation>需要等待上一次文档加载停止，可能需要些时间！</translation>
     </message>

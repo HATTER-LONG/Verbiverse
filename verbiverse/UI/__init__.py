@@ -15,5 +15,4 @@ from .WordsTableInterface_ui import Ui_WordsTableInterface  # noqa: F401,E402,I0
 from .WordsTableInterface import WordsTableInterface  # noqa: F401,E402
 from .VideoInterface_ui import Ui_VideoInterface  # noqa: F401,E402,I001
 from .VideoInterface import VideoInterface  # noqa: F401,E402
-from .AudioPlayer_ui import Ui_PlayerAudio  # noqa: F401,E402
-from .AudioPlayer import AudioPlayer  # noqa: F401,E402
+from .CReadPageTabWidget import CReadPageTabWidget  # noqa: F401

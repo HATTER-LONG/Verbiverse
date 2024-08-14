@@ -136,14 +136,14 @@ class SettingInterface(ScrollArea):
             parent=self.function_info_group,
         )
 
-        self.target_language_card = ComboBoxSettingCard(
-            cfg.target_language,
-            FIF.QUESTION,
-            self.tr("Target Language"),
-            self.tr("Set target language which you want to learn from LLM"),
-            texts=["Chinese", "English", "Japanese"],
-            parent=self.function_info_group,
-        )
+        # self.target_language_card = ComboBoxSettingCard(
+        #     cfg.target_language,
+        #     FIF.QUESTION,
+        #     self.tr("Target Language"),
+        #     self.tr("Set target language which you want to learn from LLM"),
+        #     texts=["Chinese", "English", "Japanese"],
+        #     parent=self.function_info_group,
+        # )
         self.mother_tongue_card = ComboBoxSettingCard(
             cfg.mother_tongue,
             FIF.EDUCATION,
@@ -282,7 +282,7 @@ class SettingInterface(ScrollArea):
         self.function_info_group.addSettingCard(self.embed_model_name)
         self.function_info_group.addSettingCard(self.user_key)
         self.function_info_group.addSettingCard(self.provide_url)
-        self.function_info_group.addSettingCard(self.target_language_card)
+        # self.function_info_group.addSettingCard(self.target_language_card)
         self.function_info_group.addSettingCard(self.mother_tongue_card)
         # self.function_info_group.addSettingCard(self.datebase_save_path)
 
@@ -344,9 +344,9 @@ class SettingInterface(ScrollArea):
         self.provide_url.editing_finished.connect(
             lambda: signalBus.llm_config_change_signal.emit()
         )
-        self.target_language_card.comboBox.currentIndexChanged.connect(
-            lambda _: signalBus.llm_config_change_signal.emit()
-        )
+        # self.target_language_card.comboBox.currentIndexChanged.connect(
+        #     lambda _: signalBus.llm_config_change_signal.emit()
+        # )
         self.mother_tongue_card.comboBox.currentIndexChanged.connect(
             lambda _: signalBus.llm_config_change_signal.emit()
         )

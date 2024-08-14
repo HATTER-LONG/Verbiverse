@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>696</width>
+    <width>915</width>
     <height>563</height>
    </rect>
   </property>
@@ -31,10 +31,19 @@
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
+     <property name="opaqueResize">
+      <bool>true</bool>
+     </property>
      <property name="handleWidth">
       <number>5</number>
      </property>
      <widget class="CWebView" name="web_view">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
       <property name="minimumSize">
        <size>
         <width>500</width>
@@ -47,7 +56,20 @@
        </url>
       </property>
      </widget>
-     <widget class="ChatWidget" name="chat_widget" native="true"/>
+     <widget class="CReadPageTabWidget" name="tab_widget" native="true">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>300</width>
+        <height>0</height>
+       </size>
+      </property>
+     </widget>
     </widget>
    </item>
   </layout>
@@ -64,9 +86,9 @@
    <header>CustomWidgets</header>
   </customwidget>
   <customwidget>
-   <class>ChatWidget</class>
+   <class>CReadPageTabWidget</class>
    <extends>QWidget</extends>
-   <header>UI</header>
+   <header location="global">CReadPageTabWidget</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

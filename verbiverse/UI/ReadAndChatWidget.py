@@ -3,13 +3,8 @@ from concurrent.futures import CancelledError
 from Functions.LoadPdfText import PdfReader
 from Functions.SignalBus import signalBus
 from ModuleLogger import logger
-from PySide6.QtCore import (
-    QThread,
-    QUrl,
-    Signal,
-    Slot,
-)
-from PySide6.QtWidgets import QApplication, QWidget
+from PySide6.QtCore import QThread, QUrl, Signal, Slot
+from PySide6.QtWidgets import QApplication, QWidget, QSizePolicy
 from ReadAndChatWidget_ui import Ui_ReadAndChatWidget
 
 
@@ -92,7 +87,7 @@ class ReadAndChatWidget(QWidget, Ui_ReadAndChatWidget):
     def updatePdfReader(self, reader: PdfReader):
         self.pdf_reader = reader
         self.web_view.setPdfReader(reader)
-        self.chat_widget.setRAGData(reader)
+        self.tab_widget.chat_widget.setRAGData(reader)
         path = self.local_file_path.toLocalFile()
         logger.info(
             f"read pdf [{path}] finish get [{len(self.pdf_reader.pages)}] pages"
