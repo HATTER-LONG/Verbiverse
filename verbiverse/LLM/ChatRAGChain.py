@@ -1,5 +1,6 @@
 import hashlib
 import os
+import asyncio
 
 from Functions.Config import cfg
 from Functions.LoadPdfText import PdfReader
@@ -39,8 +40,6 @@ def loadDatabase(database_path, pdf_reader, embed):
 
 
 class ChatRAGChain:
-    """Chat LLM RAG"""
-
     def __init__(self, pdf_reader: PdfReader):
         logger.info(f"database path {cfg.get(cfg.database_folder)}")
         filename_md5 = (
@@ -50,23 +49,23 @@ class ChatRAGChain:
         self.database_path = cfg.get(cfg.database_folder) + "/" + filename_md5
 
         self.pdf_reader = pdf_reader
-        self.createChatChain()
         self.stored_messages = {}
         signalBus.llm_config_change_signal.connect(self.createChatChain)
 
-    def embedding(self) -> None:
+    async def embedding(self):
         self.embed = getEmbedModelByCfg()
-        return loadDatabase(self.database_path, self.pdf_reader, self.embed)
+        return await asyncio.to_thread(
+            loadDatabase, self.database_path, self.pdf_reader, self.embed
+        )
 
-    def createChatChain(self) -> None:
-        """
-        A function that creates a chat chain by initializing various attributes and objects.
-        This function sets up the chat model, target language, chat prompt, and message history for the chain.
-        It then creates a chain with message history and applies trimming functionality to it.
-        """
+    async def createChatChain(self) -> None:
         signalBus.status_signal.emit("Embedding PDF", "Please wait!!")
-        self.db = self.embedding()
-        signalBus.status_signal.emit("Embedding PDF", "Embedding finished!!")
+        self.db = await self.embedding()
+        if self.db is None:
+            signalBus.status_signal.emit("Embedding PDF", "Embedding failed!!")
+            return
+        else:
+            signalBus.status_signal.emit("Embedding PDF", "Embedding finished!!")
         self.rag_chain = None
         try:
             self.chat = getChatModelByCfg()
@@ -118,8 +117,6 @@ class ChatRAGChain:
             history_aware_retriever, question_answer_chain
         )
 
-        # self.chain = self.prompt | self.chat
-
         self.demo_ephemeral_chat_history_for_chain = ChatMessageHistory()
 
         self.chain_with_message_history = RunnableWithMessageHistory(
@@ -141,15 +138,6 @@ class ChatRAGChain:
         return self.stored_messages[session_id]
 
     def trim_messages(self, jchain_input):
-        """
-        Trims the messages in the `demo_ephemeral_chat_history_for_chain` attribute to the last 10 messages.
-
-        Args:
-            jchain_input (Any): The input for the function. Currently not used.
-
-        Returns:
-            bool: True if the messages were successfully trimmed, False otherwise.
-        """
         stored_messages = self.demo_ephemeral_chat_history_for_chain.messages
         if len(stored_messages) <= 10:
             return False
@@ -161,15 +149,6 @@ class ChatRAGChain:
         return True
 
     def invoke(self, message):
-        """
-        Invokes the chat chain with the given message.
-
-        Args:
-            message (str): The message to be sent to the chat chain.
-
-        Returns:
-            str or None: The content of the response from the chat chain, or None if the chat chain is not ready.
-        """
         if self.chain_with_trimming is None:
             logger.warn("chat chain is not ready")
             return None
@@ -180,15 +159,6 @@ class ChatRAGChain:
         ).content
 
     def stream(self, message):
-        """
-        Stream the given message through the chat chain.
-
-        Args:
-            message (str): The message to be streamed.
-
-        Returns:
-            Any: The streamed content from the chat chain, or None if the chat chain is not ready.
-        """
         if self.chain_with_message_history is None:
             logger.warn("chat chain is not ready")
             return None

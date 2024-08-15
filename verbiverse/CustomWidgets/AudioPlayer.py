@@ -56,6 +56,7 @@ class AudioPlayer(QWidget, Ui_PlayerAudio):
         self.player_bar.player.play()
 
     async def playAudio(self, text):
+        text = text.replace("\n", " ")
         signalBus.status_signal.emit("Convert text to speech", "Please wait...")
         self.player_title.setText(text)
         try:
