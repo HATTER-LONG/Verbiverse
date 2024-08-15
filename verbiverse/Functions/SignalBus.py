@@ -11,6 +11,7 @@ class SignalBus(QObject):
     load_localfile_signal = Signal(int)
     switch_page_signal = Signal(str)
     update_file_schedule_signal = Signal(str, int)
+    play_audio_signal = Signal(str)
 
     # message signal
     info_signal = Signal(str)

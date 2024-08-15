@@ -20,6 +20,8 @@ pebble = "^5.0.7"
 pyside6 = "6.6.2"
 pyinstaller = "^6.9.0"
 pysrt = "^1.1.2"
+edge-tts = "^6.1.12"
+qasync = "^0.27.1"
 
 
 [build-system]

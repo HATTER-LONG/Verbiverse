@@ -19,14 +19,14 @@ from PySide6.QtWebEngineWidgets import QWebEngineView
 from PySide6.QtWidgets import (QApplication, QGridLayout, QSizePolicy, QSplitter,
     QWidget)
 
+from CReadPageTabWidget import CReadPageTabWidget
 from CustomWidgets import CWebView
-from UI import ChatWidget
 
 class Ui_ReadAndChatWidget(object):
     def setupUi(self, ReadAndChatWidget):
         if not ReadAndChatWidget.objectName():
             ReadAndChatWidget.setObjectName(u"ReadAndChatWidget")
-        ReadAndChatWidget.resize(696, 563)
+        ReadAndChatWidget.resize(915, 563)
         self.gridLayout = QGridLayout(ReadAndChatWidget)
         self.gridLayout.setObjectName(u"gridLayout")
         self.gridLayout.setContentsMargins(5, 5, 5, 5)
@@ -36,12 +36,23 @@ class Ui_ReadAndChatWidget(object):
         self.splitter.setHandleWidth(5)
         self.web_view = CWebView(self.splitter)
         self.web_view.setObjectName(u"web_view")
+        sizePolicy = QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Preferred)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.web_view.sizePolicy().hasHeightForWidth())
+        self.web_view.setSizePolicy(sizePolicy)
         self.web_view.setMinimumSize(QSize(500, 0))
         self.web_view.setUrl(QUrl(u"about:blank"))
         self.splitter.addWidget(self.web_view)
-        self.chat_widget = ChatWidget(self.splitter)
-        self.chat_widget.setObjectName(u"chat_widget")
-        self.splitter.addWidget(self.chat_widget)
+        self.tab_widget = CReadPageTabWidget(self.splitter)
+        self.tab_widget.setObjectName(u"tab_widget")
+        sizePolicy1 = QSizePolicy(QSizePolicy.Policy.MinimumExpanding, QSizePolicy.Policy.Preferred)
+        sizePolicy1.setHorizontalStretch(0)
+        sizePolicy1.setVerticalStretch(0)
+        sizePolicy1.setHeightForWidth(self.tab_widget.sizePolicy().hasHeightForWidth())
+        self.tab_widget.setSizePolicy(sizePolicy1)
+        self.tab_widget.setMinimumSize(QSize(300, 0))
+        self.splitter.addWidget(self.tab_widget)
 
         self.gridLayout.addWidget(self.splitter, 0, 0, 1, 1)
 

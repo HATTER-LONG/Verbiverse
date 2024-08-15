@@ -69,14 +69,12 @@
         <translation>设置 LLM 提供者 url 地址，输入空则恢复默认</translation>
     </message>
     <message>
-        <location filename="../../UI/SettingInterface.py" line="142"/>
         <source>Target Language</source>
-        <translation>目标语言</translation>
+        <translation type="vanished">目标语言</translation>
     </message>
     <message>
-        <location filename="../../UI/SettingInterface.py" line="143"/>
         <source>Set target language which you want to learn from LLM</source>
-        <translation>设置你需要通过 LLM 学习的语言</translation>
+        <translation type="vanished">设置你需要通过 LLM 学习的语言</translation>
     </message>
     <message>
         <location filename="../../UI/SettingInterface.py" line="150"/>

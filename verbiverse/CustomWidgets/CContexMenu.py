@@ -1,5 +1,6 @@
 from ExplainFlyoutView import ExplainFlyoutView
 from Functions.LanguageType import ExplainLanguage
+from Functions.SignalBus import signalBus
 from PySide6.QtCore import Signal, Slot
 from PySide6.QtGui import QAction
 from PySide6.QtWidgets import QApplication, QLabel
@@ -26,10 +27,16 @@ class CContexMenu(RoundMenu):
             self,
             triggered=self._onExplainTL,
         )
+        self.play_audio = QAction(
+            FIF.VOLUME.icon(),
+            self.tr("Play Audio"),
+            self,
+            triggered=self._onPlayAudio,
+        )
 
         self.explain_ml = QAction(
             FIF.CHAT.icon(),
-            self.tr("Explain(NL)"),
+            self.tr("Explain"),
             self,
             triggered=self._onExplainML,
         )
@@ -58,6 +65,10 @@ class CContexMenu(RoundMenu):
         self._onExplain(ExplainLanguage.MOTHER_TONGUE)
 
     @Slot()
+    def _onPlayAudio(self):
+        signalBus.play_audio_signal.emit(self.selected_text)
+
+    @Slot()
     def _onExplainTL(self):
         self._onExplain(ExplainLanguage.TARGET_LANGUAGE)
 
@@ -81,7 +92,7 @@ class CContexMenu(RoundMenu):
     def exec(self, pos, ani=True, aniType=MenuAnimationType.DROP_DOWN):
         if self.label().hasSelectedText():
             self.addActions(
-                [self.explain, self.explain_ml, self.copyAct, self.selectAllAct]
+                [self.explain_ml, self.play_audio, self.copyAct, self.selectAllAct]
             )
         else:
             self.addAction(self.selectAllAct)

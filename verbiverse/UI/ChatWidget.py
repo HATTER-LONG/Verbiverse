@@ -7,9 +7,17 @@ from ModuleLogger import logger
 from PySide6.QtCore import Qt, Slot
 from PySide6.QtWidgets import QWidget
 from qfluentwidgets import FluentIcon as FIF
+import asyncio
 
 
 class ChatWidget(QWidget, Ui_ChatWidget):
+    """
+    A widget for handling chat interactions, including sending messages and checking input.
+
+    Args:
+        parent (QWidget, optional): The parent widget. Defaults to None.
+    """
+
     def __init__(self, parent: QWidget = None):
         super().__init__(parent)
         self.setupUi(self)
@@ -17,7 +25,7 @@ class ChatWidget(QWidget, Ui_ChatWidget):
         self.chat_scroll_area.setStyleSheet(
             "QScrollArea{background: transparent; border: none}"
         )
-        # 必须给内部的视图也加上透明背景样式
+        # Must also set transparent background style for the internal view
         self.scroll_area_widget.setStyleSheet("QWidget{background: transparent}")
 
         self.chat_chain = None
@@ -33,30 +41,42 @@ class ChatWidget(QWidget, Ui_ChatWidget):
         self.connectSignal()
 
     def setRAGData(self, reader):
+        """
+        Sets the RAG data reader.
+
+        Args:
+            reader: The data reader to be used by the chat chain.
+        """
         self.chat_chain = None
         self.reader = reader
 
     def connectSignal(self):
-        self.user_send_button.clicked.connect(self.sendMessage)
+        """Connects the signals to their respective slots."""
+        self.user_send_button.clicked.connect(
+            lambda: asyncio.ensure_future(self.sendMessage())
+        )
         self.user_check_button.clicked.connect(self.checkInput)
 
-    def initChatChain(self):
+    async def initChatChain(self):
+        """Initializes the chat chain if it is not already initialized."""
         if self.chat_chain is None:
             self.chat_chain = ChatRAGChain(self.reader)
+            await self.chat_chain.createChatChain()
 
     def initCheckChain(self):
+        """Initializes the check chain if it is not already initialized."""
         if self.check_chain is None:
             self.check_chain = ChatLLMWithCustomHistory()
 
-    @Slot()
-    def sendMessage(self):
+    async def sendMessage(self):
+        """Handles the sending of a message."""
         if self.need_update_label is not None:
             return
-        try:
-            self.initChatChain()
-        except Exception as e:
-            logger.error(e)
-            return
+        await self.initChatChain()
+        # try:
+        # except Exception as e:
+        #     logger.error(e)
+        #     return
         self.user_send_button.setEnabled(False)
 
         message_text = self.user_text_edit.toPlainText()
@@ -78,6 +98,7 @@ class ChatWidget(QWidget, Ui_ChatWidget):
 
     @Slot()
     def checkInput(self):
+        """Handles the checking of input."""
         if self.need_update_label is not None:
             return
         try:
@@ -104,12 +125,14 @@ class ChatWidget(QWidget, Ui_ChatWidget):
 
     @Slot()
     def workerThreadStart(self):
+        """Slot called when the worker thread starts."""
         self.user_send_button.setEnabled(False)
         self.user_check_button.setEnabled(False)
         self.messages_list.update()
 
     @Slot()
     def workerThreadFinish(self):
+        """Slot called when the worker thread finishes."""
         self.user_send_button.setEnabled(True)
         self.user_check_button.setEnabled(True)
         self.messages_list.update()
@@ -117,6 +140,12 @@ class ChatWidget(QWidget, Ui_ChatWidget):
 
     @Slot(str)
     def updateLabel(self, message):
+        """
+        Updates the label with the given message.
+
+        Args:
+            message (str): The message to update the label with.
+        """
         if self.need_update_label is not None:
             self.need_update_label.setMessageText(
                 self.need_update_label.getMessageText() + message
