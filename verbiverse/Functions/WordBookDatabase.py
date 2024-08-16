@@ -89,8 +89,10 @@ class WordsBookDatabase:
         word = word.lower()
         current_time = datetime.datetime.now()
         next_review_on = self.calculateNextReview(current_time)
+        logger.info("add word: %s" % word)
         # 检查单词是否在词表中
         if word in self.word_map:
+            logger.info("word already in database: %s" % word)
             update_sql = """
                 UPDATE words
                 SET explain = ?, example = ?, added_on = ?, next_review_on = ?, resource = ?
@@ -108,6 +110,7 @@ class WordsBookDatabase:
             self.word_map[word].next_review_on = next_review_on
             self.word_map[word].resource = resource
         else:
+            logger.info("add new word: %s" % word)
             insert_sql = """
                 INSERT INTO words (word, explain, example, added_on, next_review_on, resource)
                 VALUES (?, ?, ?, ?, ?, ?)

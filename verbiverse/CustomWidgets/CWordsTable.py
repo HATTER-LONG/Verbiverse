@@ -43,7 +43,7 @@ class WordsTable(QWidget):
         self.tableView.setBorderRadius(8)
 
         self.tableView.setWordWrap(False)
-        self.tableView.setRowCount(30)
+        # self.tableView.setRowCount(1000000)
         self.tableView.setColumnCount(6)
 
         self.tableView.verticalHeader().hide()
@@ -67,26 +67,28 @@ class WordsTable(QWidget):
         self.hBoxLayout.setContentsMargins(10, 10, 10, 10)
         self.hBoxLayout.addWidget(self.tableView)
 
-    def getColumDataFromWord(self, index: int, word: Word):
-        if index == 0:
-            return word.word
-        elif index == 1:
-            return word.explain
-        elif index == 2:
-            return word.example
-        elif index == 3:
-            return word.added_on
-        elif index == 4:
-            return word.next_review_on
-        elif index == 5:
-            return os.path.basename(word.resource)
+    def addWord(self, word, explain, example, added_on, next_review_on, resource):
+        rowPosition = self.tableView.rowCount()
+        self.tableView.insertRow(rowPosition)
+
+        self.tableView.setItem(rowPosition, 0, QTableWidgetItem(word))
+        self.tableView.setItem(rowPosition, 1, QTableWidgetItem(explain))
+        self.tableView.setItem(rowPosition, 2, QTableWidgetItem(example))
+        self.tableView.setItem(rowPosition, 3, QTableWidgetItem(added_on))
+        self.tableView.setItem(rowPosition, 4, QTableWidgetItem(next_review_on))
+        self.tableView.setItem(rowPosition, 5, QTableWidgetItem(resource))
 
     def updateTable(self):
         db = WordsBookDatabase()
         words: map[Word] = db.updateWordsMap()
-
-        for i, word in enumerate(words):
-            for j in range(6):
-                self.tableView.setItem(
-                    i, j, QTableWidgetItem(self.getColumDataFromWord(j, words[word]))
-                )
+        self.tableView.setRowCount(0)
+        for word in words:
+            wordobj = words[word]
+            self.addWord(
+                wordobj.word,
+                wordobj.explain,
+                wordobj.example,
+                wordobj.added_on,
+                wordobj.next_review_on,
+                os.path.basename(wordobj.resource),
+            )
