@@ -42,7 +42,7 @@ class ReadAndChatWidget(QWidget, Ui_ReadAndChatWidget):
     def __init__(self, parent: QWidget = None):
         super().__init__(parent)
         self.setupUi(self)
-        self.splitter.setStretchFactor(0, 2)
+        self.splitter.setStretchFactor(0, 6)
         self.splitter.setStretchFactor(1, 1)
 
         # #### TEST CODE
