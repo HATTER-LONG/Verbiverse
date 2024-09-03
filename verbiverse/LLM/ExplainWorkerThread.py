@@ -14,10 +14,19 @@ from LLMServerInfo import (
 )
 from ModuleLogger import logger
 from PySide6.QtCore import QThread, Signal
+from pebble import concurrent
+import translators as ts
+
+
+@concurrent.thread
+def translator(text: str) -> str:
+    result = ts.translate_text(text, "bing", to_language="zh")
+    return result
 
 
 class ExplainWorkerThread(QThread):
     """Worker thread for ExplainChain"""
+
     messageCallBackSignal = Signal(str)
 
     def __init__(
@@ -31,6 +40,7 @@ class ExplainWorkerThread(QThread):
         self.chain = None
         self.stream = stream
         self.type = language_type
+        selected_text = selected_text.replace("\n", " ")
         self.is_sentence = self.isSentenceString(selected_text)
         self.createExplainChain(selected_text, all_text)
         self.quit = False
@@ -120,6 +130,7 @@ class ExplainWorkerThread(QThread):
         if self.chain is None:
             logger.error("explain chain is not set")
             return
+        trans_future = translator(self.msg["word"])
         try:
             if self.stream:
                 content = self.chain.stream(self.msg)
@@ -137,3 +148,6 @@ class ExplainWorkerThread(QThread):
         except Exception as e:
             logger.error("explain error: %s", e)
             signalBus.error_signal.emit(error_string.NO_VALID_LLM + str(e))
+            return
+
+        self.messageCallBackSignal.emit("\n\nBing: " + trans_future.result())

@@ -22,6 +22,7 @@ pyinstaller = "^6.9.0"
 pysrt = "^1.1.2"
 edge-tts = "^6.1.12"
 qasync = "^0.27.1"
+translators = "^5.9.2"
 
 
 [build-system]
