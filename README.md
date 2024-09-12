@@ -30,6 +30,8 @@
     <a href="https://github.com/HATTER-LONG/Verbiverse/issues">报告Bug/提出特性</a>
     ·
     <a href="https://sspai.com/post/91090">项目源码解析</a>
+    ·
+    <a href="https://discord.gg/YRq2MMMn">discord 群组</a>
   </p>
 
 </p>
