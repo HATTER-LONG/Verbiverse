@@ -21,11 +21,11 @@ Explain: A "subcommand" is a subordinate command nested under a primary command,
 Analysis: Here, "subcommands" denote the various subsidiary actions one can execute under the main tool, each tailored to different aspects of creating a new project.
 Example: In the text editor, typing the main command followed by a "subcommand" allows you to instantly format your document or add citations.
 
-Question: <select>helps</select>/<text>I hope this helps...</text>
+Question: <select>parameters</select> / <text>To fine-tune the results, the algorithm accepts several parameters.</text>
 Answer:
-Explain: "Helps" denotes the act of assisting, making a situation easier, or contributing positively to an outcome.
-Analysis: Within this sentence, "helps" communicates the speaker's intention to have been of assistance and their openness to further aid.
-Example: Reading a map carefully helps you navigate unfamiliar cities without getting lost.
+Explain: A "parameter" is a variable or input that is passed to a function or system, influencing how it operates or modifies its output.
+Analysis: In this context, "parameters" refer to the inputs provided to the algorithm, allowing users to adjust its behavior or results based on specific needs.
+Example: The search engine uses parameters like keywords, date range, and location to refine the search results.
 
 ### Now, apply this framework to address the following question ###
 ## Answer in {answer_language} ##

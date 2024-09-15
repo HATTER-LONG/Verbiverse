@@ -22,12 +22,12 @@ Analysis: 在句中，“endeavor”描绘了她为研究古代文明所付出�
 Example: His latest scientific endeavor aims to uncover the mysteries of deep space communication.
 
 **问题**: 
-<select>endeavor</select>/<text>She devoted her life to the endeavor of understanding ancient civilizations.</text>
+<select>resilience</select> / <text>Despite facing numerous challenges, her resilience allowed her to achieve her goals.</text>
 
-**解答**: 
-Explain: "endeavor" 意味着努力尝试或追求某个目标，通常涉及长期的、有目的的活动。
-Analysis: 在句中，“endeavor”描绘了她为研究古代文明所付出的持续而专注的努力。
-Example: His latest scientific endeavor aims to uncover the mysteries of deep space communication.
+解答:
+Explain: "Resilience" 指的是在面对困难、压力或挫折时，能够迅速恢复并继续前行的能力或韧性。
+Analysis: 在句中，“resilience” 强调了她面对众多挑战时，依然能够坚持不懈并最终实现目标的能力。
+Example: His resilience in overcoming personal hardships helped him build a successful career.
 ---
 
 请根据上述改进后的提示框架，提供以下问题的解答：
