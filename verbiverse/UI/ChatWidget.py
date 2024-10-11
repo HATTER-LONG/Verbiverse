@@ -55,7 +55,9 @@ class ChatWidget(QWidget, Ui_ChatWidget):
         self.user_send_button.clicked.connect(
             lambda: asyncio.ensure_future(self.sendMessage())
         )
-        self.user_check_button.clicked.connect(self.checkInput)
+        self.user_check_button.clicked.connect(
+            lambda: asyncio.ensure_future(self.checkInput())
+        )
 
     async def initChatChain(self):
         """Initializes the chat chain if it is not already initialized."""
@@ -97,12 +99,12 @@ class ChatWidget(QWidget, Ui_ChatWidget):
             self.chat_worker.start()
 
     @Slot()
-    def checkInput(self):
+    async def checkInput(self):
         """Handles the checking of input."""
         if self.need_update_label is not None:
             return
         try:
-            self.initChatChain()
+            await self.initChatChain()
             self.initCheckChain()
         except Exception as e:
             logger.error(e)
